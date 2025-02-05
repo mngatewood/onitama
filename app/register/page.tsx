@@ -5,6 +5,7 @@ import { Label } from "../components/ui/Label";
 import { Input } from "../components/ui/Input";
 import { DarkModeToggle } from "../components/DarkThemeToggle";
 import Link from "next/link";
+import { validateFormComplete, validateEmail, validatePassword } from "../components/helpers/accounts";
 
 const Register = () => {
 
@@ -34,12 +35,12 @@ const Register = () => {
 			return false;
 		}
 		if (!validateEmail(email)) {
-			setFormError("Email is invalid");
+			setFormError("Email address is invalid");
 			setFormValid(false);
 			return false
 		}
 		if (!validatePassword(password)) {
-			setFormError("Password is must be at least 8 characters long");
+			setFormError("Password must be at least 8 characters");
 			setFormValid(false);
 			return false
 		}
@@ -60,7 +61,7 @@ const Register = () => {
 
 	const handleInputChange = (event: FormEvent<HTMLInputElement>) => {
 		const { name, value } = event.target as HTMLInputElement;
-		
+
 		setFormData({ ...formData, [name]: value });
 	};
 
@@ -71,26 +72,6 @@ const Register = () => {
 			console.log("Form submitted");
 			console.log(formData);
 		}
-	}
-
-	const validateFormComplete = (firstName: string, email: string, password: string, confirmPassword: string) => {
-		if (!firstName || !email || !password || !confirmPassword) {
-			return false;
-		}
-		return true;
-	}
-
-	function validateEmail(email: unknown): email is string {
-		return (
-			typeof email === 'string' &&
-			email.length >= 6 &&
-			email.length <= 31 &&
-			/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)
-		);
-	}
-
-	function validatePassword(password: unknown): password is string {
-		return typeof password === 'string' && password.length >= 8 && password.length <= 255;
 	}
 
 	return (
@@ -169,7 +150,7 @@ const Register = () => {
 						type="submit"
 						disabled={!formValid}
 					>
-						Register
+						Submit
 						<span
 							className="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100"
 						></span>
