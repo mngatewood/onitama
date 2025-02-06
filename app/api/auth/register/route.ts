@@ -5,7 +5,7 @@ import { validateFormData } from "../../../components/helpers/auth";
 
 const sql = neon(`${process.env.DATABASE_URL}`);
 
-export const emailExists = async (email: string) => {
+const emailExists = async (email: string) => {
 	const response = await sql`
 		SELECT * FROM users WHERE email = ${email}
 	`;

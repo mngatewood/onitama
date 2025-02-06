@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Title } from "../components/Title";
 import { DarkModeToggle } from "../components/DarkThemeToggle";
 
-export const Login = () => {
+const Login = () => {
 
 	return (
 		<div className="absolute top-0 left-0 right-0 bottom-0 overflow-hidden flex flex-col justify-center items-center">

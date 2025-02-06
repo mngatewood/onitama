@@ -3,7 +3,7 @@ import { Title } from "../components/Title";
 import { RegisterForm } from "../components/forms/RegisterForm";
 import { DarkModeToggle } from "../components/DarkThemeToggle";
 
-export const Register = () => {
+const Register = () => {
 
 	return (
 		<div className="absolute top-0 left-0 right-0 bottom-0 overflow-hidden flex flex-col justify-between items-center">
