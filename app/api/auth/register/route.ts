@@ -13,26 +13,22 @@ export const emailExists = async (email: string) => {
 }
 
 export const POST = async (request: Request) => {
-
+	const { firstName, lastName, email, password, confirmPassword } = await request.json();
 	try {
-		const { firstName, lastName, email, password, confirmPassword } = await request.json();
 		if (!validateFormData(firstName, lastName, email, password, confirmPassword)) {
-			throw new Error("Form data is invalid");
+			return NextResponse.json({message: "Form data is invalid"}, {status: 400});
 		}
 		if (await emailExists(email)) {
-			throw new Error("Email already exists");
+			return NextResponse.json({message: "Email already exists"}, {status: 400});
 		}
-		console.log(firstName, lastName, email, password, confirmPassword);
 		const hashedPassword = await hash(password, 10);
 		const response = await sql`
 			INSERT INTO users (first_name, last_name, email, password) 
 			VALUES (${firstName}, ${lastName || null}, ${email}, ${hashedPassword})
 		`;
 		return NextResponse.json(response);
-
 	} catch (error) {
 		console.log(error);
-		// TODO: send error message to RegisterForm component and update state
-		return NextResponse.json({ message: "error" }, { status: 500 });
+		return NextResponse.json({ message: "An error occurred while registering" }, { status: 500 });
 	}
 }
