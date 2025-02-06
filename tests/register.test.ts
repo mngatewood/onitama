@@ -25,6 +25,7 @@ test.describe('user can register', () => {
 	test('registration page has expected h1, inputs and buttons', async ({ page }) => {
 		await page.getByRole('button', { name: 'Register' }).click();
 		await page.waitForTimeout(500);
+		await expect(page.getByRole('heading', { name: 'Onitama', exact: true })).toBeVisible();
 		await expect(page.getByRole('heading', { name: 'Welcome to Onitama' })).toBeVisible();
 		await expect(page.getByText('First Name')).toBeVisible();
 		await expect(page.getByText('Last Name')).toBeVisible();
@@ -152,7 +153,12 @@ test.describe('user can register', () => {
 		await page.locator('#password').fill('password');
 		await page.locator('#confirmPassword').fill('password');
 		await page.getByRole('button', { name: 'Submit' }).click();
-		await page.waitForTimeout(2000);
+		await page.waitForTimeout(1000);
+		await expect(page.getByRole('heading', { name: 'Success!', exact: true })).toBeVisible();
+		await expect(page.getByRole('button', { name: 'Proceed' })).toBeVisible();
+		await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
+		await page.getByRole('button', { name: 'Proceed' }).click();
+		await page.waitForTimeout(1000);
 		expect(page.url()).toBe(localhost + 'login');
 		await expect(page.getByRole('heading', { name: 'Onitama' })).toBeVisible();
 		await expect(page.getByRole('button', { name: 'Switch to light / dark version' })).toBeVisible();
