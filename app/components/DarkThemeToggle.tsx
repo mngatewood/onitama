@@ -19,9 +19,9 @@ export const DarkModeToggle = () => {
 	};
 
 	return (
-		<div key="dark-mode-toggle" suppressHydrationWarning={true} >
+		<div key="dark-mode-toggle" className="absolute top-4 right-4">
 			<button onClick={handleToggle}
-				className="absolute top-4 right-4 border border-gray-400 rounded-full p-0 bg-gray-200 z-10"
+				className="border border-gray-400 rounded-full p-0 bg-gray-200"
 				title="Toggle dark mode"
 				>
 				<div className="flex flex-col justify-center">

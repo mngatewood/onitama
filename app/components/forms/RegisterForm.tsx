@@ -1,4 +1,5 @@
 "use client";
+import { redirect } from "next/navigation";
 import { Label } from "./Label";
 import { Input } from "./Input";
 import React, { FormEvent, useEffect, useCallback, useState } from "react";
@@ -67,8 +68,6 @@ export const RegisterForm = () => {
 		event.preventDefault();
 
 		if (validateForm()) {
-			console.log("Form submitted");
-			console.log(formData);
 			const response = await fetch("/api/auth/register", {
 				method: "POST",
 				headers: {
@@ -77,14 +76,21 @@ export const RegisterForm = () => {
 				body: JSON.stringify(formData),
 			})
 			console.log(response);
+			if (response.ok) {
+				redirect('/login');
+			} else {
+				const errorData = await response.json();
+				setFormError(errorData.message);
+				setFormValid(false);
+			}
 		}
 	}
 
 	return (
-		<form method="post" action="/register" onSubmit={submitForm} className="my-8">
+		<form method="post" action="/register" onSubmit={submitForm} className="mt-8">
 			<div className="mb-4 flex flex-col space-y-2 md:flex-row md:space-x-2 md:space-y-0">
 				<div className={'flex w-full flex-col space-y-2'}>
-					<Label htmlFor="firstName">* First Name</Label>
+					<Label htmlFor="firstName">First Name *</Label>
 					<Input
 						id="firstName"
 						name="firstName"
@@ -107,7 +113,7 @@ export const RegisterForm = () => {
 				</div>
 			</div>
 			<div className={'mb-4 flex w-full flex-col space-y-2'}>
-				<Label htmlFor="email">* Email Address</Label>
+				<Label htmlFor="email">Email Address *</Label>
 				<Input
 					id="email"
 					name="email"
@@ -119,7 +125,7 @@ export const RegisterForm = () => {
 				/>
 			</div>
 			<div className={'mb-4 flex w-full flex-col space-y-2'}>
-				<Label htmlFor="password">* Password</Label>
+				<Label htmlFor="password">Password *</Label>
 				<Input
 					id="password"
 					name="password"
@@ -130,8 +136,8 @@ export const RegisterForm = () => {
 					required
 				/>
 			</div>
-			<div className={'mb-8 flex w-full flex-col space-y-2'}>
-				<Label htmlFor="confirmPassword">* Confirm Password</Label>
+			<div className={'mb-2 flex w-full flex-col space-y-2'}>
+				<Label htmlFor="confirmPassword">Confirm Password *</Label>
 				<Input
 					id="confirmPassword"
 					name="confirmPassword"
@@ -142,9 +148,11 @@ export const RegisterForm = () => {
 					required
 				/>
 			</div>
-
+			<div className="mb-8">
+				<span className="text-sm text-gray-500 dark:text-gray-400">* required</span>
+			</div>
 			<button
-				className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-neutral-500 to-neutral-400 font-medium hover:bg-gradient-to-br hover:from-neutral-600 hover:to-neutral-400 text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:hover:bg-white dark:hover:from-zinc-800 dark:hover:to-zinc-700 dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-800 dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset] disabled:pointer-events-none disabled:opacity-50"
+				className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-neutral-500 to-neutral-400 font-medium hover:bg-gradient-to-br hover:from-neutral-600 hover:to-neutral-400 text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:hover:bg-white dark:hover:from-zinc-800 dark:hover:to-zinc-700 dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-800 dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset] disabled:pointer-events-none disabled:opacity-75"
 				type="submit"
 				disabled={!formValid}
 			>
@@ -156,11 +164,8 @@ export const RegisterForm = () => {
 					className="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100"
 				></span>
 			</button>
-			<div className="flex space-x-2 h-24 relative">
-				<div className="flex items-center justify-center my-2 h-14">
-					<span className="text-sm text-red-500">{formError}</span>
-				</div>
-				<span className="text-sm text-gray-500 dark:text-gray-400 absolute bottom-2">* required</span>
+			<div className="flex justify-center items-center h-12">
+				<span className="text-sm text-red-500">{formError}</span>
 			</div>
 		</form>
 	)
