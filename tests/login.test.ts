@@ -1,23 +1,12 @@
 import { expect, test } from '@playwright/test';
+import { localhost, getEmail, registerUser } from './test-helpers';
 
-const localhost = 'http://localhost:3000/';
-const getEmail = () => `${Date.now()}@tested.com`
 const email = getEmail();
 
 test.describe('user can login', () => {
 
 	test.beforeAll(async ({ page }) => {
-		// Register a user
-		await page.goto('/register');
-		await page.waitForTimeout(500);
-		await page.locator('#firstName').fill('Test');
-		await page.locator('#lastName').fill('User');
-		await page.locator('#email').fill(email);
-		await page.locator('#password').fill('password');
-		await page.locator('#confirmPassword').fill('password');
-		await page.getByRole('button', { name: 'Submit' }).click();
-		await page.waitForTimeout(1000);
-		await page.getByRole('button', { name: 'Proceed' }).click();
+		await registerUser({ page }, email);
 	});
 
 	test.beforeEach(async ({ page }) => {
