@@ -1,19 +1,16 @@
 "use client";
 import { Label } from "./Label";
 import { Input } from "./Input";
-import { RegisterSuccessModal } from "./RegisterSuccessModal";
+import { LoginSuccessModal } from "./LoginSuccessModal";
 import React, { FormEvent, useEffect, useCallback, useState } from "react";
-import { validateRegisterFormComplete, validateEmail, validatePassword } from "../helpers/auth";
+import { validateLoginFormComplete, validateEmail, validatePassword } from "../helpers/auth";
+import { signIn } from "next-auth/react";
 
-
-export const RegisterForm = () => {
+export const LoginForm = () => {
 
 	const [formData, setFormData] = useState({
-		firstName: "",
-		lastName: "",
 		email: "",
 		password: "",
-		confirmPassword: "",
 	});
 
 	const [formValid, setFormValid] = useState<boolean>(false);
@@ -21,15 +18,15 @@ export const RegisterForm = () => {
 	const [successModalVisible, setSuccessModalVisible] = useState(false);
 
 	const validateForm = useCallback(() => {
-		const { firstName, lastName, email, password, confirmPassword } = formData;
+		const { email, password } = formData;
 
-		if (!firstName && !lastName && !email && !password && !confirmPassword) {
+		if (!email && !password) {
 			setFormError("");
 			setFormValid(false);
 			return false;
 		}
 
-		if (!validateRegisterFormComplete(firstName, email, password, confirmPassword)) {
+		if (!validateLoginFormComplete(email, password)) {
 			setFormError("Please fill in all the required fields");
 			setFormValid(false);
 			return false;
@@ -41,11 +38,6 @@ export const RegisterForm = () => {
 		}
 		if (!validatePassword(password)) {
 			setFormError("Password must be at least 8 characters");
-			setFormValid(false);
-			return false
-		}
-		if (password !== confirmPassword) {
-			setFormError("Passwords do not match");
 			setFormValid(false);
 			return false
 		}
@@ -67,21 +59,19 @@ export const RegisterForm = () => {
 
 	const submitForm = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-
 		if (validateForm()) {
-			const response = await fetch("/api/auth/register", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(formData),
-			})
+			const payload = {
+				email: formData.email,
+				password: formData.password,
+				redirect: false
+			};
+			const response = await signIn('credentials', payload);
 			console.log(response);
-			if (response.ok) {
+			if (response?.ok) {
+				console.log("success");
 				setSuccessModalVisible(true);
 			} else {
-				const errorData = await response.json();
-				setFormError(errorData.message);
+				setFormError("Incorrect email or password");
 				setFormValid(false);
 			}
 		}
@@ -90,30 +80,6 @@ export const RegisterForm = () => {
 	return (
 		<>
 			<form method="post" onSubmit={submitForm} className="mt-8">
-				<div className="mb-4 flex flex-col space-y-2 md:flex-row md:space-x-2 md:space-y-0">
-					<div className={'flex w-full flex-col space-y-2'}>
-						<Label htmlFor="firstName">First Name *</Label>
-						<Input
-							id="firstName"
-							name="firstName"
-							type="text"
-							role="textbox"
-							autoComplete="given-name"
-							onInput={handleInputChange}
-							required
-						/>
-					</div>
-					<div className={'flex w-full flex-col space-y-2'}>
-						<Label htmlFor="lastName">Last Name</Label>
-						<Input id="lastName"
-							name="lastName"
-							type="text"
-							role="textbox"
-							autoComplete="family-name"
-							onInput={handleInputChange}
-						/>
-					</div>
-				</div>
 				<div className={'mb-4 flex w-full flex-col space-y-2'}>
 					<Label htmlFor="email">Email Address *</Label>
 					<Input
@@ -131,18 +97,6 @@ export const RegisterForm = () => {
 					<Input
 						id="password"
 						name="password"
-						type="password"
-						role="textbox"
-						autoComplete="new-password"
-						onInput={handleInputChange}
-						required
-					/>
-				</div>
-				<div className={'mb-2 flex w-full flex-col space-y-2'}>
-					<Label htmlFor="confirmPassword">Confirm Password *</Label>
-					<Input
-						id="confirmPassword"
-						name="confirmPassword"
 						type="password"
 						role="textbox"
 						autoComplete="new-password"
@@ -171,7 +125,7 @@ export const RegisterForm = () => {
 				</div>
 			</form>
 			<div className={`${successModalVisible ? "opacity-1 z-0" : "opacity-0 z-[-1]"} absolute top-0 left-0 right-0 bottom-0 flex items-center`}>
-				<RegisterSuccessModal />
+				<LoginSuccessModal />
 			</div>
 		</>
 	)
