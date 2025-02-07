@@ -1,5 +1,12 @@
-export const validateFormComplete = (firstName: string, email: string, password: string, confirmPassword: string) => {
+export const validateRegisterFormComplete = (firstName: string, email: string, password: string, confirmPassword: string) => {
 	if (!firstName || !email || !password || !confirmPassword) {
+		return false;
+	}
+	return true;
+}
+
+export const validateLoginFormComplete = (email: string, password: string) => {
+	if (!email || !password) {
 		return false;
 	}
 	return true;
@@ -21,7 +28,7 @@ export const validatePassword = (password: unknown): password is string => {
 export const validateFormData = (firstName: string, lastName: string, email: string, password: string, confirmPassword: string) => {
 	if (!firstName && !lastName && !email && !password && !confirmPassword) {
 		return false;
-	} else if (!validateFormComplete(firstName, email, password, confirmPassword)) {
+	} else if (!validateRegisterFormComplete(firstName, email, password, confirmPassword)) {
 		return false;
 	} else if (!validateEmail(email)) {
 		return false
