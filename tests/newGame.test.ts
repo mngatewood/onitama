@@ -11,6 +11,10 @@ test.describe('user can create a new game', () => {
 		await page.screenshot({ path: `./test-results/newGame.${workerInfo.project.name}.png` });
 	});
 
+	test('when a user joins the game lobby, all pending games older than 15 minutes are deleted', async ({ page }) => {
+
+	});
+
 	test('when the user is in the game lobby, a New Game button is displayed', async ({ page }) => {
 
 	})

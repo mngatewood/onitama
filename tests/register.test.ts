@@ -159,11 +159,10 @@ test.describe('user can register', () => {
 		await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
 		await page.getByRole('button', { name: 'Proceed' }).click();
 		await page.waitForTimeout(1000);
-		expect(page.url()).toBe(localhost + 'login');
 		await expect(page.getByRole('heading', { name: 'Onitama' })).toBeVisible();
+		await expect(page.getByRole('heading', { name: 'Login to Your Account' })).toBeVisible();
 		await expect(page.getByRole('button', { name: 'Switch to light / dark version' })).toBeVisible();
 		await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
-		// add additional selectors once the login page is complete
 	});
 
 	test('if the email is already used, the user is given a message', async ({ page }) => {
