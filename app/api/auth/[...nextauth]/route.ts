@@ -1,9 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { neon } from "@neondatabase/serverless";
 import { compare } from "bcrypt";
-
-const sql = neon(`${process.env.DATABASE_URL}`);
+import { prisma } from "../../../lib/prisma";
 
 const handler = NextAuth({
 	session: {
@@ -23,10 +21,15 @@ const handler = NextAuth({
 				password: {}
 			},
 			async authorize(credentials) {
-				const response = await sql`
-					SELECT * FROM users WHERE email = ${credentials?.email || ""}
-				`
-				const user = response[0];
+				const response = await prisma.user.findUnique({
+					where: {
+						email: credentials?.email || ""
+					}
+				})
+				const user = response;
+				if (!user) {
+					return null
+				}
 				const passwordCorrect = await compare(credentials?.password || "", user.password);
 				if(passwordCorrect) {
 					return {

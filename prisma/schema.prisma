@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(uuid())
+  first_name String
+  last_name String?
+  email String @unique
+  password String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  games UsersOnGames[]
+}
+
+model Card {
+  id String @id @default(uuid())
+  title String
+  kenji String
+  moves Int[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  games CardsOnGames[]
+}
+
+model Game {
+  id String @id @default(uuid())
+  ref String
+  players UsersOnGames[]
+  cards CardsOnGames[]
+}
+
+model CardsOnGames {
+  game Game @relation(fields: [gameId], references:[id])
+  gameId String
+  card Card @relation(fields: [cardId], references:[id])
+  cardId String
+  assignedAt DateTime @default(now())
+  assignedBy String
+
+  @@id([gameId, cardId])
+}
+
+model UsersOnGames {
+  game Game @relation(fields: [gameId], references:[id])
+  gameId String
+  player User @relation(fields: [playerId], references:[id])
+  playerId String
+  assignedAt DateTime @default(now())
+  assignedBy String
+
+  @@id([gameId, playerId])
+}
