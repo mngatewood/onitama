@@ -1,15 +1,17 @@
 import { NextResponse } from "next/server";
 import { hash } from "bcrypt";
-import { neon } from "@neondatabase/serverless"
 import { validateFormData } from "../../../components/helpers/auth";
-
-const sql = neon(`${process.env.DATABASE_URL}`);
+import { prisma } from "../../../lib/prisma";
 
 const emailExists = async (email: string) => {
-	const response = await sql`
-		SELECT * FROM users WHERE email = ${email}
-	`;
-	return response.length > 0
+	const response = await prisma.user.findUnique({
+		where: {
+			email: email
+		}
+	})
+	console.log(response);
+
+	return response !== null
 }
 
 export const POST = async (request: Request) => {
@@ -22,10 +24,14 @@ export const POST = async (request: Request) => {
 			return NextResponse.json({message: "Email already exists"}, {status: 400});
 		}
 		const hashedPassword = await hash(password, 10);
-		const response = await sql`
-			INSERT INTO users (first_name, last_name, email, password) 
-			VALUES (${firstName}, ${lastName || null}, ${email}, ${hashedPassword})
-		`;
+		const response = await prisma.user.create({
+			data: {
+				first_name: firstName,
+				last_name: lastName || null,
+				email: email,
+				password: hashedPassword
+			}
+		})
 		return NextResponse.json(response);
 	} catch (error) {
 		console.log(error);
