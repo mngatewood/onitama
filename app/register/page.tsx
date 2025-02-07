@@ -2,8 +2,15 @@ import Link from "next/link";
 import { Title } from "../components/Title";
 import { RegisterForm } from "../components/forms/RegisterForm";
 import { DarkModeToggle } from "../components/DarkThemeToggle";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
-const Register = () => {
+const Register = async () => {
+	const session = await getServerSession();
+
+	if (!!session) {
+		redirect('/');
+	}
 
 	return (
 		<div className="absolute top-0 left-0 right-0 bottom-0 overflow-hidden flex flex-col justify-between items-center">
