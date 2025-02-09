@@ -1,0 +1,101 @@
+{
+	"cards":
+		[
+			{
+				"title": "Rabbit",
+				"kanji": "兎",
+				"moves": [ 9, 15, 17 ],
+				"color": "blue"
+			},
+			{
+				"title": "Dragon",
+				"kanji": "龍",
+				"moves": [ 6, 10, 17, 19 ],
+				"color": "blue"
+			},
+			{
+				"title": "Mantis",
+				"kanji": "螳螂",
+				"moves": [ 7, 9, 18 ],
+				"color": "blue"
+			},
+			{
+				"title": "Boar",
+				"kanji": "野豬",
+				"moves": [ 8, 12, 14 ],
+				"color": "blue"
+			},
+			{
+				"title": "Cobra",
+				"kanji": "蛇",
+				"moves": [ 9, 12, 19],
+				"color": "blue"
+			},
+			{
+				"title": "Elephant",
+				"kanji": "象",
+				"moves": [ 7, 9, 12, 14 ],
+				"color": "blue"
+			},
+			{
+				"title": "Ox",
+				"kanji": "牛",
+				"moves": [ 8, 14, 18 ],
+				"color": "blue"
+			},
+			{
+				"title": "Rooster",
+				"kanji": "雞",
+				"moves": [ 9, 12, 14, 17 ],
+				"color": "blue"
+			},
+			{
+				"title": "Horse",
+				"kanji": "馬",
+				"moves": [ 8, 12, 18 ],
+				"color": "red"
+			},
+			{
+				"title": "Goose",
+				"kanji": "鹿",
+				"moves": [ 7, 12, 14, 19 ],
+				"color": "red"
+			},
+			{
+				"title": "Frog",
+				"kanji": "蟲",
+				"moves": [ 7, 11, 19 ],
+				"color": "red"
+			},
+			{
+				"title": "Tiger",
+				"kanji": "虎",
+				"moves": [ 3, 18 ],
+				"color": "red"
+			},
+			{
+				"title": "Monkey",
+				"kanji": "猴",
+				"moves": [ 7, 9, 17, 19 ],
+				"color": "red"
+			},
+			{
+				"title": "Crab",
+				"kanji": "螃蟹",
+				"moves": [ 8, 11, 15 ],
+				"color": "red"
+			},
+			{
+				"title": "Eel",
+				"kanji": "鰻",
+				"moves": [ 7, 14, 17 ],
+				"color": "red"
+			},
+			{
+				"title": "Crane",
+				"kanji": "鹤",
+				"moves": [ 8, 17, 19 ],
+				"color": "red"
+			}
+		]
+}
