@@ -8,11 +8,11 @@ import { Card, Prisma } from "@prisma/client";
 // const session = await getServerSession(authOptions);
 
 const startingBoard = [
-	["RS0", "RS0", "RM0", "RS0", "RS0"],
+	["rs0", "rs0", "rm0", "rs0", "rs0"],
 	["000", "000", "000", "000", "000"],
 	["000", "000", "000", "000", "000"],
 	["000", "000", "000", "000", "000"],
-	["BS0", "BS0", "BM0", "BS0", "BS0"],
+	["bs0", "bs0", "bm0", "bs0", "bs0"],
 ];
 
 export const getAllCards = async () => {
