@@ -29,7 +29,7 @@ const Play = async ({ params }: PageProps) => {
 			<header>
 				<Title />
 			</header>
-			<main className="p-4 overflow-hidden flex flex-col items-center my-auto">
+			<main className="w-full max-w-[1024px] mx-auto p-4 overflow-hidden flex flex-col items-center">
 				<Game gameId={paramsObject.slug} />
 			</main>
 			<footer className="w-full h-14 p-4 flex justify-center text-sky-700 dark:text-sky-300 z-50">

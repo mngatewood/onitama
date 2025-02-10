@@ -1,0 +1,34 @@
+.highlighted.red{
+	background-color: red;
+}
+
+.highlighted.blue{
+	background-color: blue;
+}
+
+.notHighlighted{
+	background-color: theme("colors.neutral.300");
+}
+
+.student, .master{
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.student.red {
+	background-image: url('./assets/red-student.png');
+}
+
+.student.blue {
+	background-image: url('./assets/blue-student.png');
+}
+
+.master.red {
+	background-image: url('./assets/red-master.png');
+}
+
+.master.blue {
+	background-image: url('./assets/blue-master.png');
+}
+
