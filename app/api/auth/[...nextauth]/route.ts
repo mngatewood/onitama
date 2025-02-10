@@ -1,13 +1,29 @@
-import NextAuth from "next-auth";
+import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcrypt";
 import { prisma } from "../../../lib/prisma";
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
 	session: {
 		strategy: "jwt",
 	},
 	secret: process.env.NEXTAUTH_SECRET,
+	callbacks: {
+		jwt({ token, user }) {
+			if (user) {
+				token.id = user.id
+			}
+			return token
+		},
+
+		session({ session, token }) {
+			if(session.user) {
+				// @ts-expect-error Adding id from token to session
+				session.user.id = token.id
+			}
+			return session
+		},
+	},
 	providers: [
 		CredentialsProvider({
 			// The name to display on the sign in form (e.g. 'Sign in with...')
@@ -44,6 +60,8 @@ const handler = NextAuth({
 			}
 		})
 	],
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
