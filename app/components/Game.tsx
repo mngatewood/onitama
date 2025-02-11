@@ -42,10 +42,10 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			} else if(game.players.blue.id === userId) {
 				return identifier === "self" ? { color: "blue", ...game.players.blue } : { color: "red", ...game.players.red }
 			} else {
-				return { id: "", cards: [] }
+				return { color: "", id: "", cards: [] }
 			}
 		} else {
-			return { id: "", cards: [] }
+			return { color: "", id: "", cards: [] }
 		}
 	}
 	

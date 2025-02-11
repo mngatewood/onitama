@@ -1,11 +1,6 @@
 import { prisma } from "@/app/lib/prisma";
-// import { getServerSession } from "next-auth";
-// import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import * as utility from "./utility";
-// import { useSession } from "next-auth/react";
-import { Card, Prisma } from "@prisma/client";
-
-// const session = await getServerSession(authOptions);
+import { Card } from "@prisma/client";
 
 const startingBoard = [
 	["rs0", "rs0", "rm0", "rs0", "rs0"],
