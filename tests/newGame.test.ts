@@ -26,11 +26,62 @@ test.describe('user can create a new game', () => {
 		await expect(page.getByRole('button', { name: 'Exit Game' })).toBeVisible();
 	})
 
+	test('when a game is created, the starting board is displayed', async ({ page }) => {
+		await page.goto('/');
+		await page.getByRole('button', { name: 'New Game' }).click();
+		await page.waitForTimeout(500);
+		await expect(page.locator('#board')).toBeVisible();
+		await expect(page.locator('#board')).toHaveCount(1);
+		await expect(page.locator('.space')).toHaveCount(25);
+		await expect(page.locator('.not-highlighted')).toHaveCount(25);
+		await expect(page.locator('.red.student')).toHaveCount(4);
+		await expect(page.locator('.red.master')).toHaveCount(1);
+		await expect(page.locator('.blue.student')).toHaveCount(4);
+		await expect(page.locator('.blue.master')).toHaveCount(1);
+	})
+
+	test('when a game is created, card placeholders are displayed', async ({ page }) => {
+		await page.goto('/');
+		await page.getByRole('button', { name: 'New Game' }).click();
+		await page.waitForTimeout(500);
+		await expect(page.locator('.player')).toHaveCount(2);
+		await expect(page.locator('.player-color')).toHaveCount(2);
+		await expect(page.locator('.card')).toHaveCount(6);
+		await expect(page.locator('.player-card')).toHaveCount(4);
+		await expect(page.locator('.neutral-card')).toHaveCount(2);
+	})
+
+	test('when a game is created, defeated pawns placeholders are displayed', async ({ page }) => {
+		await page.goto('/');
+		await page.getByRole('button', { name: 'New Game' }).click();
+		await page.waitForTimeout(500);
+		await expect(page.locator('#defeated-pawns')).toBeVisible();
+		await expect(page.locator('.defeated-pawn')).toHaveCount(8);
+	})
+
+	test('when a game is created, player colors are displayed', async ({ page }) => {
+		await page.goto('/');
+		await page.getByRole('button', { name: 'New Game' }).click();
+		await page.waitForTimeout(500);
+		await expect(page.locator('.player-color')).toHaveCount(2);
+		await expect(page.locator('.player-color.bg-red-900')).toHaveCount(1);
+		await expect(page.locator('.player-color.bg-blue-900')).toHaveCount(1);
+	})
+
 	test('when the user clicks the Exit Game button, they are redirected to the game lobby', async ({ page }) => {
-		// TODO
+		await page.goto('/');
+		await page.getByRole('button', { name: 'New Game' }).click();
+		await page.waitForTimeout(500);
+		await page.getByRole('button', { name: 'Exit Game' }).click();
+		await page.waitForTimeout(500);
+		expect(page.url()).toBe(localhost);
 	})
 
 	test('when a user joins the game lobby, all pending games older than 15 minutes are deleted', async ({ page }) => {
+		// TODO
+	});
+
+	test('if the user is the red player, the board is reversed', async ({ page }) => {
 		// TODO
 	});
 

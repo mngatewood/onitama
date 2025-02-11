@@ -29,3 +29,70 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+
+/* Board, card and pawn element styles */
+
+/* highlighted space with red pawn */
+.highlighted.red{
+	background-color: red;
+}
+
+/* highlighted space with blue pawn */
+.highlighted.blue{
+	background-color: blue;
+}
+
+/* unhighlighted space */
+.not-highlighted{
+	background-color: theme("colors.neutral.300");
+}
+
+/* pawns styles for student and master */
+.student, .master{
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+/* red student pawn */
+.student.red {
+	background-image: url('../public/red-student.png');
+}
+
+/* blue student pawn */
+.student.blue {
+	background-image: url('../public/blue-student.png');
+}
+
+/* red master pawn */
+.master.red {
+	background-image: url('../public/red-master.png');
+}
+
+/* blue master pawn */
+.master.blue {
+	background-image: url('../public/blue-master.png');
+}
+
+/* defeated pawns styles */
+.defeated {
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+/* defeated student placeholder background image */
+.defeated.sil {
+	background-image: url('../public/sil-student.png');
+}
+
+/* defeated red student background image */
+.defeated.red {
+	background-image: url('../public/red-student.png');
+}
+
+/* defeated blue student background image */
+.defeated.blue {
+	background-image: url('../public/blue-student.png');
+}

@@ -38,6 +38,7 @@ model Card {
 model Game {
   id String @id @default(uuid())
   board Json
+  players Json
   status String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
