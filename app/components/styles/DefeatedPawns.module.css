@@ -1,0 +1,17 @@
+.defeated {
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.defeated.sil {
+	background-image: url('./assets/sil-student.png');
+}
+
+.defeated.red {
+	background-image: url('./assets/red-student.png');
+}
+
+.defeated.blue {
+	background-image: url('./assets/blue-student.png');
+}
