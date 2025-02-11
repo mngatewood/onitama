@@ -52,7 +52,7 @@ export const Board = ({ board }: { board: string[][] }) => {
 	}
 
 	return (
-		<div className="grid grid-cols-5 grid-rows-5 w-full max-w-md aspect-square">
+		<div id="board" className="grid grid-cols-5 grid-rows-5 w-full max-w-md aspect-square">
 			{renderBoard()}
 		</div>
 	)
