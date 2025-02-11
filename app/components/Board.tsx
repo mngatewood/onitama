@@ -1,4 +1,4 @@
-import styles from './styles/Board.module.css';
+
 
 export const Board = ({ board }: { board: string[][] }) => {
 
@@ -12,10 +12,10 @@ export const Board = ({ board }: { board: string[][] }) => {
 
 			switch (colorCode) {
 				case "r":
-					color = `${styles.red}`;
+					color = "red";
 					break
 				case "b":
-					color = `${styles.blue}`;
+					color = "blue";
 					break
 				default:
 					color = "";
@@ -23,10 +23,10 @@ export const Board = ({ board }: { board: string[][] }) => {
 
 			switch (pawnCode) {
 				case "s":
-					pawn = `${styles.student}`;
+					pawn = "student";
 					break
 				case "m":
-					pawn = `${styles.master}`;
+					pawn = "master";
 					break
 				default:
 					pawn = "";
@@ -34,13 +34,13 @@ export const Board = ({ board }: { board: string[][] }) => {
 
 			switch (highlightedCode) {
 				case "0":
-					highlighted = `${styles.notHighlighted}`;
+					highlighted = "notHighlighted";
 					break
 				case "1":
-					highlighted = `${styles.highlighted}`;
+					highlighted = "highlighted";
 					break
 				default:
-					highlighted = `${styles.notHighlighted}`;
+					highlighted = "notHighlighted";
 			} 
 
 			return (
