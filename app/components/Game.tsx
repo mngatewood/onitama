@@ -63,7 +63,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				setWaiting(false);
 			} else {
 				// change to false for development until 2nd player is implemented
-				setWaiting(false);
+				setWaiting(true);
 			}
 		};
 		if (gameId) {
