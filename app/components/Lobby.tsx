@@ -21,7 +21,7 @@ const Lobby = async () => {
 			</header>
 			<main className="p-4 overflow-hidden flex flex-col justify-center items-center">
 				<div className="flex items-center justify-center h-full max-w-2xl">
-					<Image src={spirit} width={640} height={640} alt="Spirit" className="absolute top-[calc(50%-200px)] opacity-20 z-[-1]" priority />
+					<Image src={spirit} width={640} height={640} alt="Spirit" className="absolute top-[calc(50%-300px)] opacity-20 z-[-1]" priority />
 				</div>
 					<LobbyForm {...session as AppendedSession} />
 			</main>
