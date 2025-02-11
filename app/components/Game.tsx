@@ -38,9 +38,9 @@ export const Game = ({ gameId, userId }: GameProps) => {
 	const getPlayerData = (identifier: string) => {
 		if (game?.players) {
 			if(game.players.red.id === userId) {
-				return identifier === "self" ? game.players.red : game.players.blue
+				return identifier === "self" ? { color: "red", ...game.players.red } : { color: "blue", ...game.players.blue }
 			} else if(game.players.blue.id === userId) {
-				return identifier === "self" ? game.players.blue : game.players.red
+				return identifier === "self" ? { color: "blue", ...game.players.blue } : { color: "red", ...game.players.red }
 			} else {
 				return { id: "", cards: [] }
 			}

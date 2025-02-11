@@ -59,6 +59,15 @@ test.describe('user can create a new game', () => {
 		await expect(page.locator('.defeated-pawn')).toHaveCount(8);
 	})
 
+	test('when a game is created, player colors are displayed', async ({ page }) => {
+		await page.goto('/');
+		await page.getByRole('button', { name: 'New Game' }).click();
+		await page.waitForTimeout(500);
+		await expect(page.locator('.player-color')).toHaveCount(2);
+		await expect(page.locator('.player-color.bg-red-900')).toHaveCount(1);
+		await expect(page.locator('.player-color.bg-blue-900')).toHaveCount(1);
+	})
+
 	test('when the user clicks the Exit Game button, they are redirected to the game lobby', async ({ page }) => {
 		await page.goto('/');
 		await page.getByRole('button', { name: 'New Game' }).click();
