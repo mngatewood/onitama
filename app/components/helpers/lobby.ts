@@ -33,6 +33,16 @@ export const createGame = async (playerId: string) => {
 	const allCards = await getAllCards();
 	const randomIndexes = utility.shuffleArray([...Array(allCards.length).keys()]).slice(0, 5);
 	const randomCards = allCards.filter((_:Card, index: number) => randomIndexes.includes(index));
+	const players = {
+		"blue": {
+			id: playerId,
+			cards: [ randomCards[0], randomCards[1] ],
+		},
+		"red": {
+			id: "",
+			cards: [ randomCards[2], randomCards[3] ],
+		}
+	}
 	const status = "waiting_for_players"
 	const data = {
 		users: {
@@ -48,7 +58,8 @@ export const createGame = async (playerId: string) => {
 			}))
 		},
 		board: startingBoard,
-		status: status
+		status: status,
+		players: players,
 	}
 	const response = await fetch('/api/games', {
 		method: 'POST',

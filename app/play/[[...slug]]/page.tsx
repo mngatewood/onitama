@@ -12,8 +12,8 @@ interface ParamsObject {
 }
 
 const Play = async ({ params }: PageProps) => {
-	const session = getServerSession(authOptions);
-
+	const session = await getServerSession(authOptions);
+	// const userId = (session?.user as AppendedSession['user']).id;
 	const paramsObject:ParamsObject = await params;
 
 	if (!paramsObject.slug) {
@@ -29,8 +29,8 @@ const Play = async ({ params }: PageProps) => {
 			<header>
 				<Title />
 			</header>
-			<main className="w-full max-w-[1024px] mx-auto p-4 overflow-hidden flex flex-col items-center">
-				<Game gameId={paramsObject.slug} />
+			<main className="w-full max-w-screen-lg min-w-[370px] mx-auto p-4 pr-6 overflow-hidden flex flex-col items-center">
+				<Game gameId={paramsObject.slug} userId={(session?.user as AppendedSession['user']).id}/>
 			</main>
 			<footer className="w-full h-14 p-4 flex justify-center text-sky-700 dark:text-sky-300 z-50">
 				<button className="w-1/3"><Link href="/logout">Logout</Link></button>
