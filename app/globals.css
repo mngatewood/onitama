@@ -44,7 +44,7 @@
 }
 
 /* unhighlighted space */
-.notHighlighted{
+.not-highlighted{
 	background-color: theme("colors.neutral.300");
 }
 

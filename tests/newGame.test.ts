@@ -33,6 +33,11 @@ test.describe('user can create a new game', () => {
 		await expect(page.locator('#board')).toBeVisible();
 		await expect(page.locator('#board')).toHaveCount(1);
 		await expect(page.locator('.space')).toHaveCount(25);
+		await expect(page.locator('.not-highlighted')).toHaveCount(25);
+		await expect(page.locator('.red.student')).toHaveCount(4);
+		await expect(page.locator('.red.master')).toHaveCount(1);
+		await expect(page.locator('.blue.student')).toHaveCount(4);
+		await expect(page.locator('.blue.master')).toHaveCount(1);
 	})
 
 	test('when a game is created, card placeholders are displayed', async ({ page }) => {

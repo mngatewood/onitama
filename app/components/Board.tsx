@@ -34,13 +34,13 @@ export const Board = ({ board }: { board: string[][] }) => {
 
 			switch (highlightedCode) {
 				case "0":
-					highlighted = "notHighlighted";
+					highlighted = "not-highlighted";
 					break
 				case "1":
 					highlighted = "highlighted";
 					break
 				default:
-					highlighted = "notHighlighted";
+					highlighted = "not-highlighted";
 			} 
 
 			return (
