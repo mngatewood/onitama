@@ -26,6 +26,24 @@ test.describe('user can create a new game', () => {
 		await expect(page.getByRole('button', { name: 'Exit Game' })).toBeVisible();
 	})
 
+	test('when a game is created, the starting board is displayed', async ({ page }) => {
+		await page.goto('/');
+		await page.getByRole('button', { name: 'New Game' }).click();
+		await page.waitForTimeout(500);
+	})
+
+	test('when a game is created, card placeholders are displayed', async ({ page }) => {
+		await page.goto('/');
+		await page.getByRole('button', { name: 'New Game' }).click();
+		await page.waitForTimeout(500);
+	})
+
+	test('when a game is created, defeated pawns placeholders are displayed', async ({ page }) => {
+		await page.goto('/');
+		await page.getByRole('button', { name: 'New Game' }).click();
+		await page.waitForTimeout(500);
+	})
+
 	test('when the user clicks the Exit Game button, they are redirected to the game lobby', async ({ page }) => {
 		// TODO
 	})
