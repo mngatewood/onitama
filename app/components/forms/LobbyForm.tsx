@@ -2,8 +2,14 @@
 import React from "react";
 import { redirect } from "next/navigation";
 import { createGame } from "../helpers/lobby";
+import Link from "next/link"
 
-export const LobbyForm = (session: AppendedSession) => {
+interface LobbyFormProps {
+	session: AppendedSession;
+	pendingGames: Game[];
+}
+
+export const LobbyForm = ({session, pendingGames}: LobbyFormProps) => {
 
 	const handleNewGame = async () => {
 		if(session?.user.id) {
@@ -31,6 +37,32 @@ export const LobbyForm = (session: AppendedSession) => {
 					className="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100"
 				></span>
 			</button>
+			<div className="mt-8">
+				<h2 className="text-2xl mb-4 font-bold text-neutral-800 dark:text-neutral-200">Pending Games</h2>
+				{pendingGames.length > 0 ? (
+					<div className="game-join-list flex flex-col gap-2">
+						{pendingGames.map((game) => (
+							<div key={game.id} className="game-join-entry flex justify-between items-center">
+								<div className="game-host-name">
+									{game.users[0].first_name}
+								</div>
+								<div className="game-created-at">
+									{game.createdAt.toLocaleString()}
+								</div>
+								<button>
+									<Link href={`/play/${game.id}`}>
+										Join
+									</Link>
+								</button>
+							</div>
+						))}
+					</div>
+				) : (
+					<div>
+						<p>No pending games to display.</p>
+					</div>
+				)}
+			</div>
 		</div>
 	)
 }
