@@ -5,6 +5,8 @@ import { WaitingModal } from "./WaitingModal";
 import { Board } from "./Board";
 import { DefeatedPawns } from "./DefeatedPawns";
 import { PlayerCards } from "./PlayerCards";
+import { socket } from "../lib/socketClient";
+import { ToastMessage } from "./ToastMessage";
 
 interface GameProps {
 	gameId: string;
@@ -31,9 +33,15 @@ interface Game {
 	updatedAt: Date;
 }
 
+interface Notification {
+	type: string;
+	message: string;
+}
+
 export const Game = ({ gameId, userId }: GameProps) => {
 	const [game, setGame] = useState<Game | null>(null);
 	const [waiting, setWaiting] = useState(true);
+	const [notifications, setNotifications] = useState<Notification[]>([]);
 
 	const getPlayerData = (identifier: string) => {
 		if (game?.players) {
@@ -49,6 +57,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 		}
 	}
 	
+	// Fetch game data
 	useEffect(() => {
 		const fetchGame = async (id: string) => {
 			const response = await fetch(`/api/games/?id=${id}`, {
@@ -70,7 +79,30 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			fetchGame(gameId);
 		}
 	}, [gameId]);
-	console.log(game)
+
+	useEffect(() => {
+
+		if (socket.connected) {
+			socket.emit("join", gameId);
+		} else {
+			socket.on("connect", () => {
+				socket.emit("join", gameId);
+			});
+		}
+
+		socket.on("user_joined", (message: string) => {
+			const notification: Notification = {
+				type: "system",
+				message
+			}
+			setWaiting(false);
+			setNotifications((prevNotifications) => [...prevNotifications, notification]);
+		});
+
+		return () => {
+			socket.off("user_joined");
+		}
+	}, [gameId]);
 
 	return (
 		<>
@@ -93,11 +125,12 @@ export const Game = ({ gameId, userId }: GameProps) => {
 					<WaitingModal text="Loading game..." />
 				</div>
 				}
-				{game && waiting &&
+			{game && waiting &&
 				<div className="absolute top-0 left-0 right-0 bottom-0 flex items-center">
 					<WaitingModal text="Waiting for another player to join..." />
 				</div>
 			}
+			<ToastMessage notifications={notifications} />
 		</>
 	)
 }
