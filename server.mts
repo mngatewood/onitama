@@ -27,8 +27,22 @@ app.prepare()
 			})
 			
 			socket.on("user_joined", (gameId, firstName) => {
-				console.log(`${firstName} joined game ${gameId}`);
-				socket.to(gameId).emit("user_joined", `${firstName} joined game`);
+				console.log(`${firstName} joined the game`);
+				socket.to(gameId).emit("user_joined", `${firstName} joined the game`);
+			});
+
+			socket.on("leave", (gameId) => {
+				socket.leave(gameId);
+			})
+			
+			socket.on("user_left", (gameId, firstName) => {
+				console.log(`${firstName} left the game`);
+				socket.to(gameId).emit("user_left", `${firstName} left the game. Returning to the lobby...`);
+			});
+
+			socket.on("game_full", (gameId) => {
+				console.log(`Game now has two players: ${gameId}`);
+				io.emit("game_full", gameId);
 			});
 
 			socket.on("disconnect", () => {

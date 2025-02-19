@@ -13,7 +13,7 @@ interface GameProps {
 	userId: string;
 }
 
-interface Game {
+export interface Game {
 	id: string;
 	board: string[][];
 	players: { 
@@ -26,16 +26,33 @@ interface Game {
 			cards: string[] 
 		}
 	};
-	users: string[];
-	cards: string[];
 	status: string;
 	createdAt: Date;
 	updatedAt: Date;
+	users: {
+		id: string;
+		first_name: string;
+		last_name: string;
+		email: string;
+		created_at: Date;
+		updated_at: Date;
+	}[];
+	cards: {
+		id: string;
+		title: string;
+		kanji: string;
+		color: string;
+		moves: number[];
+		createdAt: Date;
+		updatedAt: Date;
+	}[];
 }
 
 interface Notification {
 	type: string;
 	message: string;
+	action: string;
+	timeout: number;
 }
 
 export const Game = ({ gameId, userId }: GameProps) => {
@@ -66,12 +83,20 @@ export const Game = ({ gameId, userId }: GameProps) => {
 					"Content-Type": "application/json",
 				},
 			});
+			if (!response.ok) {
+				const notification: Notification = {
+					type: "error",
+					message: "Game not found.  Redirecting to lobby...",
+					timeout: 3000,
+					action: "/"
+				}
+				return setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+			}
 			const gameData: Game = await response.json();
 			setGame(gameData);
 			if (gameData.users.length === 2) {
 				setWaiting(false);
 			} else {
-				// change to false for development until 2nd player is implemented
 				setWaiting(true);
 			}
 		};
@@ -80,6 +105,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 		}
 	}, [gameId]);
 
+	// Socket IO events
 	useEffect(() => {
 
 		if (socket.connected) {
@@ -93,10 +119,23 @@ export const Game = ({ gameId, userId }: GameProps) => {
 		socket.on("user_joined", (message: string) => {
 			const notification: Notification = {
 				type: "system",
-				message
+				message,
+				timeout: 3000,
+				action: ""
 			}
 			setWaiting(false);
-			setNotifications((prevNotifications) => [...prevNotifications, notification]);
+			setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+		});
+
+		socket.on("user_left", (message: string) => {
+			const notification: Notification = {
+				type: "system",
+				message,
+				timeout: 3000,
+				action: "/"
+			}
+			console.log("User left", message);
+			setNotifications((prevNotifications) => [notification, ...prevNotifications]);
 		});
 
 		return () => {

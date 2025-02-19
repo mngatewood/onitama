@@ -1,26 +1,86 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { redirect } from "next/navigation";
-import { createGame } from "../helpers/lobby";
-import Link from "next/link"
+import { createGame, joinGame } from "../helpers/lobby";
+import { socket } from "../../lib/socketClient";
+import { Game } from "../Game";
 
 interface LobbyFormProps {
 	session: AppendedSession;
-	pendingGames: Game[];
+	initialPendingGames: Game[];
 }
 
-export const LobbyForm = ({session, pendingGames}: LobbyFormProps) => {
+export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
+
+	const [pendingGames, setPendingGames] = React.useState<Game[]>([]);
+
+	useEffect(() => {
+		if (initialPendingGames) {
+			setPendingGames(initialPendingGames);
+		} else {
+			setPendingGames([]);
+		}
+	}, [initialPendingGames]);
 
 	const handleNewGame = async () => {
+
+		// TODO: Display loading modal
+
 		if(session?.user.id) {
 			const newGame = await createGame(session?.user.id);
 			if(newGame) {
+				socket.emit("game_created", newGame);
 				redirect(`/play/${newGame.id}`);
 			}
 		} else {
 			redirect('/login');
 		}
 	}
+
+	const handleJoinGame = async (game: Game) => {
+		if(!session?.user.id) {
+			redirect('/login');
+		} else if(session?.user.id && game) {
+			const updatedGame = await joinGame(session?.user.id, game);
+			if(updatedGame) {
+				const firstName = updatedGame.users.find((user) => user.id === session?.user.id).first_name;
+				socket.emit("user_joined", game.id, firstName);
+				socket.emit("game_full", game.id, firstName);
+				redirect(`/play/${game.id}`);
+			} else {
+				console.log("Failed to join game");
+			}
+		}
+	};
+
+	// Socket.io event listeners
+	useEffect(() => {
+
+		console.log("socket connected: ", socket.connected);
+		
+		// Listen for game_created event to add new games to the list of pending games
+		socket.on("game_created", (newGame: Game) => {
+			console.log("New game created:", newGame);
+			setPendingGames((prevGames) => [newGame, ...prevGames]);
+		});
+		
+		// Listen for game_full event to remove games with two players from the list of pending games
+		socket.on("game_full", (filledGameId: string) => {
+			// Remove full game from state
+			setPendingGames((prevGames) => 
+				prevGames.filter(game => 
+					game.createdAt > new Date(Date.now() - 2 * 60 * 1000) &&
+					game.id !== filledGameId
+				)
+			);
+		});
+
+		// Clean up the event listeners on unmount
+		return () => {
+			socket.off("game_created");
+			socket.off("game_full");
+		};
+	}, []);
 
 	return (
 		<div>
@@ -39,7 +99,7 @@ export const LobbyForm = ({session, pendingGames}: LobbyFormProps) => {
 			</button>
 			<div className="mt-8">
 				<h2 className="text-2xl mb-4 font-bold text-neutral-800 dark:text-neutral-200">Pending Games</h2>
-				{pendingGames.length > 0 ? (
+				{pendingGames && pendingGames.length > 0 ? (
 					<div className="game-join-list flex flex-col gap-2">
 						{pendingGames.map((game) => (
 							<div key={game.id} className="game-join-entry flex justify-between items-center">
@@ -49,10 +109,8 @@ export const LobbyForm = ({session, pendingGames}: LobbyFormProps) => {
 								<div className="game-created-at">
 									{game.createdAt.toLocaleString()}
 								</div>
-								<button>
-									<Link href={`/play/${game.id}`}>
-										Join
-									</Link>
+								<button onClick={() => handleJoinGame(game)}>
+									Join
 								</button>
 							</div>
 						))}

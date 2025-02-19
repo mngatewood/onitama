@@ -1,8 +1,8 @@
-import { prisma } from "@/app/lib/prisma";
+// import { prisma } from "@/app/lib/prisma";
 import * as utility from "./utility";
 import { Card } from "@prisma/client";
 
-const apiUrl = process.env.API_URL || "http://localhost:3000";
+const apiUrl = process.env.API_URL || "http://localhost:3000/api/";
 
 const startingBoard = [
 	["rs0", "rs0", "rm0", "rs0", "rs0"],
@@ -23,6 +23,21 @@ export const getAllCards = async () => {
 		return data;
 	} catch (error) {
 		console.error('Error fetching cards:', error);
+		throw error;
+	}
+}
+
+export const getGame = async (id: string) => {
+	try {
+		const url = `${apiUrl}/games?id=${id}`;
+		const response = await fetch(url);
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error('Error fetching game:', error);
 		throw error;
 	}
 }
@@ -138,3 +153,17 @@ export const joinGame = async (playerId: string, game: Game) => {
 	}
 }
 
+export const deleteGame = async (gameId: string) => {
+	try {
+		const url = `${apiUrl}/games?id=${gameId}&action=delete`;
+		const response = await fetch(url);
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error('Error deleting the game:', error);
+		throw error;
+	}
+}
