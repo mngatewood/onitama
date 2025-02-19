@@ -66,9 +66,7 @@ export const LoginForm = () => {
 				redirect: false
 			};
 			const response = await signIn('credentials', payload);
-			console.log(response);
 			if (response?.ok) {
-				console.log("success");
 				setSuccessModalVisible(true);
 			} else {
 				setFormError("Incorrect email or password");
