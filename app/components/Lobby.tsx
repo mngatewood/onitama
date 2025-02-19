@@ -7,7 +7,7 @@ import { Title } from "./Title";
 import { DarkModeToggle } from "./DarkThemeToggle";
 import { LobbyForm } from "./forms/LobbyForm";
 import spirit from "../../public/spirit.png";
-import { prisma } from "../lib/prisma"
+import { getPendingGames } from "./helpers/lobby";
 
 const Lobby = async () => {
 	const session = await getServerSession(authOptions) as AppendedSession;
@@ -16,21 +16,21 @@ const Lobby = async () => {
 		redirect('/login');
 	}
 
-	const getPendingGames = async () => {
-		const games = await prisma.game.findMany({
-			orderBy: {
-				createdAt: "desc",
-			},
-			include: {
-				users: true,
-			},
-			where: {
-				status: "waiting_for_players",
-			}
-		});
+	// const getPendingGames = async () => {
+	// 	const games = await prisma.game.findMany({
+	// 		orderBy: {
+	// 			createdAt: "desc",
+	// 		},
+	// 		include: {
+	// 			users: true,
+	// 		},
+	// 		where: {
+	// 			status: "waiting_for_players",
+	// 		}
+	// 	});
 		
-		return games.filter((game) => game.users.length === 1);
-	}
+	// 	return games.filter((game) => game.users.length === 1);
+	// }
 
 	const pendingGames = await getPendingGames();
 
