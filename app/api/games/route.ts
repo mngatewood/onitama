@@ -12,7 +12,11 @@ export const POST = async (request: NextRequest ) => {
 
 			const response = await prisma.game.update({
 				include: {
-					users: true
+					users: {
+						omit: {
+							password: true
+						}
+					}
 				},
 				where: {
 					id: data.gameId
@@ -140,7 +144,11 @@ const getGame = async (id: string) => {
 				id: id
 			},
 			include: {
-				users: true,
+				users: {
+					omit: {
+						password: true
+					}
+				},
 				cards: true
 			}
 		})
@@ -199,7 +207,11 @@ const getPendingGames = async () => {
 				status: "waiting_for_players"
 			},
 			include: {
-				users: true,
+				users: {
+					omit: {
+						password: true
+					}
+				},
 				cards: true
 			}
 		})
