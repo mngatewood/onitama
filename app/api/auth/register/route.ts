@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { hash } from "bcrypt";
+import { hash } from "bcryptjs";
 import { validateFormData } from "../../../components/helpers/auth";
 import { prisma } from "../../../lib/prisma";
 
@@ -9,8 +9,6 @@ const emailExists = async (email: string) => {
 			email: email
 		}
 	})
-	console.log(response);
-
 	return response !== null
 }
 
