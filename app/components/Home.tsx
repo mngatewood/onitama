@@ -12,7 +12,7 @@ const Home = async () => {
 				<Title />
 			</header>
 			<main className="p-4 overflow-hidden flex flex-col justify-center items-center">
-				<div className="flex items-center justify-center h-full max-w-[640px]">
+				<div className="flex items-center justify-center absolute w-screen h-screen z-[-1] top-0 left-0 bottom-0 right-0">
 					<Image src={spirit} width={640} height={640} alt="Spirit" priority />
 				</div>
 			</main>

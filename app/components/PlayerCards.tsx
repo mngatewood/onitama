@@ -1,11 +1,10 @@
 interface Player {
 	color: string;
 	id: string;
-	cards: string[];
+	cards: Card[];
 }
 
 export const PlayerCards = ({player}: {player: Player}) => {
-	console.log(player);
 	const playerKanji = player.color === "red" ? "赤" : "青";
 	const playerColor = player.color === "red" ? "bg-red-900" : "bg-blue-900";
 	return (

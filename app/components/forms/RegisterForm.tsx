@@ -76,7 +76,6 @@ export const RegisterForm = () => {
 				},
 				body: JSON.stringify(formData),
 			})
-			console.log(response);
 			if (response.ok) {
 				setSuccessModalVisible(true);
 			} else {

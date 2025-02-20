@@ -69,7 +69,7 @@ test.describe('user can register', () => {
 	test('last name is optional', async ({ page }) => {
 		await page.getByRole('button', { name: 'Register' }).click();
 		await page.waitForTimeout(500);
-		await page.locator('#firstName').fill('Test');
+		await page.locator('#firstName').fill('TestW@@+');
 		await page.locator('#email').fill('testuser@gmail.com');
 		await page.locator('#password').fill('password');
 		await page.locator('#confirmPassword').fill('password');
@@ -80,7 +80,7 @@ test.describe('user can register', () => {
 	test('email is required, must be valid and unique', async ({ page }) => {
 		await page.getByRole('button', { name: 'Register' }).click();
 		await page.waitForTimeout(500);
-		await page.locator('#firstName').fill('Test');
+		await page.locator('#firstName').fill('TestW@@+');
 		await page.locator('#lastName').fill('User');
 		await page.locator('#password').fill('password');
 		await page.locator('#confirmPassword').fill('password');
@@ -97,7 +97,7 @@ test.describe('user can register', () => {
 	test('password is required and must be at least 8 characters', async ({ page }) => {
 		await page.getByRole('button', { name: 'Register' }).click();
 		await page.waitForTimeout(500);
-		await page.locator('#firstName').fill('Test');
+		await page.locator('#firstName').fill('TestW@@+');
 		await page.locator('#lastName').fill('User');
 		await page.locator('#email').fill('testuser@gmail.com');
 		await page.locator('#confirmPassword').fill('password');
@@ -114,7 +114,7 @@ test.describe('user can register', () => {
 	test('confirm password is required and must match password', async ({ page }) => {
 		await page.getByRole('button', { name: 'Register' }).click();
 		await page.waitForTimeout(500);
-		await page.locator('#firstName').fill('Test');
+		await page.locator('#firstName').fill('TestW@@+');
 		await page.locator('#lastName').fill('User');
 		await page.locator('#email').fill('testuser@gmail.com');
 		await page.locator('#password').fill('password');
@@ -132,7 +132,7 @@ test.describe('user can register', () => {
 		await page.getByRole('button', { name: 'Register' }).click();
 		await page.waitForTimeout(500);
 		await expect(page.getByRole('button', { name: 'Submit' })).toBeDisabled();
-		await page.locator('#firstName').fill('Test');
+		await page.locator('#firstName').fill('TestW@@+');
 		await expect(page.getByRole('button', { name: 'Submit' })).toBeDisabled();
 		await page.locator('#lastName').fill('User');
 		await expect(page.getByRole('button', { name: 'Submit' })).toBeDisabled();
@@ -147,7 +147,7 @@ test.describe('user can register', () => {
 	test('when the user clicks submit, an account is created and the user is redirected to the login page', async ({ page }) => {
 		await page.getByRole('button', { name: 'Register' }).click();
 		await page.waitForTimeout(500);
-		await page.locator('#firstName').fill('Test');
+		await page.locator('#firstName').fill('TestW@@+');
 		await page.locator('#lastName').fill('User');
 		await page.locator('#email').fill(email);
 		await page.locator('#password').fill('password');
@@ -168,7 +168,7 @@ test.describe('user can register', () => {
 	test('if the email is already used, the user is given a message', async ({ page }) => {
 		await page.getByRole('button', { name: 'Register' }).click();
 		await page.waitForTimeout(500);
-		await page.locator('#firstName').fill('Test');
+		await page.locator('#firstName').fill('TestW@@+');
 		await page.locator('#lastName').fill('User');
 		await page.locator('#email').fill(email);
 		await page.locator('#password').fill('password');

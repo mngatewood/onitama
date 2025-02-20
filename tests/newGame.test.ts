@@ -11,15 +11,14 @@ test.describe('user can create a new game', () => {
 
 	test.beforeEach(async ({ page }) => {
 		await loginUser({ page }, email);
+		await page.goto('/');
 	});
 
 	test('when the user is in the game lobby, a New Game button is displayed', async ({ page }) => {
-		await page.goto('/');
 		await expect(page.getByRole('button', { name: 'New Game' })).toBeVisible();
 	})
 
 	test('when a game is created, the game page is displayed with a modal', async ({ page }) => {
-		await page.goto('/');
 		await page.getByRole('button', { name: 'New Game' }).click();
 		await page.waitForTimeout(500);
 		await expect(page.getByText('Waiting for another player to join...')).toBeVisible();
@@ -27,7 +26,6 @@ test.describe('user can create a new game', () => {
 	})
 
 	test('when a game is created, the starting board is displayed', async ({ page }) => {
-		await page.goto('/');
 		await page.getByRole('button', { name: 'New Game' }).click();
 		await page.waitForTimeout(500);
 		await expect(page.locator('#board')).toBeVisible();
@@ -41,7 +39,6 @@ test.describe('user can create a new game', () => {
 	})
 
 	test('when a game is created, card placeholders are displayed', async ({ page }) => {
-		await page.goto('/');
 		await page.getByRole('button', { name: 'New Game' }).click();
 		await page.waitForTimeout(500);
 		await expect(page.locator('.player')).toHaveCount(2);
@@ -52,7 +49,6 @@ test.describe('user can create a new game', () => {
 	})
 
 	test('when a game is created, defeated pawns placeholders are displayed', async ({ page }) => {
-		await page.goto('/');
 		await page.getByRole('button', { name: 'New Game' }).click();
 		await page.waitForTimeout(500);
 		await expect(page.locator('#defeated-pawns')).toBeVisible();
@@ -60,7 +56,6 @@ test.describe('user can create a new game', () => {
 	})
 
 	test('when a game is created, player colors are displayed', async ({ page }) => {
-		await page.goto('/');
 		await page.getByRole('button', { name: 'New Game' }).click();
 		await page.waitForTimeout(500);
 		await expect(page.locator('.player-color')).toHaveCount(2);
@@ -69,11 +64,14 @@ test.describe('user can create a new game', () => {
 	})
 
 	test('when the user clicks the Exit Game button, they are redirected to the game lobby', async ({ page }) => {
-		await page.goto('/');
 		await page.getByRole('button', { name: 'New Game' }).click();
 		await page.waitForTimeout(500);
 		await page.getByRole('button', { name: 'Exit Game' }).click();
 		await page.waitForTimeout(500);
+		expect(page.getByText('Are you sure you want to exit the game? Any progress will be lost.')).toBeVisible();
+		expect(page.getByRole('button', { name: 'Exit Game' })).toBeVisible();
+		await page.getByRole('button', { name: 'Exit Game' }).click();
+		await page.waitForTimeout(1000);
 		expect(page.url()).toBe(localhost);
 	})
 

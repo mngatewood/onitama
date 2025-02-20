@@ -5,35 +5,60 @@ import { WaitingModal } from "./WaitingModal";
 import { Board } from "./Board";
 import { DefeatedPawns } from "./DefeatedPawns";
 import { PlayerCards } from "./PlayerCards";
+import { socket } from "../lib/socketClient";
+import { ToastMessage } from "./ToastMessage";
 
 interface GameProps {
 	gameId: string;
 	userId: string;
 }
 
-interface Game {
-	id: string;
-	board: string[][];
-	players: { 
-		"blue": { 
-			id: string,
-			cards: string[] 
-		}; 
-		"red": { 
-			id: string, 
-			cards: string[] 
-		}
-	};
-	users: string[];
-	cards: string[];
-	status: string;
-	createdAt: Date;
-	updatedAt: Date;
+// export interface Game {
+// 	id: string;
+// 	board: string[][];
+// 	players: { 
+// 		"blue": { 
+// 			id: string,
+// 			cards: string[] 
+// 		}; 
+// 		"red": { 
+// 			id: string, 
+// 			cards: string[] 
+// 		}
+// 	};
+// 	status: string;
+// 	createdAt: Date;
+// 	updatedAt: Date;
+// 	users: {
+// 		id: string;
+// 		first_name: string;
+// 		last_name: string;
+// 		email: string;
+// 		created_at: Date;
+// 		updated_at: Date;
+// 	}[];
+// 	cards: {
+// 		id: string;
+// 		title: string;
+// 		kanji: string;
+// 		color: string;
+// 		moves: number[];
+// 		createdAt: Date;
+// 		updatedAt: Date;
+// 	}[];
+// }
+
+interface Notification {
+	type: string;
+	message: string;
+	action: string;
+	timeout: number;
 }
 
 export const Game = ({ gameId, userId }: GameProps) => {
 	const [game, setGame] = useState<Game | null>(null);
 	const [waiting, setWaiting] = useState(true);
+	const [notifications, setNotifications] = useState<Notification[]>([]);
 
 	const getPlayerData = (identifier: string) => {
 		if (game?.players) {
@@ -49,6 +74,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 		}
 	}
 	
+	// Fetch game data
 	useEffect(() => {
 		const fetchGame = async (id: string) => {
 			const response = await fetch(`/api/games/?id=${id}`, {
@@ -57,12 +83,20 @@ export const Game = ({ gameId, userId }: GameProps) => {
 					"Content-Type": "application/json",
 				},
 			});
+			if (!response.ok) {
+				const notification: Notification = {
+					type: "error",
+					message: "Game not found.  Redirecting to lobby...",
+					timeout: 3000,
+					action: "/"
+				}
+				return setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+			}
 			const gameData: Game = await response.json();
 			setGame(gameData);
-			if (gameData.users.length === 2) {
+			if (gameData.users?.length === 2) {
 				setWaiting(false);
 			} else {
-				// change to false for development until 2nd player is implemented
 				setWaiting(true);
 			}
 		};
@@ -70,7 +104,44 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			fetchGame(gameId);
 		}
 	}, [gameId]);
-	console.log(game)
+
+	// Socket IO events
+	useEffect(() => {
+
+		if (socket.connected) {
+			socket.emit("join", gameId);
+		} else {
+			socket.on("connect", () => {
+				socket.emit("join", gameId);
+			});
+		}
+
+		socket.on("user_joined", (message: string) => {
+			const notification: Notification = {
+				type: "system",
+				message,
+				timeout: 3000,
+				action: ""
+			}
+			setWaiting(false);
+			setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+		});
+
+		socket.on("user_left", (message: string) => {
+			const notification: Notification = {
+				type: "system",
+				message,
+				timeout: 3000,
+				action: "/"
+			}
+			console.log("User left", message);
+			setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+		});
+
+		return () => {
+			socket.off("user_joined");
+		}
+	}, [gameId]);
 
 	return (
 		<>
@@ -93,11 +164,12 @@ export const Game = ({ gameId, userId }: GameProps) => {
 					<WaitingModal text="Loading game..." />
 				</div>
 				}
-				{game && waiting &&
+			{game && waiting &&
 				<div className="absolute top-0 left-0 right-0 bottom-0 flex items-center">
 					<WaitingModal text="Waiting for another player to join..." />
 				</div>
 			}
+			<ToastMessage notifications={notifications} />
 		</>
 	)
 }
