@@ -162,7 +162,7 @@ const deleteOldPendingGames = async () => {
 			where: {
 				status: "waiting_for_players",
 				createdAt: {
-					lt: new Date(Date.now() - 24 * 60 * 1000)
+					lt: new Date(Date.now() - 24 * 60 * 60 * 1000)
 				}
 			}
 		})
@@ -181,7 +181,7 @@ const getPendingGames = async () => {
 			where: {
 				status: "waiting_for_players",
 				createdAt: {
-					gte: new Date(Date.now() - 1 * 60 * 1000)
+					gte: new Date(Date.now() - 1 * 60 * 60 * 1000)
 				}
 
 			},
