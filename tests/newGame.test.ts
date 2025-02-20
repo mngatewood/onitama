@@ -68,6 +68,10 @@ test.describe('user can create a new game', () => {
 		await page.waitForTimeout(500);
 		await page.getByRole('button', { name: 'Exit Game' }).click();
 		await page.waitForTimeout(500);
+		expect(page.getByText('Are you sure you want to exit the game? Any progress will be lost.')).toBeVisible();
+		expect(page.getByRole('button', { name: 'Exit Game' })).toBeVisible();
+		await page.getByRole('button', { name: 'Exit Game' }).click();
+		await page.waitForTimeout(1000);
 		expect(page.url()).toBe(localhost);
 	})
 

@@ -74,3 +74,22 @@ export const logoutUser = async ({ page }: { page: Page }) => {
 	return;
 };
 
+export const convertTimeStringToDate = (timeString: string) => {
+	const date = new Date();
+	const [time, modifier] = timeString.split(' ');
+	const [hoursString, minutesString] = time.split(':');
+	let hours = hoursString === "12" ? 0 : parseInt(hoursString, 10);
+	const minutes = parseInt(minutesString, 10);
+
+	if (modifier.toUpperCase() === 'PM') {
+		hours = hours + 12;
+	}
+
+	date.setHours(hours);
+	date.setMinutes(minutes);
+	date.setSeconds(0);
+	date.setMilliseconds(0);
+
+	return date;
+}
+

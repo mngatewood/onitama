@@ -1,5 +1,14 @@
 import { expect, test } from '@playwright/test';
-import { localhost, getEmail, registerUser, loginUser, createGame, logoutUser, clearTestData } from './test-helpers';
+import { 
+	localhost, 
+	getEmail, 
+	registerUser, 
+	loginUser, 
+	createGame, 
+	logoutUser, 
+	clearTestData, 
+	convertTimeStringToDate 
+} from './test-helpers';
 
 const email = getEmail();
 const emailTwo = "2" + email
@@ -44,7 +53,6 @@ test.describe('user can join a game', () => {
 		await expect(page.getByText('TestW@@+')).toHaveCount(1);
 		await expect(page.locator('.game-join-entry').filter({ hasText: "TestW@@+" })).toBeVisible();
 		await expect(page.locator('.game-join-entry').filter({ hasText: "TestW@@+" })).toHaveCount(1);
-		await expect(page.locator('.game-join-entry').filter({ hasText: "TestW@@+" }).getByRole("link")).toHaveCount(1);
 	});
 
 	test('the list of pending games is sorted from newest to oldest', async ({ page }) => {
@@ -72,10 +80,10 @@ test.describe('user can join a game', () => {
 		]);
 
 		if (first !== null && second !== null && third !== null) {
-			const firstDate = new Date(first);
-			const secondDate = new Date(second);
-			const thirdDate = new Date(third);
-			expect(firstDate > secondDate && secondDate > thirdDate).toBe(true);
+			const firstDate = convertTimeStringToDate(first);
+			const secondDate = convertTimeStringToDate(second);
+			const thirdDate = convertTimeStringToDate(third);
+			expect(firstDate >= secondDate && secondDate >= thirdDate).toBe(true);
 		} else {
 			expect(false).toBe(true);
 		}
@@ -86,7 +94,7 @@ test.describe('user can join a game', () => {
 		await createGame({ page });
 		await logoutUser({ page });
 		await loginUser({ page }, emailTwo);
-		await page.locator('.game-join-entry').filter({ hasText: "TestW@@+" }).getByRole("link").click();
+		await page.locator('.game-join-entry').filter({ hasText: "TestW@@+" }).click();
 		await page.waitForTimeout(500);
 		await expect(page.locator('#board')).toBeVisible();
 		await expect(page.locator('#board')).toHaveCount(1);
@@ -100,11 +108,36 @@ test.describe('user can join a game', () => {
 	});
 
 	test('when another user joins the game, waiting for another player modal closes', async ({ page }) => {
-
+		test.skip();
 	});
 
 	test('all pawns are in their starting position', async ({ page }) => {
-
+		await loginUser({ page }, email);
+		await createGame({ page });
+		await logoutUser({ page });
+		await loginUser({ page }, emailTwo);
+		await page.locator('.game-join-entry').filter({ hasText: "TestW@@+" }).click();
+		await page.waitForTimeout(500);
+		await expect(page.locator('.space').locator('nth=0')).toHaveClass(/red/);
+		await expect(page.locator('.space').locator('nth=0')).toHaveClass(/student/);
+		await expect(page.locator('.space').locator('nth=1')).toHaveClass(/red/);
+		await expect(page.locator('.space').locator('nth=1')).toHaveClass(/student/);
+		await expect(page.locator('.space').locator('nth=2')).toHaveClass(/red/);
+		await expect(page.locator('.space').locator('nth=2')).toHaveClass(/master/);
+		await expect(page.locator('.space').locator('nth=3')).toHaveClass(/red/);
+		await expect(page.locator('.space').locator('nth=3')).toHaveClass(/student/);
+		await expect(page.locator('.space').locator('nth=4')).toHaveClass(/red/);
+		await expect(page.locator('.space').locator('nth=4')).toHaveClass(/student/);
+		await expect(page.locator('.space').locator('nth=20')).toHaveClass(/blue/);
+		await expect(page.locator('.space').locator('nth=20')).toHaveClass(/student/);
+		await expect(page.locator('.space').locator('nth=21')).toHaveClass(/blue/);
+		await expect(page.locator('.space').locator('nth=21')).toHaveClass(/student/);
+		await expect(page.locator('.space').locator('nth=22')).toHaveClass(/blue/);
+		await expect(page.locator('.space').locator('nth=22')).toHaveClass(/master/);
+		await expect(page.locator('.space').locator('nth=23')).toHaveClass(/blue/);
+		await expect(page.locator('.space').locator('nth=23')).toHaveClass(/student/);
+		await expect(page.locator('.space').locator('nth=24')).toHaveClass(/blue/);
+		await expect(page.locator('.space').locator('nth=24')).toHaveClass(/student/);
 	});
 
 	test('each player is dealt two random action cards', async ({ page }) => {
