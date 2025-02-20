@@ -1,7 +1,7 @@
 interface Player {
 	color: string;
 	id: string;
-	cards: string[];
+	cards: Card[];
 }
 
 export const PlayerCards = ({player}: {player: Player}) => {

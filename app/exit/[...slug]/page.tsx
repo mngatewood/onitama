@@ -4,20 +4,15 @@ import { DarkModeToggle } from "@/app/components/DarkThemeToggle";
 import { ExitForm } from "@/app/components/forms/ExitForm";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
-import PageProps from "next/app";
 import { getGame } from "@/app/components/helpers/lobby";
-import { Game } from "@/app/components/Game";
 import { authOptions } from "@/app/api/auth/[...nextauth]/config";
 import { ToastMessage } from "@/app/components/ToastMessage";
 
-interface ParamsObject {
-	slug: string;
-}
+const Exit = async ({ params }: { params: Promise<{ slug: string }> }) => {
 
-const Exit = async ({ params }: PageProps) => {
 	const session = await getServerSession(authOptions) as AppendedSession;
-	const paramsObject:ParamsObject = await params;
-	const gameId = paramsObject.slug[0];
+	const { slug } = await params;
+	const gameId = slug[0];
 	const game: Game = await getGame(gameId);
 	const user = game?.users && game.users.find((user) => user.id === session?.user.id);
 	const notification = {
@@ -58,4 +53,4 @@ const Exit = async ({ params }: PageProps) => {
 	);
 }
 
-export default Exit
+export default Exit;

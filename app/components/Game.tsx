@@ -94,7 +94,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			}
 			const gameData: Game = await response.json();
 			setGame(gameData);
-			if (gameData.users.length === 2) {
+			if (gameData.users?.length === 2) {
 				setWaiting(false);
 			} else {
 				setWaiting(true);

@@ -1,16 +1,26 @@
-import { JsonValue } from '@prisma/client/runtime/library';
 import { Session } from 'next-auth';
 
 declare global {
 	interface Game {
 		id: string;
-		players: JsonValue;
+		players: Players;
 		board: string[][];
 		status: string;
 		createdAt: Date;
 		updatedAt: Date;
 		users?: User[];
 		cards?: Card[];
+	}
+
+	interface Players {
+		red: {
+			id: string;
+			cards: Card[];
+		};
+		blue: {
+			id: string;
+			cards: Card[];
+		};
 	}
 
 	interface User {

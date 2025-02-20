@@ -106,7 +106,7 @@ export const getPendingGames = async () => {
 }
 
 export const joinGame = async (playerId: string, game: Game) => {
-	if(game.users.length !== 1) {
+	if(game.users?.length !== 1) {
 		return
 	}
 	try {

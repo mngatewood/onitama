@@ -44,7 +44,7 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 		} else if(session?.user.id && game) {
 			const updatedGame = await joinGame(session?.user.id, game);
 			if(updatedGame) {
-				const firstName = updatedGame.users.find((user) => user.id === session?.user.id).first_name;
+				const firstName = updatedGame.users.find((user: User) => user.id === session?.user.id).first_name;
 				socket.emit("user_joined", game.id, firstName);
 				socket.emit("game_full", game.id, firstName);
 				redirect(`/play/${game.id}`);
@@ -118,7 +118,7 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 										{pendingGames.map((game) => (
 											<button key={game.id} onClick={() => handleJoinGame(game)} className="game-join-entry group/btn flex justify-between items-center shrink-0 h-10 w-full rounded-md border border-gray-300 bg-amber-50 px-4 shadow-lg shadow-slate-500 dark:shadow-slate-800 dark:border-gray-800 dark:bg-neutral-300 text-gray-800 font-bold dark:hover:bg-neutral-100 hover:text-gray-900 cursor-pointer">
 												<div className="game-host-name w-1/3 text-left group-hover/btn:opacity-50">
-													{game.users[0].first_name}
+													{game.users?.[0].first_name}
 												</div>
 												<div className="w-1/3 text-center hidden group-hover/btn:block">
 													Join

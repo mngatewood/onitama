@@ -1,35 +1,23 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]/config";
-import PageProps from "next/app";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Title } from "../../components/Title";
 import { DarkModeToggle } from "../../components/DarkThemeToggle";
 import { Game } from "../../components/Game";
 
-interface ParamsObject {
-	slug: string;
-}
-
-const Play = async ({ params }: PageProps) => {
+const Play = async ({ params }: { params: Promise<{ slug: string }> }) => {
 	const session = await getServerSession(authOptions) as AppendedSession;
-	// const userId = (session?.user as AppendedSession['user']).id;
-	const paramsObject:ParamsObject = await params;
-	const gameId = paramsObject.slug[0];
+	const { slug } = await params;
+	const gameId = slug[0];
 
-	if (!paramsObject.slug) {
+	if (!gameId) {
 		redirect('/');
 	}
 
 	if (!session) {
 		redirect('/login');
 	}
-
-	// // TODO: If game has been pending with only one player for longer than 15 minutes, delete the game
-	// const handleExitGame = async () => {
-	// 	// TODO: Render a modal to confirm the user wants to exit the game
-	// 	// TODO: Emit 
-	// }
 
 	return (
 		<div className="absolute top-0 left-0 right-0 bottom-0 overflow-hidden flex flex-col justify-between items-center">
