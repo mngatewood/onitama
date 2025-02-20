@@ -1,11 +1,10 @@
 "use client";
 
 import { signOut } from "next-auth/react";
-import { redirect } from "next/navigation";
 
 const LogoutNow = () => {
 	signOut().then(() => {
-	  redirect('/');
+	  window.location.href = '/';
 	});
 
   return <div>Logging out...</div>;
