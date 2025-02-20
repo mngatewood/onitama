@@ -84,14 +84,6 @@ export const GET = async (request: NextRequest) => {
 	} else if (status && status === "waiting_for_players") {
 		// get pending games
 		try {
-			const oldPendingGameIds = await getOldPendingGameIds();
-			// delete old pending games, if any
-			if(oldPendingGameIds.length) {
-				const deletedGameIds = await deleteGames(oldPendingGameIds);
-				if(deletedGameIds.count === oldPendingGameIds.length) {
-					socket.emit("games_deleted", oldPendingGameIds);
-				}
-			}
 			const response = await getPendingGames();
 			return NextResponse.json(response);
 		} catch (error) {
@@ -116,6 +108,9 @@ export const GET = async (request: NextRequest) => {
 export const DELETE = async (request: NextRequest) => {
 	const url = new URL(request.url);
 	const id = url.searchParams.get("id");
+
+	// delete all pending games older than 24 hours whenever a game is deleted
+	await deleteOldPendingGames();
 
 	if(id) {
 		// delete specific game
@@ -161,33 +156,13 @@ const getGame = async (id: string) => {
 	}
 }
 
-const getOldPendingGameIds = async () => {
-	try {
-		const games = await prisma.game.findMany({
-			where: {
-				status: "waiting_for_players",
-				createdAt: {
-					lt: new Date(Date.now() - 2 * 60 * 1000)
-				}
-			}
-		})
-
-		const response = games.map(game => game.id);
-		return response;
-	} catch (error) {
-		if (error instanceof Error) {
-			console.log("Error: ", error.stack)
-		}
-		return NextResponse.json(error);
-	}
-}
-
-const deleteGames = async (gameIds: string[]) => {
+const deleteOldPendingGames = async () => {
 	try {
 		const response = await prisma.game.deleteMany({
 			where: {
-				id: {
-					in: gameIds
+				status: "waiting_for_players",
+				createdAt: {
+					lt: new Date(Date.now() - 24 * 60 * 1000)
 				}
 			}
 		})
@@ -196,7 +171,7 @@ const deleteGames = async (gameIds: string[]) => {
 		if (error instanceof Error) {
 			console.log("Error: ", error.stack)
 		}
-		return NextResponse.json(error);
+		throw error;
 	}
 }
 
@@ -204,7 +179,11 @@ const getPendingGames = async () => {
 	try {
 		const response = await prisma.game.findMany({
 			where: {
-				status: "waiting_for_players"
+				status: "waiting_for_players",
+				createdAt: {
+					gte: new Date(Date.now() - 1 * 60 * 1000)
+				}
+
 			},
 			include: {
 				users: {

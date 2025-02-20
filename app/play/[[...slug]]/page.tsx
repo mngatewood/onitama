@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]/config";
-import { PageProps } from "@/.next/types/app/layout";
+import PageProps from "next/app";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Title } from "../../components/Title";

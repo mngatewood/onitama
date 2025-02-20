@@ -32,7 +32,7 @@ export const getGame = async (id: string) => {
 		const url = `${apiUrl}/games?id=${id}`;
 		const response = await fetch(url);
 		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
+			return null;
 		}
 		const data = await response.json();
 		return data;

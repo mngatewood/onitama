@@ -13,40 +13,40 @@ interface GameProps {
 	userId: string;
 }
 
-export interface Game {
-	id: string;
-	board: string[][];
-	players: { 
-		"blue": { 
-			id: string,
-			cards: string[] 
-		}; 
-		"red": { 
-			id: string, 
-			cards: string[] 
-		}
-	};
-	status: string;
-	createdAt: Date;
-	updatedAt: Date;
-	users: {
-		id: string;
-		first_name: string;
-		last_name: string;
-		email: string;
-		created_at: Date;
-		updated_at: Date;
-	}[];
-	cards: {
-		id: string;
-		title: string;
-		kanji: string;
-		color: string;
-		moves: number[];
-		createdAt: Date;
-		updatedAt: Date;
-	}[];
-}
+// export interface Game {
+// 	id: string;
+// 	board: string[][];
+// 	players: { 
+// 		"blue": { 
+// 			id: string,
+// 			cards: string[] 
+// 		}; 
+// 		"red": { 
+// 			id: string, 
+// 			cards: string[] 
+// 		}
+// 	};
+// 	status: string;
+// 	createdAt: Date;
+// 	updatedAt: Date;
+// 	users: {
+// 		id: string;
+// 		first_name: string;
+// 		last_name: string;
+// 		email: string;
+// 		created_at: Date;
+// 		updated_at: Date;
+// 	}[];
+// 	cards: {
+// 		id: string;
+// 		title: string;
+// 		kanji: string;
+// 		color: string;
+// 		moves: number[];
+// 		createdAt: Date;
+// 		updatedAt: Date;
+// 	}[];
+// }
 
 interface Notification {
 	type: string;
