@@ -1,8 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+"use client";
 
-export const ToastMessage = ({notifications}: Notification[]) => {
+import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
 
-	const [notification, setNotification] = useState<Notification>({ type: "", message: "" });
+type Notification = {
+	type: string;
+	message: string;
+	action: string;
+	timeout: number;
+}
+
+export const ToastMessage = ({ notifications }: { notifications: Notification[] }) => {
+
+	const [notification, setNotification] = useState<Notification>({ type: "", message: "", action: "", timeout: 0 });
 
 	const toastClass = () => {
 		if (notification.type === "system") {
@@ -15,17 +25,27 @@ export const ToastMessage = ({notifications}: Notification[]) => {
 	}
 
 	useEffect(() => {
-		const toast = document.getElementById("toast");
 		if (notifications.length > 0) {
 			setNotification(notifications[0]);
-
-			toast?.classList.replace('-left-full', 'left-0')
-			const timer = setTimeout(() => {
-				toast?.classList.replace('left-0', '-left-full')
-			}, 3000);
-			return () => clearTimeout(timer);
 		}
 	}, [notifications])
+	
+	useEffect(() => {
+		const toast = document.getElementById("toast");
+		toast?.classList.replace('-left-full', 'left-0')
+		if(notification.action) {
+			const timer = setTimeout(() => {
+				redirect(notification.action);
+			}, notification.timeout);
+			return () => clearTimeout(timer);
+		} else {
+			const timer = setTimeout(() => {
+				toast?.classList.replace('left-0', '-left-full')
+			}, notification.timeout);
+			return () => clearTimeout(timer);
+		}
+	}, [notification])
+	
 	
 	return (
 		<div id="toast" className="absolute top-2 -left-full -translate-x-1 mr-4 transition-all duration-300 flex justify-center items-start z-50">
