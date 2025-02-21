@@ -27,6 +27,9 @@ export const Game = ({ gameId, userId }: GameProps) => {
 	const allPlayerCards = [ ...game?.players.red.cards ?? [], ...game?.players.blue.cards ?? [] ];
 	const allPlayerCardsIds = allPlayerCards.map((card: Card) => card.id);
 	const neutralCard = game && game.cards ? game?.cards.filter((card: Card) => !allPlayerCardsIds.includes(card.id))[0] : null;
+	const playerColor = ["red", "blue"].find((key) => {
+		return game?.players && game?.players[key as keyof typeof game.players]?.id === userId;
+	}) || "";
 
 	const getPlayerData = (identifier: string) => {
 		if (game?.players) {
@@ -124,7 +127,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 					</div>
 					<div className="board flex flow-row justify-center my-4">
 						<DefeatedPawns />
-						<Board board={game.board} />
+						<Board board={game.board} playerColor={playerColor} />
 					</div>
 					<div className="player-bottom min-h-10">
 						{getPlayerData("self") && <PlayerCards player={getPlayerData("self")} neutralCard={neutralCard}/>}

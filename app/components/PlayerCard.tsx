@@ -19,13 +19,14 @@ export const PlayerCard = ({ card, player }: { card: Card, player: string }) => 
 	}
 
 	const rotateCard = player === "opponent" ? "rotate-180" : "";
+	const color = card.color === "red" ? "bg-red-300" : "bg-blue-300";
 
 	return (
 		<div className="card player-card flex justify-between h-full rounded-sm border border-neutral-400 bg-gray-700 aspect-video">
 			{ card.id 
 				?
 				<>
-					<div className="flex flex-col justify-center items-center w-full bg-neutral-300 text-slate-700 min-w-12">
+					<div className={`${color} flex flex-col justify-center items-center w-full text-slate-700 min-w-12 text-shadow-xs`}>
 						<div>
 							{card.kanji}
 						</div>

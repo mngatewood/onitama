@@ -105,3 +105,7 @@
 	background-color: theme("colors.gray.900");
 }
 
+.text-shadow-xs {
+	text-shadow: 1px 1px darkgray;
+}
+
