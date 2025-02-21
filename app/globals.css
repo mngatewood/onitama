@@ -96,3 +96,12 @@
 .defeated.blue {
 	background-image: url('../public/blue-student.png');
 }
+
+.highlighted-move {
+	background-color: theme("colors.gray.500");
+}
+
+.highlighted-center {
+	background-color: theme("colors.gray.900");
+}
+

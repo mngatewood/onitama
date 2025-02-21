@@ -13,41 +13,6 @@ interface GameProps {
 	userId: string;
 }
 
-// export interface Game {
-// 	id: string;
-// 	board: string[][];
-// 	players: { 
-// 		"blue": { 
-// 			id: string,
-// 			cards: string[] 
-// 		}; 
-// 		"red": { 
-// 			id: string, 
-// 			cards: string[] 
-// 		}
-// 	};
-// 	status: string;
-// 	createdAt: Date;
-// 	updatedAt: Date;
-// 	users: {
-// 		id: string;
-// 		first_name: string;
-// 		last_name: string;
-// 		email: string;
-// 		created_at: Date;
-// 		updated_at: Date;
-// 	}[];
-// 	cards: {
-// 		id: string;
-// 		title: string;
-// 		kanji: string;
-// 		color: string;
-// 		moves: number[];
-// 		createdAt: Date;
-// 		updatedAt: Date;
-// 	}[];
-// }
-
 interface Notification {
 	type: string;
 	message: string;
@@ -59,13 +24,20 @@ export const Game = ({ gameId, userId }: GameProps) => {
 	const [game, setGame] = useState<Game | null>(null);
 	const [waiting, setWaiting] = useState(true);
 	const [notifications, setNotifications] = useState<Notification[]>([]);
+	const allPlayerCards = [ ...game?.players.red.cards ?? [], ...game?.players.blue.cards ?? [] ];
+	const allPlayerCardsIds = allPlayerCards.map((card: Card) => card.id);
+	const neutralCard = game && game.cards ? game?.cards.filter((card: Card) => !allPlayerCardsIds.includes(card.id))[0] : null;
 
 	const getPlayerData = (identifier: string) => {
 		if (game?.players) {
 			if(game.players.red.id === userId) {
-				return identifier === "self" ? { color: "red", ...game.players.red } : { color: "blue", ...game.players.blue }
+				return identifier === "self" 
+					? { color: "red", ...game.players.red }
+					: { color: "blue", ...game.players.blue }
 			} else if(game.players.blue.id === userId) {
-				return identifier === "self" ? { color: "blue", ...game.players.blue } : { color: "red", ...game.players.red }
+				return identifier === "self" 
+					? { color: "blue", ...game.players.blue }
+					: { color: "red", ...game.players.red }
 			} else {
 				return { color: "", id: "", cards: [] }
 			}
@@ -147,15 +119,15 @@ export const Game = ({ gameId, userId }: GameProps) => {
 		<>
 			{game && game.board &&
 				<div className="game w-full">
-					<div className="player-top h-10">
-						{getPlayerData("opponent") && <PlayerCards player={getPlayerData("opponent")}/>}
+					<div className="player-top min-h-10">
+						{getPlayerData("opponent") && <PlayerCards player={getPlayerData("opponent")} neutralCard={neutralCard} />}
 					</div>
 					<div className="board flex flow-row justify-center my-4">
 						<DefeatedPawns />
 						<Board board={game.board} />
 					</div>
-					<div className="player-bottom h-10">
-						{getPlayerData("self") && <PlayerCards player={getPlayerData("self")} />}
+					<div className="player-bottom min-h-10">
+						{getPlayerData("self") && <PlayerCards player={getPlayerData("self")} neutralCard={neutralCard}/>}
 					</div>
 				</div>
 			}
