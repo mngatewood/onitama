@@ -46,6 +46,7 @@ export const createGame = async (playerId: string) => {
 	const allCards = await getAllCards();
 	const randomIndexes = utility.shuffleArray([...Array(allCards.length).keys()]).slice(0, 5);
 	const randomCards = allCards.filter((_:Card, index: number) => randomIndexes.includes(index));
+	const neutralCard = randomCards[4];
 	const players = {
 		"blue": {
 			id: playerId,
@@ -72,6 +73,7 @@ export const createGame = async (playerId: string) => {
 		},
 		board: startingBoard,
 		status: status,
+		turn: neutralCard.color,
 		players: players,
 	}
 	const url = `${apiUrl}/games`;
@@ -125,6 +127,7 @@ export const joinGame = async (playerId: string, game: Game) => {
 		const update = {
 			gameId: game.id,
 			userId: playerId,
+			status: "in_progress",
 			players: playersUpdate
 		}
 		const url = `${apiUrl}/games?id=${game.id}&action=join`;
