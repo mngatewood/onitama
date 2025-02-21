@@ -14,7 +14,7 @@ export const PlayerCard = ({ card, player }: { card: Card, player: string }) => 
 				</div>
 			)
 		})
-		console.log("moves", moves);
+
 		return moves;
 	}
 

@@ -2,6 +2,8 @@ import { PlayerCard } from "./PlayerCard";
 
 interface Player {
 	color: string;
+	turn: string;
+	userId: string;
 	id: string;
 	cards: Card[];
 }
@@ -9,9 +11,8 @@ interface Player {
 export const PlayerCards = ({player, neutralCard}: {player: Player, neutralCard: Card | null}) => {
 	const playerKanji = player.color === "red" ? "赤" : "青";
 	const playerColor = player.color === "red" ? "bg-red-900" : "bg-blue-900";
-
-	// TODO: this will only work for setup; need to track turn order in Game object
-	const renderNeutralCard = player.color === neutralCard?.color;
+	const renderNeutralCard = player.color === player.turn;
+	const playerIdentifier = player.id === player.userId ? "self" : "opponent";
 	const neutralCardPlaceholder = {
 		id: "",
 		title: "",
@@ -30,12 +31,12 @@ export const PlayerCards = ({player, neutralCard}: {player: Player, neutralCard:
 			<div className="w-full flex justify-between h-10">
 				<div className="opacity-50 h-full">
 					{ renderNeutralCard
-						? <PlayerCard card={neutralCard!} player="self" />
-						: <PlayerCard card={neutralCardPlaceholder!} player="opponent" />
+						? <PlayerCard card={neutralCard!} player={playerIdentifier} />
+						: <PlayerCard card={neutralCardPlaceholder!} player={playerIdentifier} />
 					}
 				</div>
-				<PlayerCard card={player.cards[0]!} player={renderNeutralCard ? "self" : "opponent"}/>
-				<PlayerCard card={player.cards[1]!} player={renderNeutralCard ? "self" : "opponent"}/>
+				<PlayerCard card={player.cards[0]!} player={playerIdentifier}/>
+				<PlayerCard card={player.cards[1]!} player={playerIdentifier}/>
 			</div>
 		</div>
 	);
