@@ -39,9 +39,8 @@ export const PlayerCard = ({ card, player }: { card: Card, player: string }) => 
 					</div>
 				</>
 				:
-				<div className="flex justify-center items-center bg-gray-500 text-slate-700">
-					<div className="h-full min-w-12"></div>
-					<div className="h-full aspect-square"></div>
+				<div className="flex justify-center items-center bg-gray-500 text-slate-700 w-20">
+					{/* Empty neutral card placeholder */}
 				</div>
 			}
 		</div>

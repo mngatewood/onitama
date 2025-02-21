@@ -33,21 +33,28 @@ export const Game = ({ gameId, userId }: GameProps) => {
 
 	const getPlayerData = (identifier: string) => {
 		if (game?.players) {
-			if(game.players.red.id === userId) {
-				return identifier === "self" 
-					? { color: "red", turn: game.turn, userId: userId, ...game.players.red }
-					: { color: "blue", turn: game.turn, userId: userId, ...game.players.blue }
-			} else if(game.players.blue.id === userId) {
-				return identifier === "self" 
-					? { color: "blue", turn: game.turn, userId: userId, ...game.players.blue }
-					: { color: "red", turn: game.turn, userId: userId, ...game.players.red }
-			} else {
-				return { color: "", turn: "", userId: userId, id: "", cards: [] }
+			const data = {
+				turn: game.turn,
+				userId: userId,
+				firstName: "" as string | undefined,
+				color: "",
+				id: "",
+				cards: [] as Card[],
 			}
-		} else {
-			return { color: "", turn: "", userId: userId, id: "", cards: [] }
-		}
-	}
+			if((game.players.red.id === userId && identifier === "self") || (game.players.blue.id === userId && identifier === "opponent")) {
+				data.color = "red";
+				data.id = game.players.red.id;
+				data.cards = game.players.red.cards;
+				data.firstName = game.users?.find((user) => user.id === game.players.red.id)?.first_name;
+			} else if ((game.players.blue.id === userId && identifier === "self") || (game.players.red.id === userId && identifier === "opponent")) {
+				data.color = "blue";
+				data.id = game.players.blue.id;
+				data.cards = game.players.blue.cards;
+				data.firstName = game.users?.find((user) => user.id === game.players.blue.id)?.first_name;
+			}
+			return data;
+		};
+	};
 	
 	// Fetch game data
 	useEffect(() => {
