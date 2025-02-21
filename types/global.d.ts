@@ -6,6 +6,7 @@ declare global {
 		players: Players;
 		board: string[][];
 		status: string;
+		turn: string;
 		createdAt: Date;
 		updatedAt: Date;
 		users?: User[];

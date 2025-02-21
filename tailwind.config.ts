@@ -38,6 +38,9 @@ export default {
 				mono: ["var(--font-geist-mono)", "monospace"],
 				reggae: ["var(--font-reggae-one)", "cursive"],
 			},
+			fontSize: {
+				"2xs": ".625rem",
+			},
 			boxShadow: {
 				input: `0px 2px 3px -1px rgba(0,0,0,0.1), 0px 1px 0px 0px rgba(25,28,33,0.02), 0px 0px 0px 1px rgba(25,28,33,0.08)`,
 			},

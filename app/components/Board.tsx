@@ -1,9 +1,9 @@
 
 
-export const Board = ({ board }: { board: string[][] }) => {
+export const Board = ({ board, playerColor }: { board: string[][], playerColor: string }) => {
 
 	const renderBoard = () => {
-		const flatBoard = board.flat();
+		const flatBoard = playerColor === "red" ? board.flat().reverse() : board.flat();
 		return flatBoard.map((space: string, index: number) => {
 			let color, pawn, highlighted;
 			const colorCode = space[0];
