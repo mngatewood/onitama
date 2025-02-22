@@ -4,15 +4,18 @@ interface Player {
 	color: string;
 	turn: string;
 	userId: string;
+	firstName: string | null;
 	id: string;
 	cards: Card[];
 }
 
-export const PlayerCards = ({player, neutralCard}: {player: Player, neutralCard: Card | null}) => {
-	const playerKanji = player.color === "red" ? "赤" : "青";
-	const playerColor = player.color === "red" ? "bg-red-900" : "bg-blue-900";
-	const renderNeutralCard = player.color === player.turn;
-	const playerIdentifier = player.id === player.userId ? "self" : "opponent";
+export const PlayerCards = ({player, neutralCard}: {player: Player | null, neutralCard: Card | null}) => {
+	const playerKanji = player?.color === "red" ? "赤" : "青";
+	const playerColor = player?.color === "red" ? "bg-red-900" : "bg-blue-900";
+	const renderNeutralCard = player?.color === player?.turn;
+	const playerIdentifier = player?.id === player?.userId ? "self" : "opponent";
+	const playerFlex = playerIdentifier === "self" ? "flex-col-reverse" : "flex-col";
+	const clickable = (renderNeutralCard && playerIdentifier === "self") ? true : false;
 	const neutralCardPlaceholder = {
 		id: "",
 		title: "",
@@ -24,19 +27,33 @@ export const PlayerCards = ({player, neutralCard}: {player: Player, neutralCard:
 	}
 
 	return (
-		<div className="player w-full h-full flex justify-between">
-			<div className={`${playerColor} player-color w-6 h-10 border rounded-xl border-neutral-400 justify-center items-center text-lg text-gray-300 ml-1 mr-3 hidden xs:flex`}>
-				{playerKanji}
+		<div className={`${playerFlex} player w-full flex justify-evenly items-center`}>
+			<div className={`${playerColor} player-color flex w-1/2 text-xs xs:text-sm sm:text-base md:text-lg landscape:text-sm border rounded-xl border-neutral-400 items-center text-gray-300`}>
+				<div className="flex flex-col items-center w-1/6">
+					{playerKanji}
+				</div>
+				<div className="text-center w-4/6">
+					{player?.firstName}
+				</div>
+				<div className="flex flex-col items-center w-1/6">
+					{playerKanji}
+				</div>
 			</div>
-			<div className="w-full flex justify-between h-10">
-				<div className="opacity-50 h-full">
+			<div className={`
+				${playerIdentifier === "self" ? "landscape:flex-wrap-reverse tall:flex-wrap" : "landscape:flex-wrap tall:flex-wrap-reverse"} 
+				w-full flex justify-around my-2 gap-2 landscape:flex-wrap tall:flex-wrap`}>
+				<div className={`${playerIdentifier === "self" ? "landscape:order-2" : "landscape:order-last"} opacity-50 tall:basis-full [&>*:first-child]:justify-self-center [&>*:first-child]:tall:my-4`}>
 					{ renderNeutralCard
-						? <PlayerCard card={neutralCard!} player={playerIdentifier} />
-						: <PlayerCard card={neutralCardPlaceholder!} player={playerIdentifier} />
+						? <PlayerCard card={neutralCard!} player={playerIdentifier} clickable={false}/>
+						: <PlayerCard card={neutralCardPlaceholder!} player={playerIdentifier} clickable={false} />
 					}
 				</div>
-				<PlayerCard card={player.cards[0]!} player={playerIdentifier}/>
-				<PlayerCard card={player.cards[1]!} player={playerIdentifier}/>
+				{ player &&
+					<>
+						<PlayerCard card={player.cards[0]!} player={playerIdentifier} clickable={clickable} />
+						<PlayerCard card={player.cards[1]!} player={playerIdentifier} clickable={clickable} />
+					</>
+				}
 			</div>
 		</div>
 	);

@@ -23,6 +23,12 @@ export default {
 	darkMode: "class",
 	theme: {
 		extend: {
+			screens: {
+				'short': { raw: '(min-height: 600px)' },
+				'tall': { raw: '(min-height: 800px)' },
+				"xtall": { raw: '(min-height: 900px)' },
+				'xs': '480px',
+			},
 			colors: {
 				background: "var(--background)",
 				foreground: "var(--foreground)",

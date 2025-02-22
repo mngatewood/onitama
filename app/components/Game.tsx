@@ -33,21 +33,31 @@ export const Game = ({ gameId, userId }: GameProps) => {
 
 	const getPlayerData = (identifier: string) => {
 		if (game?.players) {
-			if(game.players.red.id === userId) {
-				return identifier === "self" 
-					? { color: "red", turn: game.turn, userId: userId, ...game.players.red }
-					: { color: "blue", turn: game.turn, userId: userId, ...game.players.blue }
-			} else if(game.players.blue.id === userId) {
-				return identifier === "self" 
-					? { color: "blue", turn: game.turn, userId: userId, ...game.players.blue }
-					: { color: "red", turn: game.turn, userId: userId, ...game.players.red }
-			} else {
-				return { color: "", turn: "", userId: userId, id: "", cards: [] }
+			const data = {
+				turn: game.turn,
+				userId: userId,
+				firstName: "" as string | undefined,
+				color: "",
+				id: "",
+				cards: [] as Card[],
 			}
-		} else {
-			return { color: "", turn: "", userId: userId, id: "", cards: [] }
-		}
-	}
+			if((game.players.red.id === userId && identifier === "self") || (game.players.blue.id === userId && identifier === "opponent")) {
+				data.color = "red";
+				data.id = game.players.red.id;
+				data.cards = game.players.red.cards;
+				data.firstName = game.users?.find((user) => user.id === game.players.red.id)?.first_name ?? undefined;
+			} else if ((game.players.blue.id === userId && identifier === "self") || (game.players.red.id === userId && identifier === "opponent")) {
+				data.color = "blue";
+				data.id = game.players.blue.id;
+				data.cards = game.players.blue.cards;
+				data.firstName = game.users?.find((user) => user.id === game.players.blue.id)?.first_name ?? undefined;
+			}
+			if (!data) {
+				return null;;
+			}
+			return data;
+		};
+	};
 	
 	// Fetch game data
 	useEffect(() => {
@@ -121,16 +131,16 @@ export const Game = ({ gameId, userId }: GameProps) => {
 	return (
 		<>
 			{game && game.board &&
-				<div className="game w-full">
-					<div className="player-top min-h-10">
-						{getPlayerData("opponent") && <PlayerCards player={getPlayerData("opponent")} neutralCard={neutralCard} />}
+				<div className="game w-full flex flex-col justify-evenly items-center h-screen landscape:h-[calc(100vh-140px)] landscape:flex-wrap">
+					<div className="player-top order-1 landscape:w-1/2 flex justify-center flex-grow">
+						{getPlayerData("opponent") && <PlayerCards player={getPlayerData("opponent") ?? null} neutralCard={neutralCard} />}
 					</div>
-					<div className="board flex flow-row justify-center my-4">
+					<div className="flex flow-row justify-center order-2 landscape:items-center h-[60vw] portrait:relative portrait:-left-[5%] portrait:tall:md:h-[50vw] landscape:order-3 landscape:w-1/2 landscape:h-[50vh] landscape:md:short:h-[47vw]">
 						<DefeatedPawns />
 						<Board board={game.board} playerColor={playerColor} />
 					</div>
-					<div className="player-bottom min-h-10">
-						{getPlayerData("self") && <PlayerCards player={getPlayerData("self")} neutralCard={neutralCard}/>}
+					<div className="player-bottom order-3 landscape:order-2 landscape:w-1/2 flex justify-center flex-grow">
+						{getPlayerData("self") && <PlayerCards player={getPlayerData("self") ?? null} neutralCard={neutralCard}/>}
 					</div>
 				</div>
 			}
