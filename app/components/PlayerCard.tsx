@@ -23,15 +23,15 @@ export const PlayerCard = ({ card, player, clickable }: { card: Card, player: st
 	const pointer = clickable ? "cursor-pointer" : "cursor-not-allowed";
 
 	return (
-		<div className={`${pointer} ${card.id && "hover:scale-125"} card player-card flex justify-between h-[15vw] rounded-sm border border-neutral-400 shadow-md shadow-slate-500 bg-gray-700 aspect-video transition-all transition-duration-300`}>
+		<div className={`${pointer} ${card.id && "hover:scale-125"} card player-card flex justify-between h-[15vw] landscape:h-[5vw] landscape:my-2 landscape:md:h-[7vw] landscape:lg:h-[10vw] max-h-[13vh] landscape:xl:h-[8vw] xtall:max-w-screen-xs:h-[20vw] tall:md:h-[10vw] rounded-sm border border-neutral-400 shadow-md shadow-slate-500 bg-gray-700 aspect-video transition-all transition-duration-300 first:basis-full`}>
 			{ card.id 
 				?
 				<>
 					<div className={`${color} flex flex-col justify-center items-center w-full text-slate-700 min-w-12 text-shadow-xs`}>
-						<div className="text-lg xs:text-2xl sm:text-3xl md:text-4xl">
+						<div className="text-lg xs:text-2xl sm:text-3xl md:text-4xl landscape:hidden landscape:md:block landscape:md:text-xl landscape:lg:text-2xl landscape:xl:text-3xl">
 							{card.kanji}
 						</div>
-						<div className="text-2xs xs:text-sm sm:text-base md:text-lg font-reggae">
+						<div className="text-2xs xs:text-sm sm:text-base md:text-lg font-reggae landscape:text-2xs landscape:md:text-xs">
 							{card.title}
 						</div>
 					</div>
@@ -40,7 +40,7 @@ export const PlayerCard = ({ card, player, clickable }: { card: Card, player: st
 					</div>
 				</>
 				:
-				<div className="flex justify-center items-center bg-gray-500 text-slate-700 w-[26vw]">
+				<div className="flex justify-center items-center bg-gray-500 text-slate-700 w-full">
 					{/* Empty neutral card placeholder */}
 				</div>
 			}

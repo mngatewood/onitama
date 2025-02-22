@@ -24,6 +24,9 @@ export default {
 	theme: {
 		extend: {
 			screens: {
+				'short': { raw: '(min-height: 600px)' },
+				'tall': { raw: '(min-height: 800px)' },
+				"xtall": { raw: '(min-height: 900px)' },
 				'xs': '480px',
 			},
 			colors: {

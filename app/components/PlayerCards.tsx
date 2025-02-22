@@ -27,8 +27,8 @@ export const PlayerCards = ({player, neutralCard}: {player: Player | null, neutr
 	}
 
 	return (
-		<div className={`${playerFlex} player w-full flex justify-between items-center`}>
-			<div className={`${playerColor} player-color flex w-1/2 text-xs xs:text-sm sm:text-base md:text-lg border rounded-xl border-neutral-400 items-center text-gray-300`}>
+		<div className={`${playerFlex} player w-full flex justify-evenly items-center`}>
+			<div className={`${playerColor} player-color flex w-1/2 text-xs xs:text-sm sm:text-base md:text-lg landscape:text-sm border rounded-xl border-neutral-400 items-center text-gray-300`}>
 				<div className="flex flex-col items-center w-1/6">
 					{playerKanji}
 				</div>
@@ -39,8 +39,10 @@ export const PlayerCards = ({player, neutralCard}: {player: Player | null, neutr
 					{playerKanji}
 				</div>
 			</div>
-			<div className="w-full flex justify-around my-2">
-				<div className="opacity-50">
+			<div className={`
+				${playerIdentifier === "self" ? "landscape:flex-wrap-reverse tall:flex-wrap" : "landscape:flex-wrap tall:flex-wrap-reverse"} 
+				w-full flex justify-around my-2 gap-2 landscape:flex-wrap tall:flex-wrap`}>
+				<div className={`${playerIdentifier === "self" ? "landscape:order-2" : "landscape:order-last"} opacity-50 tall:basis-full [&>*:first-child]:justify-self-center [&>*:first-child]:tall:my-4`}>
 					{ renderNeutralCard
 						? <PlayerCard card={neutralCard!} player={playerIdentifier} clickable={false}/>
 						: <PlayerCard card={neutralCardPlaceholder!} player={playerIdentifier} clickable={false} />
@@ -49,7 +51,7 @@ export const PlayerCards = ({player, neutralCard}: {player: Player | null, neutr
 				{ player &&
 					<>
 						<PlayerCard card={player.cards[0]!} player={playerIdentifier} clickable={clickable} />
-					<PlayerCard card={player.cards[1]!} player={playerIdentifier} clickable={clickable} />
+						<PlayerCard card={player.cards[1]!} player={playerIdentifier} clickable={clickable} />
 					</>
 				}
 			</div>
