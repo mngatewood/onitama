@@ -4,7 +4,7 @@ interface Player {
 	color: string;
 	turn: string;
 	userId: string;
-	firstName: string | null;
+	firstName: string | undefined;
 	id: string;
 	cards: Card[];
 }
