@@ -14,7 +14,8 @@ export const PlayerCards = ({player, neutralCard}: {player: Player | null, neutr
 	const playerColor = player?.color === "red" ? "bg-red-900" : "bg-blue-900";
 	const renderNeutralCard = player?.color === player?.turn;
 	const playerIdentifier = player?.id === player?.userId ? "self" : "opponent";
-	const playerFlex = playerIdentifier === "self" ? "short:flex-col-reverse" : "short:flex-col";
+	const playerFlex = playerIdentifier === "self" ? "flex-col-reverse" : "flex-col";
+	const clickable = (renderNeutralCard && playerIdentifier === "self") ? true : false;
 	const neutralCardPlaceholder = {
 		id: "",
 		title: "",
@@ -26,26 +27,29 @@ export const PlayerCards = ({player, neutralCard}: {player: Player | null, neutr
 	}
 
 	return (
-		<div className={`${playerFlex} player w-full h-full flex justify-between`}>
-			<div className={`${playerColor} player-color w-full h-6 border rounded-xl border-neutral-400 items-center text-gray-300 hidden short:flex short:my-2 short:mx-1 xs:flex`}>
-				<div className="flex flex-col items-center text-xs w-1/12">
+		<div className={`${playerFlex} player w-full flex justify-between items-center`}>
+			<div className={`${playerColor} player-color flex w-1/2 text-xs xs:text-sm sm:text-base md:text-lg border rounded-xl border-neutral-400 items-center text-gray-300`}>
+				<div className="flex flex-col items-center w-1/6">
 					{playerKanji}
 				</div>
-				<div className="text-center w-4/5">
+				<div className="text-center w-4/6">
 					{player?.firstName}
 				</div>
+				<div className="flex flex-col items-center w-1/6">
+					{playerKanji}
+				</div>
 			</div>
-			<div className="w-full flex justify-between h-10">
-				<div className="opacity-50 h-full">
+			<div className="w-full flex justify-around my-2">
+				<div className="opacity-50">
 					{ renderNeutralCard
-						? <PlayerCard card={neutralCard!} player={playerIdentifier} />
-						: <PlayerCard card={neutralCardPlaceholder!} player={playerIdentifier} />
+						? <PlayerCard card={neutralCard!} player={playerIdentifier} clickable={false}/>
+						: <PlayerCard card={neutralCardPlaceholder!} player={playerIdentifier} clickable={false} />
 					}
 				</div>
 				{ player &&
 					<>
-						<PlayerCard card={player.cards[0]!} player={playerIdentifier}/>
-						<PlayerCard card={player.cards[1]!} player={playerIdentifier}/>
+						<PlayerCard card={player.cards[0]!} player={playerIdentifier} clickable={clickable} />
+					<PlayerCard card={player.cards[1]!} player={playerIdentifier} clickable={clickable} />
 					</>
 				}
 			</div>

@@ -128,15 +128,15 @@ export const Game = ({ gameId, userId }: GameProps) => {
 	return (
 		<>
 			{game && game.board &&
-				<div className="game w-full">
-					<div className="player-top min-h-10">
+				<div className="game w-full flex flex-col justify-evenly align-items h-screen max-h-[800px]">
+					<div className="player-top">
 						{getPlayerData("opponent") && <PlayerCards player={getPlayerData("opponent")} neutralCard={neutralCard} />}
 					</div>
-					<div className="board flex flow-row justify-center my-4">
+					<div className="flex flow-row justify-center h-[65vw]">
 						<DefeatedPawns />
 						<Board board={game.board} playerColor={playerColor} />
 					</div>
-					<div className="player-bottom min-h-10">
+					<div className="player-bottom">
 						{getPlayerData("self") && <PlayerCards player={getPlayerData("self")} neutralCard={neutralCard}/>}
 					</div>
 				</div>

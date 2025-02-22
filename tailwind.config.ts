@@ -24,10 +24,7 @@ export default {
 	theme: {
 		extend: {
 			screens: {
-				short: { raw: '(min-height: 640px)' },
-				tall: { raw: '(min-height: 740px)' },
-				tablet: { raw: '(min-height: 10240px)' },
-				desktop: { raw: '(min-height: 1280px)' },
+				'xs': '480px',
 			},
 			colors: {
 				background: "var(--background)",
