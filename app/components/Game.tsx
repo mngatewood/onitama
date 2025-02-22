@@ -45,12 +45,15 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				data.color = "red";
 				data.id = game.players.red.id;
 				data.cards = game.players.red.cards;
-				data.firstName = game.users?.find((user) => user.id === game.players.red.id)?.first_name;
+				data.firstName = game.users?.find((user) => user.id === game.players.red.id)?.first_name ?? undefined;
 			} else if ((game.players.blue.id === userId && identifier === "self") || (game.players.red.id === userId && identifier === "opponent")) {
 				data.color = "blue";
 				data.id = game.players.blue.id;
 				data.cards = game.players.blue.cards;
-				data.firstName = game.users?.find((user) => user.id === game.players.blue.id)?.first_name;
+				data.firstName = game.users?.find((user) => user.id === game.players.blue.id)?.first_name ?? undefined;
+			}
+			if (!data) {
+				return null;;
 			}
 			return data;
 		};
@@ -130,14 +133,14 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			{game && game.board &&
 				<div className="game w-full flex flex-col justify-evenly items-center h-screen landscape:h-[calc(100vh-140px)] landscape:flex-wrap">
 					<div className="player-top order-1 landscape:w-1/2 flex justify-center flex-grow">
-						{getPlayerData("opponent") && <PlayerCards player={getPlayerData("opponent")} neutralCard={neutralCard} />}
+						{getPlayerData("opponent") && <PlayerCards player={getPlayerData("opponent") ?? null} neutralCard={neutralCard} />}
 					</div>
 					<div className="flex flow-row justify-center order-2 landscape:items-center h-[60vw] portrait:relative portrait:-left-[5%] portrait:tall:md:h-[50vw] landscape:order-3 landscape:w-1/2 landscape:h-[50vh] landscape:md:short:h-[47vw]">
 						<DefeatedPawns />
 						<Board board={game.board} playerColor={playerColor} />
 					</div>
 					<div className="player-bottom order-3 landscape:order-2 landscape:w-1/2 flex justify-center flex-grow">
-						{getPlayerData("self") && <PlayerCards player={getPlayerData("self")} neutralCard={neutralCard}/>}
+						{getPlayerData("self") && <PlayerCards player={getPlayerData("self") ?? null} neutralCard={neutralCard}/>}
 					</div>
 				</div>
 			}
