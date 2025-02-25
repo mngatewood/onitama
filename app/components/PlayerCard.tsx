@@ -28,10 +28,10 @@ export const PlayerCard = ({ card, player, clickable }: { card: Card, player: st
 				?
 				<>
 					<div className={`${color} flex flex-col justify-center items-center w-full text-slate-700 min-w-12 text-shadow-xs`}>
-						<div className="text-lg xs:text-2xl sm:text-3xl md:text-4xl landscape:hidden landscape:md:block landscape:md:text-xl landscape:lg:text-2xl landscape:xl:text-3xl">
+						<div className="text-lg xs:text-2xl sm:text-3xl portrait:xl:text-6xl landscape:hidden landscape:md:block landscape:md:text-xl landscape:lg:text-2xl landscape:xl:text-3xl landscape:tall:text-xl landscape:tall:lg:text-3xl landscape:xtall:text-4xl landscape:xtall:xl:text-5xl">
 							{card.kanji}
 						</div>
-						<div className="text-2xs xs:text-sm sm:text-base md:text-lg font-reggae landscape:text-2xs landscape:md:text-xs">
+						<div className="text-2xs xs:text-sm sm:text-base portrait:lg:text-2xl font-reggae landscape:text-2xs landscape:md:text-xs landscape:tall:text-xs landscape:tall:lg:text-base landscape:xtall:text-xs landscape:xtall:xl:text-base">
 							{card.title}
 						</div>
 					</div>
