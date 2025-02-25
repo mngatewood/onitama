@@ -42,7 +42,7 @@ export const PlayerCards = ({player, neutralCard}: {player: Player | null, neutr
 			<div className={`
 				${playerIdentifier === "self" ? "landscape:flex-wrap-reverse tall:flex-wrap" : "landscape:flex-wrap tall:flex-wrap-reverse"} 
 				w-full flex justify-around my-2 gap-2 landscape:flex-wrap tall:flex-wrap`}>
-				<div className={`${playerIdentifier === "self" ? "landscape:order-2" : "landscape:order-last"} opacity-50 tall:basis-full [&>*:first-child]:justify-self-center [&>*:first-child]:tall:my-4`}>
+				<div className={`${playerIdentifier === "self" ? "landscape:order-2" : "landscape:order-last"} opacity-50 tall:basis-full [&>*:first-child]:mx-auto [&>*:first-child]:tall:my-4`}>
 					{ renderNeutralCard
 						? <PlayerCard card={neutralCard!} player={playerIdentifier} clickable={false}/>
 						: <PlayerCard card={neutralCardPlaceholder!} player={playerIdentifier} clickable={false} />
