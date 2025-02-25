@@ -50,7 +50,7 @@ export const ToastMessage = ({ notifications }: { notifications: Notification[] 
 	return (
 		<div id="toast" className="absolute top-2 -left-full -translate-x-1 mr-4 transition-all duration-300 flex justify-center items-start z-50">
 			<div className={`${toastClass()} opacity-90 w-full shadow-[2px_2px_5px_0px_rgba(0,0,0,0.7)] dark:shadow-[2px_2px_5px_0px_rgba(255,255,255,0.7)] rounded-r-2xl p-4`}>
-				<p className="mx-4">{notification.message}</p>
+				<p className="mx-4 text-white font-bold">{notification.message}</p>
 			</div>
 		</div>
 	);
