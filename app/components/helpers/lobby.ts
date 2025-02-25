@@ -178,3 +178,28 @@ export const deleteGame = async (gameId: string) => {
 		throw error;
 	}
 }
+
+export const endGame = async (gameId: string) => {
+	try {
+		const url = `${apiUrl}/games?id=${gameId}&action=change_status`;
+		const update = {
+			gameId: gameId,
+			status: "ended"
+		}
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(update),
+		})
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error('Error ending the game:', error);
+		throw error;
+	}
+}

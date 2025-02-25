@@ -38,6 +38,25 @@ export const POST = async (request: NextRequest ) => {
 			}
 			return NextResponse.json(error);
 		}
+	// change game status
+	} else if (action === "change_status") {
+		try {
+			const data = await request.json();
+			const response = await prisma.game.update({
+				where: {
+					id: data.gameId
+				},
+				data: {
+					status: data.status
+				}
+			})
+			return NextResponse.json(response);
+		} catch (error) {
+			if (error instanceof Error) {
+				console.log("Error: ", error.stack)
+			}
+			return NextResponse.json(error);
+		}
 	} else {
 		return NextResponse.json({ message: "No valid action parameter provided" }, { status: 400 });
 	}
@@ -109,7 +128,7 @@ export const DELETE = async (request: NextRequest) => {
 	const url = new URL(request.url);
 	const id = url.searchParams.get("id");
 
-	// delete all pending games older than 24 hours whenever a game is deleted
+	// delete all pending games older than 1 hour whenever a game is deleted
 	await deleteOldPendingGames();
 
 	if(id) {
@@ -162,7 +181,7 @@ const deleteOldPendingGames = async () => {
 			where: {
 				status: "waiting_for_players",
 				createdAt: {
-					lt: new Date(Date.now() - 24 * 60 * 60 * 1000)
+					lt: new Date(Date.now() - 1 * 60 * 60 * 1000)
 				}
 			}
 		})
