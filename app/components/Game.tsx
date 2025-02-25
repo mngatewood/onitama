@@ -58,33 +58,34 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			return data;
 		};
 	};
+
+	const fetchGame = async (id: string) => {
+		const response = await fetch(`/api/games/?id=${id}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+		if (!response.ok) {
+			const notification: Notification = {
+				type: "error",
+				message: "Game not found.  Redirecting to lobby...",
+				timeout: 3000,
+				action: "/"
+			}
+			return setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+		}
+		const gameData: Game = await response.json();
+		setGame(gameData);
+		if (gameData.users?.length === 2) {
+			setWaiting(false);
+		} else {
+			setWaiting(true);
+		}
+	};
 	
 	// Fetch game data
 	useEffect(() => {
-		const fetchGame = async (id: string) => {
-			const response = await fetch(`/api/games/?id=${id}`, {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
-			if (!response.ok) {
-				const notification: Notification = {
-					type: "error",
-					message: "Game not found.  Redirecting to lobby...",
-					timeout: 3000,
-					action: "/"
-				}
-				return setNotifications((prevNotifications) => [notification, ...prevNotifications]);
-			}
-			const gameData: Game = await response.json();
-			setGame(gameData);
-			if (gameData.users?.length === 2) {
-				setWaiting(false);
-			} else {
-				setWaiting(true);
-			}
-		};
 		if (gameId) {
 			fetchGame(gameId);
 		}
@@ -108,6 +109,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				timeout: 3000,
 				action: ""
 			}
+			fetchGame(gameId);
 			setWaiting(false);
 			setNotifications((prevNotifications) => [notification, ...prevNotifications]);
 		});
@@ -135,7 +137,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 					<div className="player-top order-1 landscape:w-1/2 flex justify-center flex-grow">
 						{getPlayerData("opponent") && <PlayerCards player={getPlayerData("opponent") ?? null} neutralCard={neutralCard} />}
 					</div>
-					<div className="flex flow-row justify-center order-2 landscape:items-center h-[60vw] portrait:relative portrait:-left-[5%] portrait:tall:md:h-[50vw] landscape:order-3 landscape:w-1/2 landscape:h-[50vh] landscape:md:short:h-[47vw]">
+					<div className="flex flow-row justify-center order-2 landscape:items-center h-[60vw] portrait:relative portrait:tall:md:h-[50vw] landscape:order-3 landscape:w-1/2 landscape:h-[50vh] landscape:md:short:h-[47vw]">
 						<DefeatedPawns />
 						<Board board={game.board} playerColor={playerColor} />
 					</div>
