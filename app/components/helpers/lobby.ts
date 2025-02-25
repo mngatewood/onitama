@@ -2,7 +2,7 @@
 import * as utility from "./utility";
 import { Card } from "@prisma/client";
 
-const apiUrl = process.env.API_URL || "http://localhost:3000/api/";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api/";
 
 const startingBoard = [
 	["rs0", "rs0", "rm0", "rs0", "rs0"],
