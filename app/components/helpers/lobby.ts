@@ -9,7 +9,7 @@ console.log('Current origin:', typeof window !== 'undefined' ? window.location.o
 
 // Try this approach
 export const apiUrl = typeof window !== 'undefined'
-	? window.location.origin  // This will use the actual deployed URL
+	? `${window.location.origin}/api`  // This will use the actual deployed URL
 	: process.env.NEXT_PUBLIC_API_URL;
 
 const startingBoard = [
