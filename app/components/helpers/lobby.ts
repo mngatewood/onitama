@@ -4,6 +4,9 @@ import { Card } from "@prisma/client";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api/";
 
+console.log("apiUrl", apiUrl)
+console.log("Node ENV", process.env.NODE_ENV)
+
 const startingBoard = [
 	["rs0", "rs0", "rm0", "rs0", "rs0"],
 	["000", "000", "000", "000", "000"],
