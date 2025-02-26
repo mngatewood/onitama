@@ -13,17 +13,10 @@ interface GameProps {
 	userId: string;
 }
 
-interface Notification {
-	type: string;
-	message: string;
-	action: string;
-	timeout: number;
-}
-
 export const Game = ({ gameId, userId }: GameProps) => {
 	const [game, setGame] = useState<Game | null>(null);
 	const [waiting, setWaiting] = useState(true);
-	const [notifications, setNotifications] = useState<Notification[]>([]);
+	const [notifications, setNotifications] = useState<ToastNotification[]>([]);
 	const allPlayerCards = [ ...game?.players.red.cards ?? [], ...game?.players.blue.cards ?? [] ];
 	const allPlayerCardsIds = allPlayerCards.map((card: Card) => card.id);
 	const neutralCard = game && game.cards ? game?.cards.filter((card: Card) => !allPlayerCardsIds.includes(card.id))[0] : null;
@@ -67,7 +60,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			},
 		});
 		if (!response.ok) {
-			const notification: Notification = {
+			const notification: ToastNotification = {
 				type: "error",
 				message: "Game not found.  Redirecting to lobby...",
 				timeout: 3000,
@@ -103,7 +96,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 		}
 
 		socket.on("user_joined", (message: string) => {
-			const notification: Notification = {
+			const notification: ToastNotification = {
 				type: "system",
 				message,
 				timeout: 3000,
@@ -115,7 +108,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 		});
 
 		socket.on("user_left", (message: string) => {
-			const notification: Notification = {
+			const notification: ToastNotification = {
 				type: "system",
 				message,
 				timeout: 3000,

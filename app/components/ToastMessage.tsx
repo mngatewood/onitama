@@ -3,19 +3,14 @@
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 
-type Notification = {
-	type: string;
-	message: string;
-	action: string;
-	timeout: number;
-}
+export const ToastMessage = ({ notifications }: { notifications: ToastNotification[] }) => {
 
-export const ToastMessage = ({ notifications }: { notifications: Notification[] }) => {
-
-	const [notification, setNotification] = useState<Notification>({ type: "", message: "", action: "", timeout: 0 });
+	const [notification, setNotification] = useState<ToastNotification | null>(null);
 
 	const toastClass = () => {
-		if (notification.type === "system") {
+		if (!notification) {
+			return "hidden"
+		} else if (notification.type === "system") {
 			return "bg-blue-900"
 		} else if (notification.type === "error") {
 			return "bg-red-900"
@@ -25,6 +20,7 @@ export const ToastMessage = ({ notifications }: { notifications: Notification[] 
 	}
 
 	useEffect(() => {
+		console.log("notifications", notifications.length)
 		if (notifications.length > 0) {
 			setNotification(notifications[0]);
 		}
@@ -33,7 +29,7 @@ export const ToastMessage = ({ notifications }: { notifications: Notification[] 
 	useEffect(() => {
 		const toast = document.getElementById("toast");
 		toast?.classList.replace('-left-full', 'left-0')
-		if(notification.action) {
+		if(notification?.action) {
 			const timer = setTimeout(() => {
 				redirect(notification.action);
 			}, notification.timeout);
@@ -41,7 +37,7 @@ export const ToastMessage = ({ notifications }: { notifications: Notification[] 
 		} else {
 			const timer = setTimeout(() => {
 				toast?.classList.replace('left-0', '-left-full')
-			}, notification.timeout);
+			}, notification?.timeout);
 			return () => clearTimeout(timer);
 		}
 	}, [notification])
@@ -50,7 +46,7 @@ export const ToastMessage = ({ notifications }: { notifications: Notification[] 
 	return (
 		<div id="toast" className="absolute top-2 -left-full -translate-x-1 mr-4 transition-all duration-300 flex justify-center items-start z-50">
 			<div className={`${toastClass()} opacity-90 w-full shadow-[2px_2px_5px_0px_rgba(0,0,0,0.7)] dark:shadow-[2px_2px_5px_0px_rgba(255,255,255,0.7)] rounded-r-2xl p-4`}>
-				<p className="mx-4 text-white font-bold">{notification.message}</p>
+				<p className="mx-4 text-white font-bold">{notification?.message || ""}</p>
 			</div>
 		</div>
 	);
