@@ -1,14 +1,12 @@
 'use client';
 
 import { signOut } from "next-auth/react";
-import { redirect } from "next/navigation";
 
 export const LogoutForm = () => {
 
-	const handleSignOut = async (e: React.MouseEvent<HTMLButtonElement>) => {
+	const handleSignOut = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
-		await signOut();
-		redirect('/');
+		signOut({ callbackUrl: '/?logged_out=true', redirect: true })
 	};
 		
 	return (

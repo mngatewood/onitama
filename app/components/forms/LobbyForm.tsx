@@ -28,7 +28,7 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 			if (loggedIn === "true") {
 				const notification = {
 					type: "success",
-					message: "You have successfully logged in",
+					message: "You have successfully logged in.",
 					action: "",
 					timeout: 3000
 				} as ToastNotification;
