@@ -67,10 +67,9 @@ export const LoginForm = () => {
 			};
 			const response = await signIn('credentials', payload);
 			if (response?.ok) {
-				router.refresh();
-				const session = await getSession() as AppendedSession;
-				console.log("session: ", session);
-				socket.emit("login", session?.user?.id ?? null);
+				const url = new URL('/', window.location.origin);
+				url.searchParams.set('message', 'login');
+				router.push(url.toString());
 			} else {
 				setFormError("Incorrect email or password");
 				setFormValid(false);

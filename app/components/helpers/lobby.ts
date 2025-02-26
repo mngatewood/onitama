@@ -3,14 +3,14 @@ import * as utility from "./utility";
 import { Card } from "@prisma/client";
 
 // Add debugging to see when and how the value is being set
-console.log('Initial load - API URL:', process.env.NEXT_PUBLIC_API_URL);
+console.log('Initial load - API URL:', process.env.NEXT_PUBLIC_BASE_URL + "/api");
 console.log('Window object available:', typeof window !== 'undefined');
 console.log('Current origin:', typeof window !== 'undefined' ? window.location.origin : 'no window');
 
 // Try this approach
 export const apiUrl = typeof window !== 'undefined'
 	? `${window.location.origin}/api`  // This will use the actual deployed URL
-	: process.env.NEXT_PUBLIC_API_URL;
+	: process.env.NEXT_PUBLIC_BASE_URL + "/api";
 
 const startingBoard = [
 	["rs0", "rs0", "rm0", "rs0", "rs0"],
