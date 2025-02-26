@@ -8,11 +8,8 @@ import { DarkModeToggle } from "./DarkThemeToggle";
 import { LobbyForm } from "./forms/LobbyForm";
 import spirit from "../../public/spirit.png";
 import { getPendingGames } from "./helpers/lobby";
-import { headers } from "next/headers";
-import { ToastMessage } from "./ToastMessage";
 
 const Lobby = async () => {
-	const referrer = (await headers()).get('Referer') || '/';
 	const session = await getServerSession(authOptions) as AppendedSession;
 	
 	if (!session) {
@@ -20,13 +17,6 @@ const Lobby = async () => {
 	}
 	
 	const pendingGames = await getPendingGames();
-
-	const notifications = referrer && referrer.split("/").pop() === "login" ? [{
-		type: "success",
-		message: "You have been logged in.",
-		action: "",
-		timeout: 5000
-	}] : [];
 
 	return (
 		<div className="absolute top-0 left-0 right-0 bottom-0 overflow-hidden flex flex-col justify-between items-center">
@@ -45,7 +35,6 @@ const Lobby = async () => {
 				<button className="w-1/3"><Link href="/demo">Guide</Link></button>
 			</footer>
 			<DarkModeToggle />
-			<ToastMessage notifications={notifications} />
 		</div>
 	);
 }

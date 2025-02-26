@@ -1,9 +1,12 @@
 "use client";
-import React, { useEffect } from "react";
+
+import React, { useEffect, useState } from "react";
 import { redirect } from "next/navigation";
 import { createGame, joinGame } from "../helpers/lobby";
 import { socket } from "../../lib/socketClient";
 import { WaitingModal } from "../WaitingModal";
+import { ToastMessage } from "../ToastMessage";
+import { useSearchParams, usePathname } from "next/navigation";
 
 interface LobbyFormProps {
 	session: AppendedSession;
@@ -11,10 +14,32 @@ interface LobbyFormProps {
 }
 
 export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
-
+	const searchParams = useSearchParams();
+	const pathname = usePathname();
 	const [pendingGames, setPendingGames] = React.useState<Game[]>([]);
 	const [loading, setLoading] = React.useState(false);
+	const [notifications, setNotifications] = useState<ToastNotification[]>([]);
 
+	// Evaluate searchParams
+	useEffect(() => {
+		if (searchParams) {
+			// Push success notification if logged_in query parameter is true
+			const loggedIn = searchParams.get("logged_in");
+			if (loggedIn === "true") {
+				const notification = {
+					type: "success",
+					message: "You have successfully logged in",
+					action: "",
+					timeout: 3000
+				} as ToastNotification;
+				setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+			}
+			// Remove query parameter from URL
+			window.history.replaceState(null, "", pathname);
+		}
+	}, [searchParams, pathname]);
+
+	// Update pending games when initialPendingGames prop changes
 	useEffect(() => {
 		if (initialPendingGames) {
 			setPendingGames(initialPendingGames);
@@ -57,8 +82,6 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 	// Socket.io event listeners
 	useEffect(() => {
 
-		console.log("socket connected: ", socket.connected);
-		
 		// Listen for game_created event to add new games to the list of pending games
 		socket.on("game_created", (newGame: Game) => {
 			console.log("New game created:", newGame);
@@ -139,6 +162,7 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 					</div>
 				</div>
 			}
+			<ToastMessage notifications={notifications} />
 		</>
 	)
 }

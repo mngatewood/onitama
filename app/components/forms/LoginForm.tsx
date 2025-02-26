@@ -3,9 +3,8 @@ import { Label } from "./Label";
 import { Input } from "./Input";
 import React, { FormEvent, useEffect, useCallback, useState } from "react";
 import { validateLoginFormComplete, validateEmail, validatePassword } from "../helpers/auth";
-import { signIn, getSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { socket } from "@/app/lib/socketClient";
 
 export const LoginForm = () => {
 	const router = useRouter();
@@ -67,9 +66,7 @@ export const LoginForm = () => {
 			};
 			const response = await signIn('credentials', payload);
 			if (response?.ok) {
-				const url = new URL('/', window.location.origin);
-				url.searchParams.set('message', 'login');
-				router.push(url.toString());
+				router.push("/?logged_in=true");
 			} else {
 				setFormError("Incorrect email or password");
 				setFormValid(false);

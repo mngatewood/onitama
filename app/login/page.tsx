@@ -8,7 +8,7 @@ import Image from "next/image";
 import spirit from "../../public/spirit.png";
 
 const Login = async () => {
-	const session = await getServerSession();
+	const session = await getServerSession() as AppendedSession;
 
 	if (!!session) {
 		redirect('/');
