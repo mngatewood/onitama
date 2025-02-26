@@ -86,6 +86,7 @@ export const GET = async (request: NextRequest) => {
 	const url = new URL(request.url);
 	const id = url.searchParams.get("id");
 	const status = url.searchParams.get("status");
+	const userId = url.searchParams.get("user_id")
 	if (id) {
 		// get specific game
 		try {
@@ -104,6 +105,20 @@ export const GET = async (request: NextRequest) => {
 		// get pending games
 		try {
 			const response = await getPendingGames();
+			return NextResponse.json(response);
+		} catch (error) {
+			if (error instanceof Error) {
+				console.log("Error: ", error.stack)
+			}
+			return NextResponse.json(error);
+		}
+	} else if (userId) {
+		// get all games for a specific user
+		try {
+			const response = await getUserGames(userId);
+			if (!response) {
+				return NextResponse.json({ message: "Game not found" }, { status: 404 });
+			}
 			return NextResponse.json(response);
 		} catch (error) {
 			if (error instanceof Error) {
@@ -211,6 +226,26 @@ const getPendingGames = async () => {
 					}
 				},
 				cards: true
+			}
+		})
+		return response;
+	} catch (error) {
+		if (error instanceof Error) {
+			console.log("Error: ", error.stack)
+		}
+		return NextResponse.json(error);
+	}
+}
+
+const getUserGames = async (userId: string) => {
+	try {
+		const response = await prisma.game.findMany({
+			where: {
+				users: {
+					some: {
+						id: userId
+					}
+				}
 			}
 		})
 		return response;
