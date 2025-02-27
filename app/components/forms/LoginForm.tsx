@@ -5,9 +5,15 @@ import React, { FormEvent, useEffect, useCallback, useState } from "react";
 import { validateLoginFormComplete, validateEmail, validatePassword } from "../helpers/auth";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { ToastMessage } from "../ToastMessage";
+import { useSearchParams, usePathname } from "next/navigation";
 
 export const LoginForm = () => {
 	const router = useRouter();
+	const searchParams = useSearchParams();
+	const pathname = usePathname();
+	const [notifications, setNotifications] = useState<ToastNotification[]>([]);
+
 	const [formData, setFormData] = useState({
 		email: "",
 		password: "",
@@ -15,6 +21,25 @@ export const LoginForm = () => {
 
 	const [formValid, setFormValid] = useState<boolean>(false);
 	const [formError, setFormError] = useState<string>("");
+
+	// Evaluate searchParams
+	useEffect(() => {
+		if (searchParams) {
+			// Push success notification if logged_in query parameter is true
+			const registered = searchParams.get("registered");
+			if (registered === "true") {
+				const notification = {
+					type: "success",
+					message: "You have successfully registered.  Please log in.",
+					action: "",
+					timeout: 3000
+				} as ToastNotification;
+				setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+			}
+			// Remove query parameter from URL
+			window.history.replaceState(null, "", pathname);
+		}
+	}, [searchParams, pathname]);
 
 	const validateForm = useCallback(() => {
 		const { email, password } = formData;
@@ -121,6 +146,7 @@ export const LoginForm = () => {
 					<span className="text-sm text-red-500">{formError}</span>
 				</div>
 			</form>
+			<ToastMessage notifications={notifications} />
 		</>
 	)
 }

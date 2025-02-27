@@ -1,12 +1,13 @@
 "use client";
+
 import { Label } from "./Label";
 import { Input } from "./Input";
-import { RegisterSuccessModal } from "./RegisterSuccessModal";
 import React, { FormEvent, useEffect, useCallback, useState } from "react";
 import { validateRegisterFormComplete, validateEmail, validatePassword } from "../helpers/auth";
-
+import { useRouter } from "next/navigation";
 
 export const RegisterForm = () => {
+	const router = useRouter();
 
 	const [formData, setFormData] = useState({
 		firstName: "",
@@ -18,7 +19,6 @@ export const RegisterForm = () => {
 
 	const [formValid, setFormValid] = useState<boolean>(false);
 	const [formError, setFormError] = useState<string>("");
-	const [successModalVisible, setSuccessModalVisible] = useState(false);
 
 	const validateForm = useCallback(() => {
 		const { firstName, lastName, email, password, confirmPassword } = formData;
@@ -77,7 +77,7 @@ export const RegisterForm = () => {
 				body: JSON.stringify(formData),
 			})
 			if (response.ok) {
-				setSuccessModalVisible(true);
+				router.push("/login?registered=true");
 			} else {
 				const errorData = await response.json();
 				setFormError(errorData.message);
@@ -169,9 +169,6 @@ export const RegisterForm = () => {
 					<span className="text-sm text-red-500">{formError}</span>
 				</div>
 			</form>
-			<div className={`${successModalVisible ? "opacity-1 z-0" : "opacity-0 z-[-1]"} absolute top-0 left-0 right-0 bottom-0 flex items-center`}>
-				<RegisterSuccessModal />
-			</div>
 		</>
 	)
 }
