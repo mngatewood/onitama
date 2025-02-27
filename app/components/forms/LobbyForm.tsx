@@ -84,7 +84,6 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 
 		// Listen for game_created event to add new games to the list of pending games
 		socket.on("game_created", (newGame: Game) => {
-			console.log("New game created:", newGame);
 			setPendingGames((prevGames) => [newGame, ...prevGames]);
 		});
 		
@@ -100,10 +99,23 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 			);
 		});
 
+		// Listen for game_ended event to remove games that have ended
+		socket.on("game_ended", (endedGameId: string) => {
+			// Remove full game from state
+			setPendingGames((prevGames) => 
+				// Filter out games that are older than 1 hour
+				prevGames.filter(game => 
+					game.createdAt > new Date(Date.now() - 60 * 60 * 1000) &&
+					game.id !== endedGameId
+				)
+			);
+		});
+
 		// Clean up the event listeners on unmount
 		return () => {
 			socket.off("game_created");
 			socket.off("game_full");
+			socket.off("game_ended");
 		};
 	}, []);
 

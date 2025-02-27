@@ -73,6 +73,7 @@ app.prepare()
 			socket.on("leave", (gameId) => {
 				// console.log("socket.on: leave", gameId);
 				socket.leave(gameId);
+				io.emit("game_ended", gameId);
 			})
 			
 			socket.on("user_left", (gameId, firstName) => {
