@@ -20,7 +20,6 @@ export const ToastMessage = ({ notifications }: { notifications: ToastNotificati
 	}
 
 	useEffect(() => {
-		console.log("notifications", notifications.length)
 		if (notifications.length > 0) {
 			setNotification(notifications[0]);
 		}

@@ -114,7 +114,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				timeout: 3000,
 				action: "/"
 			}
-			console.log("User left", message);
 			setNotifications((prevNotifications) => [notification, ...prevNotifications]);
 		});
 
