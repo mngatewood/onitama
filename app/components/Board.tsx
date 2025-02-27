@@ -52,7 +52,7 @@ export const Board = ({ board, playerColor }: { board: string[][], playerColor: 
 	}
 
 	return (
-		<div id="board" className="grid grid-cols-5 grid-rows-5 aspect-square outline outline-2 outline-offset-1 outline-slate-600 dark:outline-slate-400 h-full landscape:h-48 landscape:short:h-72 landscape:md:short:h-80 landscape:lg:short:h-96 landscape:tall:xl:h-[36rem]">
+		<div id="board" className="grid grid-cols-5 grid-rows-5 aspect-square outline outline-2 outline-offset-1 outline-slate-600 dark:outline-slate-400 h-full landscape:h-40 landscape:xshort:h-48 landscape:short:h-72 landscape:md:short:h-80 landscape:lg:short:h-96 landscape:tall:xl:h-[36rem]">
 			{renderBoard()}
 		</div>
 	)

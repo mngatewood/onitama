@@ -24,9 +24,11 @@ export default {
 	theme: {
 		extend: {
 			screens: {
+				'xshort': { raw: '(min-height: 420px)' },
 				'short': { raw: '(min-height: 600px)' },
 				'tall': { raw: '(min-height: 800px)' },
 				"xtall": { raw: '(min-height: 900px)' },
+				"2xtall": { raw: '(min-height: 1020px)' },
 				'xxs': '420px',
 				'xs': '480px',
 			},
