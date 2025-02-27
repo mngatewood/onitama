@@ -154,11 +154,6 @@ test.describe('user can register', () => {
 		await page.locator('#confirmPassword').fill('password');
 		await page.getByRole('button', { name: 'Submit' }).click();
 		await page.waitForTimeout(1000);
-		await expect(page.getByRole('heading', { name: 'Success!', exact: true })).toBeVisible();
-		await expect(page.getByRole('button', { name: 'Proceed' })).toBeVisible();
-		await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
-		await page.getByRole('button', { name: 'Proceed' }).click();
-		await page.waitForTimeout(1000);
 		await expect(page.getByRole('heading', { name: 'Onitama' })).toBeVisible();
 		await expect(page.getByRole('heading', { name: 'Login to Your Account' })).toBeVisible();
 		await expect(page.getByRole('button', { name: 'Switch to light / dark version' })).toBeVisible();

@@ -112,19 +112,13 @@ test.describe('user can login', () => {
 		await page.locator('#email').fill(email);
 		await page.locator('#password').fill('password');
 		await page.getByRole('button', { name: 'Submit' }).click();
-		await page.waitForTimeout(1000);
-		await expect(page.getByRole('heading', { name: 'Success!', exact: true })).toBeVisible();
-		await expect(page.getByRole('button', { name: 'Proceed' })).toBeVisible();
-		await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
-		await page.getByRole('button', { name: 'Proceed' }).click();
 		await page.waitForTimeout(500);
-		expect(page.url()).toBe(localhost);
+		await expect(page).toHaveURL(localhost);
 		await expect(page.getByRole('heading', { name: 'Onitama' })).toBeVisible();
 		await expect(page.getByRole('button', { name: 'Switch to light / dark version' })).toBeVisible();
 		await expect(page.getByRole('button', { name: 'Register' })).not.toBeVisible();
 		await expect(page.getByRole('button', { name: 'Login' })).not.toBeVisible();
 		await expect(page.getByRole('button', { name: 'Logout' })).toBeVisible();
-		await expect(page.getByRole('button', { name: 'Play' })).toBeVisible();
 		await expect(page.getByRole('button', { name: 'Guide' })).toBeVisible();
 	});
 
@@ -134,11 +128,6 @@ test.describe('user can login', () => {
 		await page.locator('#email').fill(email);
 		await page.locator('#password').fill('password');
 		await page.getByRole('button', { name: 'Submit' }).click();
-		await page.waitForTimeout(1000);
-		await expect(page.getByRole('heading', { name: 'Success!', exact: true })).toBeVisible();
-		await expect(page.getByRole('button', { name: 'Proceed' })).toBeVisible();
-		await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
-		await page.getByRole('button', { name: 'Proceed' }).click();
 		await page.waitForTimeout(500);
 		await page.goto('/register');
 		expect(page.url()).toBe(localhost);
