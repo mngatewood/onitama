@@ -7,7 +7,8 @@ import {
 	createGame, 
 	logoutUser, 
 	clearTestData, 
-	convertTimeStringToDate 
+	convertTimeStringToDate, 
+	createNewGame
 } from './test-helpers';
 
 const email = getEmail();
@@ -44,10 +45,8 @@ test.describe('user can join a game', () => {
 	});
 
 	test('when the user is in the game lobby, a list of pending games is displayed', async ({ page }) => {
+		await createNewGame();
 		await loginUser({ page }, email);
-		await createGame({ page });
-		await logoutUser({ page });
-		await loginUser({ page }, emailTwo);
 		await page.waitForTimeout(500);
 		await expect(page.getByText('TestW@@+')).toBeVisible();
 		await expect(page.getByText('TestW@@+')).toHaveCount(1);
@@ -56,19 +55,10 @@ test.describe('user can join a game', () => {
 	});
 
 	test('the list of pending games is sorted from newest to oldest', async ({ page }) => {
+		await createNewGame();
+		await createNewGame();
+		await createNewGame();
 		await loginUser({ page }, email);
-		await expect(page.locator('.game-join-entry').filter({ hasText: "TestW@@+" })).toHaveCount(0);
-		await createGame({ page });
-		await logoutUser({ page });
-		await loginUser({ page }, emailTwo);
-		await expect(page.locator('.game-join-entry').filter({ hasText: "TestW@@+" })).toHaveCount(1);
-		await createGame({ page });
-		await logoutUser({ page });
-		await loginUser({ page }, emailThree);
-		await expect(page.locator('.game-join-entry').filter({ hasText: "TestW@@+" })).toHaveCount(2);
-		await createGame({ page });
-		await logoutUser({ page });
-		await loginUser({ page }, emailFour);
 		await page.waitForTimeout(500);
 		await expect(page.getByText('TestW@@+')).toHaveCount(3);
 		await expect(page.locator('.game-join-entry').filter({ hasText: "TestW@@+" })).toHaveCount(3);
@@ -104,7 +94,6 @@ test.describe('user can join a game', () => {
 		await expect(page.locator('.red.master')).toHaveCount(1);
 		await expect(page.locator('.blue.student')).toHaveCount(4);
 		await expect(page.locator('.blue.master')).toHaveCount(1);
-		// TODO: cards should be dealt and turn order determined
 	});
 
 	test('when another user joins the game, waiting for another player modal closes', async ({ page }) => {

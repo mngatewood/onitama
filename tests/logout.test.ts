@@ -64,7 +64,7 @@ test.describe('user can logout', () => {
 		await page.waitForTimeout(500);
 		await page.getByRole('button', { name: 'Logout' }).click();
 		await page.waitForTimeout(500);
-		expect(page.url()).toBe(localhost);
+		expect(page.url()).toBe(localhost + "?logged_out=true");
 		await expect(page.getByRole('heading', { name: 'Logout', exact: true })).not.toBeVisible();
 		await expect(page.getByRole('button', { name: 'Cancel' })).not.toBeVisible();
 		await expect(page.getByRole('button', { name: 'Logout' })).not.toBeVisible();

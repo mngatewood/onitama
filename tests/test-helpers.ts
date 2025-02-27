@@ -5,6 +5,14 @@ export const localhost = 'http://localhost:3000/';
 
 export const getEmail = () => `${Date.now()}@tested.com`
 
+const startingBoard = [
+	["rs0", "rs0", "rm0", "rs0", "rs0"],
+	["000", "000", "000", "000", "000"],
+	["000", "000", "000", "000", "000"],
+	["000", "000", "000", "000", "000"],
+	["bs0", "bs0", "bm0", "bs0", "bs0"],
+];
+
 const deleteOldTestGames = async () => {
 	await prisma.game.deleteMany({
 		where: {
@@ -44,19 +52,17 @@ export const registerUser = async ( { page }: { page: Page }, email: string) => 
 	await page.locator('#confirmPassword').fill('password');
 	await page.getByRole('button', { name: 'Submit' }).click();
 	await page.waitForTimeout(500);
-	await page.getByRole('button', { name: 'Proceed' }).click();
 	return;
 }
 
 export const loginUser = async ({ page }: { page: Page }, email: string) => {
 	console.log("logging in user", email);
 	await page.goto('/login');
-	await page.waitForTimeout(500);
+	await page.waitForTimeout(1000);
 	await page.locator('#email').fill(email);
 	await page.locator('#password').fill('password');
 	await page.getByRole('button', { name: 'Submit' }).click();
 	await page.waitForTimeout(500);
-	await page.getByRole('button', { name: 'Proceed' }).click();
 	return;
 };
 
@@ -93,3 +99,64 @@ export const convertTimeStringToDate = (timeString: string) => {
 	return date;
 }
 
+export const createNewGame = async () => {
+	const email = getEmail();
+	const cardIds = await prisma.card.findMany({
+		take: 5,
+		where: {
+			color: "red",
+		},
+		select: {
+			id: true
+		}
+	})
+	const user = await prisma.user.create({
+		data: {
+			first_name: "TestW@@+",
+			last_name: "User",
+			email: email,
+			password: "password"
+		}
+	});
+	const data = {
+		users: {
+			connect: [
+				{
+					id: user.id
+				}
+			]
+		},
+		cards: {
+			connect: cardIds
+		},
+		board: startingBoard,
+		status: "waiting_for_players",
+		turn: "red",
+		players: {
+			red: {
+				id: user.id,
+				cards: [cardIds[0].id, cardIds[1].id]
+			},
+			blue: {
+				id: "",
+				cards: [cardIds[2].id, cardIds[3].id]
+			}
+		}
+	}
+	const game = await prisma.game.create({
+		data: data
+	});
+	return game;
+}
+
+export const createOldGame = async () => {
+	const game = await createNewGame();
+	await prisma.game.update({
+		where: {
+			id: game.id
+		},
+		data: {
+			createdAt: new Date(Date.now() - 60 * 60 * 1000)
+		}
+	});
+}
