@@ -50,4 +50,12 @@ declare global {
 			email: string;
 		};
 	}
+
+	interface ToastNotification {
+		type: string;
+		message: string;
+		action: string;
+		timeout: number;
+	}
+
 };

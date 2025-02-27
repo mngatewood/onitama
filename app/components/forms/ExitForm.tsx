@@ -1,14 +1,14 @@
 'use client';
 
 import { redirect } from "next/navigation";
-// import { deleteGame } from "../helpers/lobby";
+import { endGame } from "../helpers/lobby";
 import { socket } from "@/app/lib/socketClient";
 
 export const ExitForm = ({gameId, firstName}: {gameId: string, firstName: string}) => {
 
-	const handleExitGame = (e: React.MouseEvent<HTMLButtonElement>) => {
+	const handleExitGame = async (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
-		// deleteGame(gameId);
+		await endGame(gameId);
 		socket.emit("leave", gameId);
 		socket.emit("user_left", gameId, firstName);
 		redirect('/');

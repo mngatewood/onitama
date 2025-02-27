@@ -19,8 +19,8 @@ const Register = async () => {
 			<header>
 				<Title />
 			</header>
-			<main className="p-4 overflow-hidden flex flex-col items-center my-auto">
-				<div className="flex items-center justify-center absolute w-screen h-screen z-[-1] top-0 left-0 bottom-0 right-0">
+			<main className="p-4 overflow-hidden flex flex-col justify-center items-center my-auto">
+				<div className="flex items-center justify-center absolute w-screen h-screen z-[-1]">
 					<Image src={spirit} width={640} height={640} alt="Spirit" className="absolute opacity-20 z-[-1]" priority />
 				</div>
 				<div className="mx-auto overflow-y-scroll scroll-no-bars w-full max-w-md rounded-none border border-gray-300 bg-amber-50 px-4 pt-4 shadow-lg shadow-slate-500 dark:shadow-slate-800 dark:border-gray-800 dark:bg-black md:rounded-2xl md:px-8 md:pt-8">
@@ -31,7 +31,7 @@ const Register = async () => {
 					<RegisterForm />
 				</div>
 			</main>
-			<footer className="w-full h-14 p-4 flex justify-center text-sky-700 dark:text-sky-300 z-50">
+			<footer className="w-full h-10 portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center text-sky-700 dark:text-sky-300 z-50">
 				<button className="w-1/3"><Link href="/">Cancel</Link></button>
 			</footer>
 			<DarkModeToggle />

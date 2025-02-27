@@ -31,7 +31,7 @@ const Exit = async ({ params }: { params: Promise<{ slug: string }> }) => {
 			<header>
 				<Title />
 			</header>
-			<main className="p-4 overflow-hidden flex flex-col items-center my-auto">
+			<main className="p-4 overflow-hidden flex flex-col justify-center items-center my-auto">
 				{ game ?
 					<div className="mx-auto overflow-y-scroll scroll-no-bars w-full max-w-md rounded-none border border-gray-300 bg-amber-50 px-4 pt-4 shadow-lg shadow-slate-500 dark:shadow-slate-800 dark:border-gray-800 dark:bg-black md:rounded-2xl md:px-8 md:pt-8">
 						<h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">Exit Game</h2>
@@ -44,7 +44,7 @@ const Exit = async ({ params }: { params: Promise<{ slug: string }> }) => {
 						<ToastMessage notifications={[notification]} />
 					}
 			</main>
-			<footer className="w-full h-14 p-4 flex justify-center text-sky-700 dark:text-sky-300">
+			<footer className="w-full h-10 portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center text-sky-700 dark:text-sky-300">
 				{/* TODO: When the user clicks the Cancel button, go back to the previous page */}
 				<button className="w-1/3"><Link href={`/play/${gameId}`}>Cancel</Link></button>
 			</footer>
