@@ -23,15 +23,15 @@ export const PlayerCard = ({ card, player, clickable }: { card: Card, player: st
 	const pointer = clickable ? "cursor-pointer" : "cursor-not-allowed";
 
 	return (
-		<div className={`${pointer} ${card.id && "hover:scale-125"} card player-card flex justify-between h-[15vw] landscape:h-[5vw] landscape:my-2 landscape:md:h-[7vw] landscape:lg:h-[10vw] max-h-[13vh] landscape:xl:h-[8vw] xtall:max-w-screen-xs:h-[20vw] tall:md:h-[10vw] rounded-sm border border-neutral-400 shadow-md shadow-slate-500 bg-gray-700 aspect-video transition-all transition-duration-300 first:basis-full`}>
+		<div className={`${pointer} ${card.id && "hover:scale-125"} card player-card flex justify-between h-[15vw] landscape:h-[5vw] landscape:short:h-[10vw] landscape:my-2 landscape:md:h-[7vw] landscape:lg:h-[10vw] max-h-[12vh] landscape:xl:h-[8vw] xtall:max-w-screen-xs:h-[20vw] tall:md:h-[10vw] rounded-sm border border-neutral-400 shadow-md shadow-slate-500 bg-gray-700 aspect-video transition-all transition-duration-300 first:basis-full`}>
 			{ card.id 
 				?
 				<>
 					<div className={`${color} flex flex-col justify-center items-center w-full text-slate-700 min-w-12 text-shadow-xs`}>
-						<div className="text-lg xs:text-2xl sm:text-3xl portrait:xl:text-6xl landscape:hidden landscape:md:block landscape:md:text-xl landscape:lg:text-2xl landscape:xl:text-3xl landscape:tall:text-xl landscape:tall:lg:text-3xl landscape:xtall:text-4xl landscape:xtall:xl:text-5xl">
+						<div className="text-lg xs:text-xl sm:text-2xl portrait:xl:text-6xl landscape:hidden landscape:short:block landscape:md:block">
 							{card.kanji}
 						</div>
-						<div className="text-2xs xs:text-sm sm:text-base portrait:lg:text-2xl font-reggae landscape:text-2xs landscape:md:text-xs landscape:tall:text-xs landscape:tall:lg:text-base landscape:xtall:text-xs landscape:xtall:xl:text-base">
+						<div className="text-2xs xs:text-xs sm:text-sm portrait:lg:text-2xl font-reggae">
 							{card.title}
 						</div>
 					</div>

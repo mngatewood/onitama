@@ -28,9 +28,25 @@ const Play = async ({ params }: { params: Promise<{ slug: string }> }) => {
 				<Game gameId={gameId} userId={(session?.user as AppendedSession['user']).id}/>
 			</main>
 			<footer className="w-full h-10 portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center text-sky-700 dark:text-sky-300 z-50">
-				<button className="w-1/3"><Link href="/logout">Logout</Link></button>
-				<button className="w-1/3"><Link href="/demo">Guide</Link></button>
-				<button className="w-1/3"><Link href={`/exit/${gameId}`}>Exit Game</Link></button>
+				<button className="w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
+					<Link href="/logout" className="relative">
+						<span>Logout</span>
+						<span className="absolute -bottom-1 left-0 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-full"></span>
+					</Link>
+				</button>
+				<button className="w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
+					<Link href="/demo" className="relative">
+						<span>Guide</span>
+						<span className="absolute -bottom-1 left-1/2 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-1/2"></span>
+						<span className="absolute -bottom-1 right-1/2 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-1/2"></span>
+					</Link>
+				</button>
+				<button className="w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
+					<Link href={`/exit/${gameId}`} className="relative">
+						<span>Exit Game</span>
+						<span className="absolute -bottom-1 right-0 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-full"></span>
+					</Link>
+				</button>
 			</footer>
 			<DarkModeToggle />
 		</div>

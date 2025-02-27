@@ -129,9 +129,13 @@ export const Game = ({ gameId, userId }: GameProps) => {
 					<div className="player-top order-1 landscape:w-1/2 flex justify-center flex-grow">
 						{getPlayerData("opponent") && <PlayerCards player={getPlayerData("opponent") ?? null} neutralCard={neutralCard} />}
 					</div>
-					<div className="flex flow-row justify-center order-2 landscape:items-center h-[60vw] portrait:relative portrait:tall:md:h-[50vw] landscape:order-3 landscape:w-1/2 landscape:h-[50vh] landscape:md:short:h-[47vw]">
-						<DefeatedPawns />
-						<Board board={game.board} playerColor={playerColor} />
+					<div className="flex flow-row justify-start order-2 w-full h-56 sm:h-auto landscape:w-1/2 my-2 landscape:order-last landscape:items-center">
+						<div className="basis-[20%] landscape:tall:xl:basis-[10%] flex justify-center items-center h-full">
+							<DefeatedPawns />
+						</div>
+						<div className="basis-[60%] landscape:basis-[80%] flex justify-center items-center h-full">
+							<Board board={game.board} playerColor={playerColor} />
+						</div>
 					</div>
 					<div className="player-bottom order-3 landscape:order-2 landscape:w-1/2 flex justify-center flex-grow">
 						{getPlayerData("self") && <PlayerCards player={getPlayerData("self") ?? null} neutralCard={neutralCard}/>}
