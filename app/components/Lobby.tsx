@@ -23,7 +23,7 @@ const Lobby = async () => {
 			<header>
 				<Title />
 			</header>
-			<main className="p-4 overflow-hidden flex flex-col justify-center items-center">
+			<main className="p-4 overflow-hidden flex flex-col justify-center items-center my-auto">
 				<div className="flex items-center justify-center absolute w-screen h-screen z-[-1]">
 					<Image src={spirit} width={640} height={640} alt="Spirit" className="absolute opacity-20 z-[-1]" priority />
 				</div>

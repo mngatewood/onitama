@@ -31,7 +31,7 @@ const Exit = async ({ params }: { params: Promise<{ slug: string }> }) => {
 			<header>
 				<Title />
 			</header>
-			<main className="p-4 overflow-hidden flex flex-col items-center my-auto">
+			<main className="p-4 overflow-hidden flex flex-col justify-center items-center my-auto">
 				{ game ?
 					<div className="mx-auto overflow-y-scroll scroll-no-bars w-full max-w-md rounded-none border border-gray-300 bg-amber-50 px-4 pt-4 shadow-lg shadow-slate-500 dark:shadow-slate-800 dark:border-gray-800 dark:bg-black md:rounded-2xl md:px-8 md:pt-8">
 						<h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">Exit Game</h2>
