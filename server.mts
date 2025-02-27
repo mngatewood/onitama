@@ -90,7 +90,15 @@ app.prepare()
 				// console.log("A user disconnected");
 				// console.log("Authenticated User Data:", socket.data.user);
 				if(socket.data.user.id) {
-					userExit(socket.data.user.id);
+					const gameIds = getUserPendingGameIds(socket.data.user.id);
+					gameIds.then((ids) => {
+						if (ids?.length) {
+							for (const id of ids) {
+								endGame(id);
+								io.emit("game_ended", id);
+							}
+						}
+					});
 				}
 			});
 		});
@@ -102,7 +110,7 @@ app.prepare()
 		});
 	})
 
-const userExit = async (userId: string) => {
+const getUserPendingGameIds = async (userId: string) => {
 	const userGames = await getUserGames(userId);
 
 	if (!userGames?.length) {
@@ -136,9 +144,7 @@ const userExit = async (userId: string) => {
 		}
 	}
 
-	for (const game of pendingGames) {
-		await endGame(game.id);
-	}
+	return pendingGames.map((game) => game.id);
 }
 
 const getUserGames = async (userId: string) => {
