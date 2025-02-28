@@ -35,17 +35,33 @@
 
 /* highlighted space with red pawn */
 .highlighted.red{
-	background-color: red;
+	background-color: theme("colors.red.300");
 }
 
 /* highlighted space with blue pawn */
 .highlighted.blue{
-	background-color: blue;
+	background-color: theme("colors.blue.300");
 }
 
 /* unhighlighted space */
 .not-highlighted{
 	background-color: theme("colors.neutral.300");
+}
+
+.targeted{
+	background-color: theme("colors.neutral.300");
+}
+
+.targeted::after{
+	content: "⌖";
+	color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	font-size: large;
+	font-weight: bold;
 }
 
 /* pawns styles for student and master */

@@ -58,4 +58,9 @@ declare global {
 		timeout: number;
 	}
 
+	interface Target {
+		origin: Position;
+		target: Position;
+	}
+
 };

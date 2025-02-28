@@ -7,6 +7,7 @@ import { DefeatedPawns } from "./DefeatedPawns";
 import { PlayerCards } from "./PlayerCards";
 import { socket } from "../lib/socketClient";
 import { ToastMessage } from "./ToastMessage";
+import { getCardActions, getUpdatedBoard } from "../components/helpers/action";
 
 interface GameProps {
 	gameId: string;
@@ -15,6 +16,7 @@ interface GameProps {
 
 export const Game = ({ gameId, userId }: GameProps) => {
 	const [game, setGame] = useState<Game | null>(null);
+	const [board, setBoard] = useState<string[][] | null>(null);
 	const [waiting, setWaiting] = useState(true);
 	const [notifications, setNotifications] = useState<ToastNotification[]>([]);
 	const allPlayerCards = [ ...game?.players.red.cards ?? [], ...game?.players.blue.cards ?? [] ];
@@ -70,6 +72,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 		}
 		const gameData: Game = await response.json();
 		setGame(gameData);
+		setBoard(gameData.board);
 		if (gameData.users?.length === 2) {
 			setWaiting(false);
 		} else {
@@ -122,23 +125,34 @@ export const Game = ({ gameId, userId }: GameProps) => {
 		}
 	}, [gameId]);
 
+	const selectCard = (cardId: string) => {
+		if(game !== null) {
+			const cardActions = getCardActions(game, cardId, userId);
+			if (cardActions) {
+				const updatedBoard = getUpdatedBoard(game, cardActions);
+				setBoard(updatedBoard);
+				// socket.emit("select_card", gameId, cardId);
+			}
+		}
+	};
+
 	return (
 		<>
 			{game && game.board &&
 				<div className="game w-full flex flex-col justify-evenly items-center h-screen landscape:h-[calc(100vh-140px)] landscape:flex-wrap">
 					<div className="player-top order-1 landscape:w-1/2 flex justify-center flex-grow">
-						{getPlayerData("opponent") && <PlayerCards player={getPlayerData("opponent") ?? null} neutralCard={neutralCard} userColor={userColor}/>}
+						{getPlayerData("opponent") && <PlayerCards player={getPlayerData("opponent") ?? null} neutralCard={neutralCard} userColor={userColor} selectCard={selectCard} />}
 					</div>
 					<div className="flex flow-row justify-start order-2 w-full h-56 sm:h-auto landscape:w-1/2 my-2 landscape:order-last landscape:items-center">
 						<div className="basis-[20%] landscape:tall:xl:basis-[10%] flex justify-center items-center h-full">
 							<DefeatedPawns />
 						</div>
 						<div className="basis-[60%] landscape:basis-[80%] flex justify-center items-center h-full">
-							<Board board={game.board} userColor={userColor} />
+							<Board board={board || game.board} userColor={userColor} />
 						</div>
 					</div>
 					<div className="player-bottom order-3 landscape:order-2 landscape:w-1/2 flex justify-center flex-grow">
-						{getPlayerData("self") && <PlayerCards player={getPlayerData("self") ?? null} neutralCard={neutralCard} userColor={userColor}/>}
+						{getPlayerData("self") && <PlayerCards player={getPlayerData("self") ?? null} neutralCard={neutralCard} userColor={userColor} selectCard={selectCard} />}
 					</div>
 				</div>
 			}
