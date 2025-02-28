@@ -7,11 +7,11 @@ export const apiUrl = typeof window !== 'undefined'
 	: process.env.NEXT_PUBLIC_BASE_URL + "/api";
 
 const startingBoard = [
-	["rs0", "rs0", "rm0", "rs0", "rs0"],
-	["000", "000", "000", "000", "000"],
-	["000", "000", "000", "000", "000"],
-	["000", "000", "000", "000", "000"],
-	["bs0", "bs0", "bm0", "bs0", "bs0"],
+	["rs00", "rs00", "rm00", "rs00", "rs00"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["bs00", "bs00", "bm00", "bs00", "bs00"],
 ];
 
 export const getAllCards = async () => {
@@ -48,15 +48,16 @@ export const createGame = async (playerId: string) => {
 	const allCards = await getAllCards();
 	const randomIndexes = utility.shuffleArray([...Array(allCards.length).keys()]).slice(0, 5);
 	const randomCards = allCards.filter((_:Card, index: number) => randomIndexes.includes(index));
-	const neutralCard = randomCards[4];
+	const shuffledCards = utility.shuffleArray(randomCards);
+	const neutralCard = shuffledCards[4];
 	const players = {
 		"blue": {
 			id: playerId,
-			cards: [ randomCards[0], randomCards[1] ],
+			cards: [ shuffledCards[0], shuffledCards[1] ],
 		},
 		"red": {
 			id: "",
-			cards: [ randomCards[2], randomCards[3] ],
+			cards: [ shuffledCards[2], shuffledCards[3] ],
 		}
 	}
 	const status = "waiting_for_players"

@@ -1,4 +1,4 @@
-export const shuffleArray = (array: Array<number>) =>{
+export const shuffleArray = (array: Array<number | object>) =>{
 	let j, x, index;
 	for (index = array.length - 1; index > 0; index--) {
 		j = Math.floor(Math.random() * (index + 1));
