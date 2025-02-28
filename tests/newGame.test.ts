@@ -121,8 +121,8 @@ test.describe('user can create a new game', () => {
 		await page.getByRole('button', { name: 'New Game' }).click();
 		await page.waitForTimeout(500);
 
-		const thirdCard = page.locator(".card").locator("nth=0");
-		const className = await thirdCard.getAttribute('class');
+		const firstCard = page.locator(".card").locator("nth=0");
+		const className = await firstCard.getAttribute('class');
 		if(className?.includes("neutral-card")) {
 			await expect(page.locator(".neutral-card").locator(".card-title")).toHaveClass(/bg-red-300/);
 		} else {

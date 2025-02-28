@@ -20,7 +20,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 	const allPlayerCards = [ ...game?.players.red.cards ?? [], ...game?.players.blue.cards ?? [] ];
 	const allPlayerCardsIds = allPlayerCards.map((card: Card) => card.id);
 	const neutralCard = game && game.cards ? game?.cards.filter((card: Card) => !allPlayerCardsIds.includes(card.id))[0] : null;
-	const playerColor = ["red", "blue"].find((key) => {
+	const userColor = ["red", "blue"].find((key) => {
 		return game?.players && game?.players[key as keyof typeof game.players]?.id === userId;
 	}) || "";
 
@@ -127,18 +127,18 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			{game && game.board &&
 				<div className="game w-full flex flex-col justify-evenly items-center h-screen landscape:h-[calc(100vh-140px)] landscape:flex-wrap">
 					<div className="player-top order-1 landscape:w-1/2 flex justify-center flex-grow">
-						{getPlayerData("opponent") && <PlayerCards player={getPlayerData("opponent") ?? null} neutralCard={neutralCard} />}
+						{getPlayerData("opponent") && <PlayerCards player={getPlayerData("opponent") ?? null} neutralCard={neutralCard} userColor={userColor}/>}
 					</div>
 					<div className="flex flow-row justify-start order-2 w-full h-56 sm:h-auto landscape:w-1/2 my-2 landscape:order-last landscape:items-center">
 						<div className="basis-[20%] landscape:tall:xl:basis-[10%] flex justify-center items-center h-full">
 							<DefeatedPawns />
 						</div>
 						<div className="basis-[60%] landscape:basis-[80%] flex justify-center items-center h-full">
-							<Board board={game.board} playerColor={playerColor} />
+							<Board board={game.board} userColor={userColor} />
 						</div>
 					</div>
 					<div className="player-bottom order-3 landscape:order-2 landscape:w-1/2 flex justify-center flex-grow">
-						{getPlayerData("self") && <PlayerCards player={getPlayerData("self") ?? null} neutralCard={neutralCard}/>}
+						{getPlayerData("self") && <PlayerCards player={getPlayerData("self") ?? null} neutralCard={neutralCard} userColor={userColor}/>}
 					</div>
 				</div>
 			}

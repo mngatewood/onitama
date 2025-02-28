@@ -4,7 +4,6 @@ import {
 	getEmail, 
 	registerUser, 
 	loginUser, 
-	createGame, 
 	logoutUser, 
 	clearTestData, 
 	convertTimeStringToDate, 
@@ -12,9 +11,6 @@ import {
 } from './test-helpers';
 
 const email = getEmail();
-const emailTwo = "2" + email
-const emailThree = "3" + email
-const emailFour = "4" + email
 
 test.describe.configure({ mode: 'parallel' });
 
@@ -23,9 +19,6 @@ test.describe('user can join a game', () => {
 	test.beforeEach(async ({ page }) => {
 		await clearTestData();
 		await registerUser({ page }, email);
-		await registerUser({ page }, emailTwo);
-		await registerUser({ page }, emailThree);
-		await registerUser({ page }, emailFour);
 		await page.goto('/');
 	});
 
@@ -80,10 +73,8 @@ test.describe('user can join a game', () => {
 	});
 
 	test('when the user clicks the Join button for a pending game, the game page is displayed', async ({ page }) => {
+		await createNewGame();
 		await loginUser({ page }, email);
-		await createGame({ page });
-		await logoutUser({ page });
-		await loginUser({ page }, emailTwo);
 		await page.locator('.game-join-entry').filter({ hasText: "TestW@@+" }).click();
 		await page.waitForTimeout(500);
 		await expect(page.locator('#board')).toBeVisible();
@@ -101,10 +92,8 @@ test.describe('user can join a game', () => {
 	});
 
 	test('all pawns are in their starting position', async ({ page }) => {
+		await createNewGame();
 		await loginUser({ page }, email);
-		await createGame({ page });
-		await logoutUser({ page });
-		await loginUser({ page }, emailTwo);
 		await page.locator('.game-join-entry').filter({ hasText: "TestW@@+" }).click();
 		await page.waitForTimeout(500);
 		await expect(page.locator('.space').locator('nth=0')).toHaveClass(/red/);
@@ -129,24 +118,63 @@ test.describe('user can join a game', () => {
 		await expect(page.locator('.space').locator('nth=24')).toHaveClass(/student/);
 	});
 
-	test('each player is dealt two random action cards', async ({ page }) => {
+	test('the game correctly indicates whose turn it is', async ({ page }) => {
+		await createNewGame();
+		await loginUser({ page }, email);
+		await page.locator('.game-join-entry').filter({ hasText: "TestW@@+" }).click();
+		await page.waitForTimeout(500);
 
+		await expect(page.locator(".player-color").locator("nth=0")).toHaveClass(/bg-red-500 text-amber-100 shadow-amber-300 shadow-lg border-black/);
+		await expect(page.locator(".player-color").locator("nth=1")).not.toHaveClass(/bg-red-500 text-amber-100 shadow-amber-300 shadow-lg border-black/);
+		await expect(page.locator(".card").locator("nth=0")).not.toHaveClass(/bg-red-500 text-amber-100 shadow-amber-300 shadow-lg border-black/);
+		await expect(page.locator(".card").locator("nth=1")).toHaveClass(/bg-red-500 text-amber-100 shadow-amber-300 shadow-lg border-black/);
+		await expect(page.locator(".card").locator("nth=2")).toHaveClass(/bg-red-500 text-amber-100 shadow-amber-300 shadow-lg border-black/);
+		await expect(page.locator(".card").locator("nth=3")).not.toHaveClass(/bg-red-500 text-amber-100 shadow-amber-300 shadow-lg border-black/);
+		await expect(page.locator(".card").locator("nth=4")).not.toHaveClass(/bg-red-500 text-amber-100 shadow-amber-300 shadow-lg border-black/);
 	});
 
-	test('one neutral card is dealt to the side of the game board', async ({ page }) => {
+	test('an Exit Game link is displayed.', async ({ page }) => {
+		await createNewGame();
+		await loginUser({ page }, email);
+		await page.locator('.game-join-entry').filter({ hasText: "TestW@@+" }).click();
 
+		await expect (page.getByRole('link', { name: 'Exit Game' })).toBeVisible();
+		await page.waitForTimeout(500);
 	});
 
-	test('if the neutral card is blue, the blue player goes first', async ({ page }) => {
+	test('when the user clicks the Exit Game link, a confirmation modal is displayed', async ({ page }) => {
+		await createNewGame();
+		await loginUser({ page }, email);
+		await page.locator('.game-join-entry').filter({ hasText: "TestW@@+" }).click();
+		await page.waitForTimeout(500);
+		await page.getByRole('link', { name: 'Exit Game' }).click();
 
+		await expect(page.getByText('Are you sure you want to exit the game?')).toBeVisible();
+		await expect(page.getByRole('button', { name: 'Exit Game' })).toBeVisible();
 	});
 
-	test('if the neutral card is red, the red player goes first', async ({ page }) => {
-
+	test('when the user clicks cancel while the exit confirmation modal is displayed, the game is displayed', async ({ page }) => {
+		const game = await createNewGame();
+		await loginUser({ page }, email);
+		await page.locator('.game-join-entry').filter({ hasText: "TestW@@+" }).click();
+		await page.waitForTimeout(500);
+		await page.getByRole('link', { name: 'Exit Game' }).click();
+		await page.getByRole('button', { name: 'Cancel' }).click();
+		await expect(page.getByRole('link', { name: 'Exit Game' })).toBeVisible();
+		await expect(page).toHaveURL(`${localhost}play/${game.id}`);
 	});
 
-	test('an Exit Game icon is displayed.', async ({ page }) => {
+	test('when the user clicks exit while the exit confirmation modal is displayed, the lobby is displayed', async ({ page }) => {
+		await createNewGame();
+		await loginUser({ page }, email);
+		await page.locator('.game-join-entry').filter({ hasText: "TestW@@+" }).click();
+		await page.waitForTimeout(500);
+		await page.getByRole('link', { name: 'Exit Game' }).click();
+		await page.getByRole('button', { name: 'Exit Game' }).click();
 
+		await expect(page.getByRole('button', { name: 'New Game' })).toBeVisible();
+		await expect(page.getByText('Game Lobby')).toBeVisible();
+		await expect(page).toHaveURL(localhost);
 	});
 
 });
