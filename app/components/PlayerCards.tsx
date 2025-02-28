@@ -9,13 +9,14 @@ interface Player {
 	cards: Card[];
 }
 
-export const PlayerCards = ({player, neutralCard}: {player: Player | null, neutralCard: Card | null}) => {
+export const PlayerCards = ({player, neutralCard, userColor}: {player: Player | null, neutralCard: Card | null, userColor: string}) => {
 	const playerKanji = player?.color === "red" ? "赤" : "青";
-	const playerColor = player?.color === "red" ? "bg-red-900" : "bg-blue-900";
+	const playerCardsColor = player?.color === "red" ? "bg-red-900" : "bg-blue-900";
 	const renderNeutralCard = player?.color === player?.turn;
 	const playerIdentifier = player?.id === player?.userId ? "self" : "opponent";
 	const playerFlex = playerIdentifier === "self" ? "flex-col-reverse" : "flex-col";
 	const clickable = (renderNeutralCard && playerIdentifier === "self") ? true : false;
+	const usersTurn = userColor === player?.turn;
 	const neutralCardPlaceholder = {
 		id: "",
 		title: "",
@@ -26,9 +27,21 @@ export const PlayerCards = ({player, neutralCard}: {player: Player | null, neutr
 		updatedAt: new Date()
 	}
 
+	const getPlayerTurnClass = () => {
+		if (usersTurn && playerIdentifier === "self") {
+			return userColor === "red" ? "bg-red-500 text-amber-100 shadow-amber-300 shadow-lg border-black [text-shadow:_1px_1px_2px_black]" : "bg-blue-500 text-amber-100 shadow-amber-300 shadow-lg border-black [text-shadow:_1px_1px_2px_black]";
+		} else if (!usersTurn && playerIdentifier === "opponent") {
+			return userColor === "red" ? "bg-blue-500 text-amber-100 shadow-amber-300 shadow-lg border-black [text-shadow:_1px_1px_2px_black]" : "bg-red-500 text-amber-100 shadow-amber-300 shadow-lg border-black [text-shadow:_1px_1px_2px_black]";
+		} else {
+			return "";
+		}
+	}
+
+	const playerTurnClass = getPlayerTurnClass();
+
 	return (
 		<div className={`${playerFlex} player w-full flex justify-evenly items-center`}>
-			<div className={`${playerColor} player-color flex w-1/2 text-xs xs:text-sm sm:text-base md:text-lg landscape:text-sm border rounded-xl border-neutral-400 items-center text-gray-300`}>
+			<div className={`${playerCardsColor} ${playerTurnClass} player-color flex w-1/2 text-xs xs:text-sm sm:text-base md:text-lg landscape:text-sm border rounded-xl border-neutral-400 items-center text-gray-300`}>
 				<div className="flex flex-col items-center w-1/6">
 					{playerKanji}
 				</div>
@@ -50,8 +63,8 @@ export const PlayerCards = ({player, neutralCard}: {player: Player | null, neutr
 				</div>
 				{ player &&
 					<>
-						<PlayerCard card={player.cards[0]!} player={playerIdentifier} clickable={clickable} cardClass={`${playerIdentifier}-card`}/>
-						<PlayerCard card={player.cards[1]!} player={playerIdentifier} clickable={clickable} cardClass={`${playerIdentifier}-card`}/>
+						<PlayerCard card={player.cards[0]!} player={playerIdentifier} clickable={clickable} cardClass={`${playerIdentifier}-card ${playerTurnClass}`}/>
+						<PlayerCard card={player.cards[1]!} player={playerIdentifier} clickable={clickable} cardClass={`${playerIdentifier}-card ${playerTurnClass}`}/>
 					</>
 				}
 			</div>

@@ -39,14 +39,16 @@ test.describe('user can create a new game', () => {
 		await expect(page.locator('.blue.master')).toHaveCount(1);
 	});
 
-	test('when a game is created, card placeholders are displayed', async ({ page }) => {
+	test('when a game is created, all cards are displayed', async ({ page }) => {
 		await page.getByRole('button', { name: 'New Game' }).click();
 		await page.waitForTimeout(500);
 		await expect(page.locator('.player')).toHaveCount(2);
 		await expect(page.locator('.player-color')).toHaveCount(2);
 		await expect(page.locator('.card')).toHaveCount(6);
-		await expect(page.locator('.player-card')).toHaveCount(5);
-		await expect(page.locator('.card-placeholder')).toHaveCount(1);
+		await expect(page.locator('.self-card')).toHaveCount(2);
+		await expect(page.locator('.opponent-card')).toHaveCount(2);
+		await expect(page.locator('.neutral-card')).toHaveCount(1);
+		await expect(page.locator('.placeholder-card')).toHaveCount(1);
 	});
 
 	test('when a game is created, defeated pawns placeholders are displayed', async ({ page }) => {
@@ -121,8 +123,8 @@ test.describe('user can create a new game', () => {
 		await page.getByRole('button', { name: 'New Game' }).click();
 		await page.waitForTimeout(500);
 
-		const thirdCard = page.locator(".card").locator("nth=0");
-		const className = await thirdCard.getAttribute('class');
+		const firstCard = page.locator(".card").locator("nth=0");
+		const className = await firstCard.getAttribute('class');
 		if(className?.includes("neutral-card")) {
 			await expect(page.locator(".neutral-card").locator(".card-title")).toHaveClass(/bg-red-300/);
 		} else {
