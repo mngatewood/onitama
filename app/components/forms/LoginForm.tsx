@@ -32,7 +32,7 @@ export const LoginForm = () => {
 					type: "success",
 					message: "You have successfully registered.  Please log in.",
 					action: "",
-					timeout: 3000
+					duration: 3000
 				} as ToastNotification;
 				setNotifications((prevNotifications) => [notification, ...prevNotifications]);
 			}

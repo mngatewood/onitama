@@ -23,7 +23,7 @@ export const ToastMessage = ({ notifications }: { notifications: ToastNotificati
 		if (notifications.length > 0) {
 			setNotification(notifications[0]);
 		}
-	}, [notifications])
+	}, [notifications, setNotification])
 	
 	useEffect(() => {
 		const toast = document.getElementById("toast");
@@ -31,12 +31,12 @@ export const ToastMessage = ({ notifications }: { notifications: ToastNotificati
 		if(notification?.action) {
 			const timer = setTimeout(() => {
 				redirect(notification.action);
-			}, notification.timeout);
+			}, notification.delay);
 			return () => clearTimeout(timer);
-		} else {
+		} else if (notification?.duration) {
 			const timer = setTimeout(() => {
 				toast?.classList.replace('left-0', '-left-full')
-			}, notification?.timeout);
+			}, notification?.duration);
 			return () => clearTimeout(timer);
 		}
 	}, [notification])

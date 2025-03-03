@@ -52,10 +52,11 @@ declare global {
 	}
 
 	interface ToastNotification {
-		type: string;
+		type: string; /* system (blue), error (red), success (green) */
 		message: string;
-		action: string;
-		timeout: number;
+		action: string; /* path to redirect to after the delay */
+		duration: number; /* how long to show the notification (0 to stay rendered until next notification is added) */
+		delay: number; /* how long to wait before redirecting to the action path */
 	}
 
 	interface Target {

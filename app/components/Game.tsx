@@ -65,7 +65,8 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			const notification: ToastNotification = {
 				type: "error",
 				message: "Game not found.  Redirecting to lobby...",
-				timeout: 3000,
+				duration: 3000,
+				delay: 3000,
 				action: "/"
 			}
 			return setNotifications((prevNotifications) => [notification, ...prevNotifications]);
@@ -102,7 +103,8 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			const notification: ToastNotification = {
 				type: "system",
 				message,
-				timeout: 3000,
+				duration: 3000,
+				delay: 0,
 				action: ""
 			}
 			fetchGame(gameId);
@@ -114,7 +116,8 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			const notification: ToastNotification = {
 				type: "system",
 				message,
-				timeout: 3000,
+				duration: 3000,
+				delay: 3000,
 				action: "/"
 			}
 			setNotifications((prevNotifications) => [notification, ...prevNotifications]);
@@ -131,6 +134,14 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			if (cardActions) {
 				const updatedBoard = getUpdatedBoard(game, cardActions);
 				setBoard(updatedBoard);
+				const notification = {
+					type: "system",
+					message: "Action card selected.  Next, select a highlighted pawn.",
+					duration: 0,
+					delay: 0,
+					action: ""
+				}
+				setNotifications((prevNotifications) => [notification, ...prevNotifications]);
 				// socket.emit("select_card", gameId, cardId);
 			}
 		}
