@@ -2,11 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import { redirect } from "next/navigation";
-import { createGame, joinGame } from "../helpers/lobby";
+import { createSoloGame, createMultiplayerGame, joinGame } from "../helpers/lobby";
 import { socket } from "../../lib/socketClient";
 import { WaitingModal } from "../WaitingModal";
 import { ToastMessage } from "../ToastMessage";
 import { useSearchParams, usePathname } from "next/navigation";
+import { NewGameModal } from "./NewGameModal";
 
 interface LobbyFormProps {
 	session: AppendedSession;
@@ -19,6 +20,7 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 	const [pendingGames, setPendingGames] = React.useState<Game[]>([]);
 	const [loading, setLoading] = React.useState(false);
 	const [notifications, setNotifications] = useState<ToastNotification[]>([]);
+	const [showNewGameModal, setShowNewGameModal] = useState(false);
 
 	// Evaluate searchParams
 	useEffect(() => {
@@ -48,11 +50,35 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 		}
 	}, [initialPendingGames]);
 
+	const handleNewSoloGame = async () => {
+		if(session?.user.id) {
+			setLoading(true);
+			setShowNewGameModal(false);
+			const newGame = await createSoloGame(session?.user.id);
+			if(newGame) {
+				console.log("newGame", newGame);
+				redirect(`/play/${newGame.id}`);
+			}
+			setLoading(false);			
+		} else {
+			redirect('/login');
+		}
+	}
+
 	const handleNewGame = async () => {
+		setShowNewGameModal(true);
+	}
+
+	const handleCancelNewGame = () => {
+		setShowNewGameModal(false);
+	}
+
+	const handleNewMultiplayerGame = async () => {
 
 		if(session?.user.id) {
 			setLoading(true);
-			const newGame = await createGame(session?.user.id);
+			setShowNewGameModal(false);
+			const newGame = await createMultiplayerGame(session?.user.id);
 			if(newGame) {
 				socket.emit("game_created", newGame);
 				redirect(`/play/${newGame.id}`);
@@ -175,6 +201,7 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 				</div>
 			}
 			<ToastMessage notifications={notifications} />
+			{showNewGameModal && <NewGameModal handleNewSoloGame={handleNewSoloGame} handleNewMultiplayerGame={handleNewMultiplayerGame} handleCancelNewGame={handleCancelNewGame} />}
 		</>
 	)
 }
