@@ -44,53 +44,49 @@ export const getGame = async (id: string) => {
 	}
 }
 
-export const createGame = async (playerId: string) => {
-	const allCards = await getAllCards();
-	const randomIndexes = utility.shuffleArray([...Array(allCards.length).keys()]).slice(0, 5);
-	const randomCards = allCards.filter((_:Card, index: number) => randomIndexes.includes(index));
-	const neutralCard = randomCards[4];
-	const players = {
-		"blue": {
-			id: playerId,
-			cards: [ randomCards[0], randomCards[1] ],
-		},
-		"red": {
-			id: "",
-			cards: [ randomCards[2], randomCards[3] ],
+export const createSoloGame = async (playerId: string) => {
+	try {
+		const gameData = await getNewGameData(playerId);
+		const url = `${apiUrl}/games?action=solo`;
+		const response = await fetch(url, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(gameData),
+		});
+		if (response.ok) {
+			return response.json();
+		} else {
+			throw new Error(`HTTP error! status: ${response.status}`);
 		}
+	} catch (error) {
+		console.error('Error creating the game:', error);
+		throw error;
 	}
-	const status = "waiting_for_players"
-	const data = {
-		users: {
-			connect: [
-				{
-					id: playerId,
-				},
-			],
-		},
-		cards: {
-			connect: randomCards.map((card: Card) => ({
-				id: card.id,
-			}))
-		},
-		board: startingBoard,
-		status: status,
-		turn: neutralCard.color,
-		players: players,
-	}
-	const url = `${apiUrl}/games`;
-	const response = await fetch(url, {
-		method: 'PUT',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify(data),
-	})
+}
 
-	if (response.ok) {
-		return response.json();
-	} else {
-		throw new Error(`HTTP error! status: ${response.status}`);
+export const createMultiplayerGame = async (playerId: string) => {
+	try {
+		const gameData = await getNewGameData(playerId);
+		const url = `${apiUrl}/games?action=multiplayer`;
+		const response = await fetch(url, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(gameData),
+		})
+	
+		if (response.ok) {
+			return response.json();
+		} else {
+			console.log(response)
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+	} catch (error) {
+		console.error('Error creating game:', error);
+		throw error;
 	}
 }
 
@@ -197,3 +193,42 @@ export const endGame = async (gameId: string) => {
 		throw error;
 	}
 }
+
+const getNewGameData = async (playerId: string) => {
+	const allCards = await getAllCards();
+	const randomIndexes = utility.shuffleArray([...Array(allCards.length).keys()]).slice(0, 5);
+	const randomCards = allCards.filter((_: Card, index: number) => randomIndexes.includes(index));
+	const shuffledCards = utility.shuffleArray(randomCards);
+	const neutralCard = shuffledCards[4];
+	const players = {
+		"blue": {
+			id: playerId,
+			cards: [shuffledCards[0], shuffledCards[1]],
+		},
+		"red": {
+			id: "",
+			cards: [shuffledCards[2], shuffledCards[3]],
+		}
+	}
+	const status = "waiting_for_players"
+	const data = {
+		users: {
+			connect: [
+				{
+					id: playerId,
+				},
+			],
+		},
+		cards: {
+			connect: randomCards.map((card: Card) => ({
+				id: card.id,
+			}))
+		},
+		board: startingBoard,
+		status: status,
+		turn: neutralCard.color,
+		players: players,
+	}
+
+	return data;
+};

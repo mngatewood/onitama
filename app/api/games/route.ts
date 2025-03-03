@@ -63,22 +63,51 @@ export const POST = async (request: NextRequest ) => {
 }
 
 export const PUT = async (request: NextRequest) => {
-	try {
-		const data = await request.json();
-		const newGame = await prisma.game.create({ data: data })
-		if(!newGame) {
-			return NextResponse.json({ message: "Error creating game" }, { status: 500 });
+	const url = new URL(request.url);
+	const action = url.searchParams.get("action");
+	const data = await request.json();
+	if (action === "solo") {
+		try {
+			const virtualOpponent = await createVirtualOpponent();
+			data.players.red.id = virtualOpponent.id;
+			data.users.connect.push({
+				id: virtualOpponent.id,
+			});
+			data.status = "in_progress";
+			const newGame = await prisma.game.create({ data: data })
+			if (!newGame) {
+				return NextResponse.json({ message: "Error creating game" }, { status: 500 });
+			}
+			const response = await getGame(newGame.id);
+			if (!response) {
+				return NextResponse.json({ message: "Game not found" }, { status: 404 });
+			}
+			return NextResponse.json(response);
+		} catch (error) {
+			if (error instanceof Error) {
+				console.log("Error: ", error.stack)
+			}
+			return NextResponse.json(error);
 		}
-		const response = await getGame(newGame.id);
-		if(!response) {
-			return NextResponse.json({ message: "Game not found" }, { status: 404 });
+	} else if (action === "multiplayer") {
+		try {
+			const newGame = await prisma.game.create({ data: data })
+			if(!newGame) {
+				return NextResponse.json({ message: "Error creating game" }, { status: 500 });
+			}
+			const response = await getGame(newGame.id);
+			if(!response) {
+				return NextResponse.json({ message: "Game not found" }, { status: 404 });
+			}
+			return NextResponse.json(response);
+		} catch (error) {
+			if (error instanceof Error) {
+				console.log("Error: ", error.stack)
+			}
+			return NextResponse.json(error);
 		}
-		return NextResponse.json(response);
-	} catch (error) {
-		if (error instanceof Error) {
-			console.log("Error: ", error.stack)
-		}
-		return NextResponse.json(error);
+	} else {
+		return NextResponse.json({ message: "No valid action parameter provided" }, { status: 400 });
 	}
 };
 
@@ -254,5 +283,25 @@ const getUserGames = async (userId: string) => {
 			console.log("Error: ", error.stack)
 		}
 		return NextResponse.json(error);
+	}
+}
+
+const createVirtualOpponent = async () => {
+	const existingUser = await prisma.user.findFirst({
+		where: {
+			email: "virtual_opponent@mngatewood.com"
+		}
+	})
+	if (!existingUser) {
+		const response = await prisma.user.create({
+			data: {
+				email: "virtual_opponent@mngatewood.com",
+				password: process.env.VIRTUAL_OPPONENT_PASSWORD!,
+				first_name: "Virtual Opponent"
+			}
+		})
+		return response;
+	} else {
+		return existingUser;
 	}
 }
