@@ -52,16 +52,20 @@
 	background-color: theme("colors.neutral.300");
 }
 
-.targeted::after{
+.targeted::after {
 	content: "⌖";
-	color: white;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	width: 100%;
-	height: 100%;
 	font-size: large;
 	font-weight: bold;
+	width: 100%;
+	height: 100%;
+	color: black;
+}
+
+.targeted.student, .targeted.master {
+	color: white;
 }
 
 /* pawns styles for student and master */
