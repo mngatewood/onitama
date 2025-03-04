@@ -21,6 +21,7 @@ test.describe('user can create a new game', () => {
 
 	test('when a game is created, the game page is displayed with a modal', async ({ page }) => {
 		await page.getByRole('button', { name: 'New Game' }).click();
+		await page.getByRole('button', { name: 'Multiplayer' }).click();
 		await page.waitForTimeout(500);
 		await expect(page.getByText('Waiting for another player to join...')).toBeVisible();
 		await expect(page.getByRole('button', { name: 'Exit Game' })).toBeVisible();
@@ -28,6 +29,7 @@ test.describe('user can create a new game', () => {
 
 	test('when a game is created, the starting board is displayed', async ({ page }) => {
 		await page.getByRole('button', { name: 'New Game' }).click();
+		await page.getByRole('button', { name: 'Multiplayer' }).click();
 		await page.waitForTimeout(500);
 		await expect(page.locator('#board')).toBeVisible();
 		await expect(page.locator('#board')).toHaveCount(1);
@@ -41,6 +43,7 @@ test.describe('user can create a new game', () => {
 
 	test('when a game is created, all cards are displayed', async ({ page }) => {
 		await page.getByRole('button', { name: 'New Game' }).click();
+		await page.getByRole('button', { name: 'Multiplayer' }).click();
 		await page.waitForTimeout(500);
 		await expect(page.locator('.player')).toHaveCount(2);
 		await expect(page.locator('.player-color')).toHaveCount(2);
@@ -53,6 +56,7 @@ test.describe('user can create a new game', () => {
 
 	test('when a game is created, defeated pawns placeholders are displayed', async ({ page }) => {
 		await page.getByRole('button', { name: 'New Game' }).click();
+		await page.getByRole('button', { name: 'Multiplayer' }).click();
 		await page.waitForTimeout(500);
 		await expect(page.locator('#defeated-pawns')).toBeVisible();
 		await expect(page.locator('.defeated-pawn')).toHaveCount(8);
@@ -60,6 +64,7 @@ test.describe('user can create a new game', () => {
 
 	test('when a game is created, player colors are displayed', async ({ page }) => {
 		await page.getByRole('button', { name: 'New Game' }).click();
+		await page.getByRole('button', { name: 'Multiplayer' }).click();
 		await page.waitForTimeout(500);
 		await expect(page.locator('.player-color')).toHaveCount(2);
 		await expect(page.locator('.player-color.bg-red-900')).toHaveCount(1);
@@ -68,13 +73,14 @@ test.describe('user can create a new game', () => {
 
 	test('when the user clicks the Exit Game button, they are redirected to the game lobby', async ({ page }) => {
 		await page.getByRole('button', { name: 'New Game' }).click();
+		await page.getByRole('button', { name: 'Multiplayer' }).click();
 		await page.waitForTimeout(500);
 		await page.getByRole('button', { name: 'Exit Game' }).click();
 		await page.waitForTimeout(500);
 		expect(page.getByText('Are you sure you want to exit the game? Any progress will be lost.')).toBeVisible();
 		expect(page.getByRole('button', { name: 'Exit Game' })).toBeVisible();
 		await page.getByRole('button', { name: 'Exit Game' }).click();
-		await page.waitForTimeout(1000);
+		await page.waitForTimeout(500);
 		expect(page.url()).toBe(localhost);
 	});
 
@@ -91,6 +97,7 @@ test.describe('user can create a new game', () => {
 
 	test('the first player is the blue player', async ({ page }) => {
 		await page.getByRole('button', { name: 'New Game' }).click();
+		await page.getByRole('button', { name: 'Multiplayer' }).click();
 		await page.waitForTimeout(500);
 		await expect(page.locator('.space').locator('nth=0')).toHaveClass(/red/);
 		await expect(page.locator('.space').locator('nth=1')).toHaveClass(/red/);
@@ -106,6 +113,7 @@ test.describe('user can create a new game', () => {
 
 	test('all starting pawns are in their starting position', async ({ page }) => {
 		await page.getByRole('button', { name: 'New Game' }).click();
+		await page.getByRole('button', { name: 'Multiplayer' }).click();
 		await page.waitForTimeout(500);
 		await expect(page.locator('.space').locator('nth=0')).toHaveClass(/student/);
 		await expect(page.locator('.space').locator('nth=1')).toHaveClass(/student/);
@@ -121,6 +129,7 @@ test.describe('user can create a new game', () => {
 
 	test('neutral card is in the correct starting position', async ({ page }) => {
 		await page.getByRole('button', { name: 'New Game' }).click();
+		await page.getByRole('button', { name: 'Multiplayer' }).click();
 		await page.waitForTimeout(500);
 
 		const firstCard = page.locator(".card").locator("nth=0");
@@ -134,6 +143,7 @@ test.describe('user can create a new game', () => {
 
 	test('the player name is displayed in the correct color', async ({ page }) => {
 		await page.getByRole('button', { name: 'New Game' }).click();
+		await page.getByRole('button', { name: 'Multiplayer' }).click();
 		await page.waitForTimeout(500);
 		await expect(page.locator('.player-color')).toHaveCount(2);
 		await expect(page.locator('.player-color').locator('nth=0')).toHaveClass(/bg-red-900/);

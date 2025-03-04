@@ -165,7 +165,7 @@ export const createNewGame = async (firstPlayerColor: string = "red") => {
 			},
 			blue: {
 				id: "",
-				cards: [cardIds[0].id, cardIds[5].id]
+				cards: [cardIds[0].id, cardIds[4].id]
 			}
 		}
 	}
