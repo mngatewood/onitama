@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from '@/app/lib/prisma';
+import { Prisma } from "@prisma/client";
 
 export const POST = async (request: NextRequest ) => {
 	const url = new URL(request.url);
@@ -51,6 +52,40 @@ export const POST = async (request: NextRequest ) => {
 				}
 			})
 			return NextResponse.json(response);
+		} catch (error) {
+			if (error instanceof Error) {
+				console.log("Error: ", error.stack)
+			}
+			return NextResponse.json(error);
+		}
+	} else if (action === "pass") {
+		try {
+			const data = await request.json();
+			const players = await swapNeutralCard(data.gameId, data.selectedCardId, data.neutralCardId)
+
+			if (data && players) {
+				const response = await prisma.game.update({
+					where: {
+						id: data.gameId
+					},
+					data: {
+						turn: data.turn === "red" ? "blue" : "red",
+						players: players as unknown as Prisma.JsonObject
+					},
+					include: {
+						users: {
+							omit: {
+								password: true
+							}
+						},
+						cards: true
+					}
+				})
+				return NextResponse.json(response);
+			}
+
+			return NextResponse.json(players);
+
 		} catch (error) {
 			if (error instanceof Error) {
 				console.log("Error: ", error.stack)
@@ -215,7 +250,7 @@ const getGame = async (id: string) => {
 		if (error instanceof Error) {
 			console.log("Error: ", error.stack)
 		}
-		return NextResponse.json(error);
+		throw error;
 	}
 }
 
@@ -305,3 +340,40 @@ const createVirtualOpponent = async () => {
 		return existingUser;
 	}
 }
+
+const swapNeutralCard = async (gameId: string, selectedCardId: string, neutralCardId: string) => {
+	try {
+
+		const game = await getGame(gameId);
+		if (game && game.players) {
+
+			const players: Players = game.players as unknown as Players;
+			const playerColor = game.turn;
+			const opponentColor = playerColor === "red" ? "blue" : "red";
+			const player = players[playerColor as keyof typeof players];
+			const opponent = players[opponentColor as keyof typeof players];
+			const neutralCard = game.cards.find((card) => card.id === neutralCardId);
+			const updatedPlayers = {
+				[playerColor]: {
+					id: player.id,
+					cards: [neutralCard, ...player.cards.filter((card) => card.id !== selectedCardId)]
+				},
+				[opponentColor]: {
+					id: opponent.id,
+					cards: opponent.cards
+				}
+			}
+
+			return updatedPlayers
+
+		}
+	}
+
+	catch (error) {
+		if (error instanceof Error) {
+			console.log("Error: ", error.stack)
+		}
+		throw error;
+	}
+
+};

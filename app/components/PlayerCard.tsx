@@ -1,6 +1,6 @@
 
 
-export const PlayerCard = ({ card, player, clickable, cardClass }: { card: Card, player: string, clickable: boolean, cardClass: string }) => {
+export const PlayerCard = ({ card, player, clickable, cardClass, selectCard }: { card: Card, player: string, clickable: boolean, cardClass: string, selectCard: (cardId: string) => void }) => {
 	const renderMoves = () => {
 		const moves = [...Array(25).keys()].map((index) => {
 			let highlighted = "";
@@ -22,8 +22,25 @@ export const PlayerCard = ({ card, player, clickable, cardClass }: { card: Card,
 	const color = card.color === "red" ? "bg-red-300" : "bg-blue-300";
 	const pointer = clickable ? "cursor-pointer" : "cursor-not-allowed";
 
+	const handleClickCard = () => {
+		if (clickable) {
+			const cardElements = document.querySelectorAll('.card');
+			cardElements.forEach((cardElement) => {
+				cardElement.classList.remove('scale-125');
+			});
+			const cardElement = document.getElementById(`card-${card.id}`);
+			if (cardElement) {
+				cardElement.classList.add('scale-125');
+			}
+
+			selectCard(card.id);
+
+			return;
+		}
+	}
+
 	return (
-		<div className={`${pointer} ${cardClass} ${card.id && "hover:scale-125"} card flex justify-between h-[15vw] landscape:h-[5vw] landscape:short:h-[10vw] landscape:my-2 landscape:md:h-[7vw] landscape:lg:h-[10vw] max-h-[12vh] landscape:xl:h-[8vw] xtall:max-w-screen-xs:h-[20vw] tall:md:h-[10vw] rounded-sm border border-neutral-400 shadow-md shadow-slate-500 bg-gray-700 aspect-video transition-all transition-duration-300 first:basis-full`}>
+		<div onClick={handleClickCard} id={`card-${card.id}`} className={`${pointer} ${cardClass} ${card.id && "hover:scale-125"} card flex justify-between h-[15vw] landscape:h-[5vw] landscape:short:h-[10vw] landscape:my-2 landscape:md:h-[7vw] landscape:lg:h-[10vw] max-h-[12vh] landscape:xl:h-[8vw] xtall:max-w-screen-xs:h-[20vw] tall:md:h-[10vw] rounded-sm border border-neutral-400 shadow-md shadow-slate-500 bg-gray-700 aspect-video transition-all transition-duration-300 first:basis-full`}>
 			{ card.id 
 				?
 				<>

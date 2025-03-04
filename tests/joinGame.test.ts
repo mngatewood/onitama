@@ -22,10 +22,10 @@ test.describe('user can join a game', () => {
 		await page.goto('/');
 	});
 
-	test.afterEach(async ({ page }) => {
-		await logoutUser({ page });
-		await page.waitForTimeout(500);
-	});
+	// test.afterEach(async ({ page }) => {
+	// 	await logoutUser({ page });
+	// 	await page.waitForTimeout(500);
+	// });
 
 	test('take a screenshot', async ({ page }, workerInfo) => {
 		await loginUser({ page }, email);
@@ -119,18 +119,18 @@ test.describe('user can join a game', () => {
 	});
 
 	test('the game correctly indicates whose turn it is', async ({ page }) => {
-		await createNewGame();
+		await createNewGame("red");
 		await loginUser({ page }, email);
 		await page.locator('.game-join-entry').filter({ hasText: "TestW@@+" }).click();
 		await page.waitForTimeout(500);
 
-		await expect(page.locator(".player-color").locator("nth=0")).toHaveClass(/bg-red-500 text-amber-100 shadow-amber-300 shadow-lg border-black/);
-		await expect(page.locator(".player-color").locator("nth=1")).not.toHaveClass(/bg-red-500 text-amber-100 shadow-amber-300 shadow-lg border-black/);
-		await expect(page.locator(".card").locator("nth=0")).not.toHaveClass(/bg-red-500 text-amber-100 shadow-amber-300 shadow-lg border-black/);
-		await expect(page.locator(".card").locator("nth=1")).toHaveClass(/bg-red-500 text-amber-100 shadow-amber-300 shadow-lg border-black/);
-		await expect(page.locator(".card").locator("nth=2")).toHaveClass(/bg-red-500 text-amber-100 shadow-amber-300 shadow-lg border-black/);
-		await expect(page.locator(".card").locator("nth=3")).not.toHaveClass(/bg-red-500 text-amber-100 shadow-amber-300 shadow-lg border-black/);
-		await expect(page.locator(".card").locator("nth=4")).not.toHaveClass(/bg-red-500 text-amber-100 shadow-amber-300 shadow-lg border-black/);
+		await expect(page.locator(".player-color").locator("nth=0")).toHaveClass(/!shadow-amber-300 !shadow-md/);
+		await expect(page.locator(".player-color").locator("nth=1")).not.toHaveClass(/!shadow-amber-300 !shadow-md/);
+		await expect(page.locator(".card").locator("nth=0")).not.toHaveClass(/!shadow-amber-300 !shadow-md/);
+		await expect(page.locator(".card").locator("nth=1")).toHaveClass(/!shadow-amber-300 !shadow-md/);
+		await expect(page.locator(".card").locator("nth=2")).toHaveClass(/!shadow-amber-300 !shadow-md/);
+		await expect(page.locator(".card").locator("nth=3")).not.toHaveClass(/!shadow-amber-300 !shadow-md/);
+		await expect(page.locator(".card").locator("nth=4")).not.toHaveClass(/!shadow-amber-300 !shadow-md/);
 	});
 
 	test('an Exit Game link is displayed.', async ({ page }) => {

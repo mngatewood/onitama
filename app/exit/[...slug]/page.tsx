@@ -18,7 +18,8 @@ const Exit = async ({ params }: { params: Promise<{ slug: string }> }) => {
 	const notification = {
 		type: "error",
 		message: "Game not found.  Redirecting to the lobby...",
-		timeout: 3000,
+		duration: 3000,
+		delay: 3000,
 		action: "/"
 	};
 
