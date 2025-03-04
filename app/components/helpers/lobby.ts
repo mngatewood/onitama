@@ -14,7 +14,7 @@ const startingBoard = [
 	["bs00", "bs00", "bm00", "bs00", "bs00"],
 ];
 
-export const getAllCards = async () => {
+export const getAllCards = async (): Promise<Card[]> => {
 	try {
 		const url = `${apiUrl}/cards`;
 		const response = await fetch(url);
@@ -199,7 +199,7 @@ const getNewGameData = async (playerId: string) => {
 	const randomIndexes = utility.shuffleArray([...Array(allCards.length).keys()]).slice(0, 5);
 	const randomCards = allCards.filter((_: Card, index: number) => randomIndexes.includes(index));
 	const shuffledCards = utility.shuffleArray(randomCards);
-	const neutralCard = shuffledCards[4];
+	const neutralCard: Card = shuffledCards[4];
 	const players = {
 		"blue": {
 			id: playerId,
