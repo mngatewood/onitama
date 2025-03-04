@@ -1,3 +1,7 @@
+export const apiUrl = typeof window !== 'undefined'
+	? `${window.location.origin}/api`  // This will use the actual deployed URL
+	: process.env.NEXT_PUBLIC_BASE_URL + "/api";
+
 interface Position {
 	row: number;
 	column: number;
@@ -31,31 +35,31 @@ export const getCardActions = (game: Game, cardId: string, userId: string) => {
 
 // Convert "moves" to position deltas
 const movesMatrix: MovesMatrix = {
-	1: { row: 2, column: 2 },
-	2: { row: 2, column: 1 },
-	3: { row: 2, column: 0 },
-	4: { row: 2, column: -1 },
-	5: { row: 2, column: -2 },
-	6: { row: 1, column: 2 },
-	7: { row: 1, column: 1 },
-	8: { row: 1, column: 0 },
-	9: { row: 1, column: -1 },
-	10: { row: 1, column: -2 },
-	11: { row: 0, column: 2 },
-	12: { row: 0, column: 1 },
+	1: { row: -2, column: -2 },
+	2: { row: -2, column: -1 },
+	3: { row: -2, column: 0 },
+	4: { row: -2, column: 1 },
+	5: { row: -2, column: 2 },
+	6: { row: -1, column: -2 },
+	7: { row: -1, column: -1 },
+	8: { row: -1, column: 0 },
+	9: { row: -1, column: 1 },
+	10: { row: -1, column: 2 },
+	11: { row: 0, column: -2 },
+	12: { row: 0, column: -1 },
 	13: { row: 0, column: 0 },
-	14: { row: 0, column: -1 },
-	15: { row: 0, column: -2 },
-	16: { row: -1, column: 2 },
-	17: { row: -1, column: 1 },
-	18: { row: -1, column: 0 },
-	19: { row: -1, column: -1 },
-	20: { row: -1, column: -2 },
-	21: { row: -2, column: 2 },
-	22: { row: -2, column: 1 },
-	23: { row: -2, column: 0 },
-	24: { row: -2, column: -1 },
-	25: { row: -2, column: -2 },
+	14: { row: 0, column: 1 },
+	15: { row: 0, column: 2 },
+	16: { row: 1, column: -2 },
+	17: { row: 1, column: -1 },
+	18: { row: 1, column: 0 },
+	19: { row: 1, column: 1 },
+	20: { row: 1, column: 2 },
+	21: { row: 2, column: -2 },
+	22: { row: 2, column: -1 },
+	23: { row: 2, column: 0 },
+	24: { row: 2, column: 1 },
+	25: { row: 2, column: 2 },
 };
 
 const getPawnPositions = (board: string[][], playerColor: string) => {
@@ -119,3 +123,32 @@ export const getUpdatedBoard = (game: Game, cardActions: Action[]) => {
 
 	return board;
 }
+
+export const passTurn = async (gameId: string, nextTurn: string, selectedCardId: string, neutralCardId: string) => {
+	try {
+		const url = `${apiUrl}/games?id=${gameId}&action=pass`;
+		const update = {
+			gameId,
+			nextTurn,
+			selectedCardId,
+			neutralCardId
+		}
+		console.log("update", update);
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(update),
+		})
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+		const data = await response.json();
+		console.log("data", data);
+		return data;
+	} catch (error) {
+		console.error('Error ending the game:', error);
+		throw error;
+	}
+};
