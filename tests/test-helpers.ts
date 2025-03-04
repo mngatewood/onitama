@@ -6,12 +6,38 @@ export const localhost = 'http://localhost:3000/';
 export const getEmail = () => `${Date.now()}@tested.com`
 
 const startingBoard = [
-	["rs0", "rs0", "rm0", "rs0", "rs0"],
-	["000", "000", "000", "000", "000"],
-	["000", "000", "000", "000", "000"],
-	["000", "000", "000", "000", "000"],
-	["bs0", "bs0", "bm0", "bs0", "bs0"],
+	["rs00", "rs00", "rm00", "rs00", "rs00"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["bs00", "bs00", "bm00", "bs00", "bs00"],
 ];
+
+const getStartingTestCards = async (cardColor: string) => {
+	if (cardColor === "blue") {
+		return await prisma.card.findMany({
+			where: {
+				title: {
+					in: ["Boar", "Cobra", "Dragon", "Mantis", "Rabbit"]
+				},
+			},
+			orderBy: {
+				title: "asc"
+			}
+		})
+	} else if (cardColor === "red") {
+		return await prisma.card.findMany({
+			where: {
+				title: {
+					in: ["Frog", "Goose", "Horse", "Monkey", "Tiger"]
+				},
+			},
+			orderBy: {
+				title: "asc"
+			}
+		})
+	}
+};
 
 const deleteOldTestGames = async () => {
 	await prisma.game.deleteMany({
@@ -99,12 +125,12 @@ export const convertTimeStringToDate = (timeString: string) => {
 	return date;
 }
 
-export const createNewGame = async () => {
+export const createNewGame = async (firstPlayerColor: string = "red") => {
 	const email = getEmail();
 	const cardIds = await prisma.card.findMany({
 		take: 5,
 		where: {
-			color: "red",
+			color: firstPlayerColor,
 		},
 		select: {
 			id: true
@@ -131,15 +157,15 @@ export const createNewGame = async () => {
 		},
 		board: startingBoard,
 		status: "waiting_for_players",
-		turn: "red",
+		turn: firstPlayerColor,
 		players: {
 			red: {
 				id: user.id,
-				cards: [cardIds[0].id, cardIds[1].id]
+				cards: [cardIds[1].id, cardIds[2].id]
 			},
 			blue: {
 				id: "",
-				cards: [cardIds[2].id, cardIds[3].id]
+				cards: [cardIds[0].id, cardIds[5].id]
 			}
 		}
 	}
@@ -159,4 +185,136 @@ export const createOldGame = async () => {
 			createdAt: new Date(Date.now() - 60 * 60 * 1000)
 		}
 	});
+}
+
+export const startTestGame = async ({page}: {page: Page}, email: string, firstPlayerColor: string = "blue") => {
+	await registerUser({page}, email);
+	await loginUser({page}, email);
+	await page.getByRole('button', { name: 'New Game' }).click();
+	await page.getByRole('button', { name: 'Solo' }).click();
+	await page.waitForTimeout(2000);
+	
+	// get 5 cards of the desired color (blue for first player, red for second player)
+	const cards = await getStartingTestCards(firstPlayerColor);
+
+	if (cards?.length !== 5) {
+		throw new Error('Failed to get starting test cards');
+	}
+
+	// get the game
+	const game = await getTestGame();
+	const secondPlayerColor = firstPlayerColor === "red" ? "blue" : "red";
+
+	// redistribute cards
+	const playersData = {
+		[firstPlayerColor]: {
+			id: game?.users?.find((user) => user.first_name === "TestW@@+")?.id,
+			cards: [cards[0], cards[4]],
+		},
+		[secondPlayerColor]: {
+			id: game?.users?.find((user) => user.email === "virtual_opponent@mngatewood.com")?.id,
+			cards: [cards[2], cards[3]],
+		}
+	}
+
+	// remove existing cards, update status, and add new cards
+	const updatedGame = await prisma.$transaction([
+		prisma.game.update({
+			where: {
+				id: game?.id,
+			},
+			data: {
+				cards: {
+					set: []
+				},
+				players: playersData,
+				status: "in_progress",
+				turn: firstPlayerColor
+			},
+		}),
+		prisma.game.update({
+			where: {
+				id: game?.id,
+			},
+			data: {
+				cards: {
+					connect: cards.map(card => ({ id: card.id }))
+				}
+			}
+		})
+	])
+
+	if (updatedGame) {
+		await page.reload();
+		await page.waitForTimeout(500);
+	};
+}
+
+const getTestGame = async () => {
+	const game = await prisma.game.findFirst({
+		where: {
+			users: {
+				some: {
+					first_name: {
+						equals: "TestW@@+"
+					}
+				}
+			},
+			status: {
+				equals: "in_progress"
+			}
+		},
+		include: {
+			users: {
+				omit: {
+					password: true
+				}
+			},
+			cards: true
+		}
+	})
+	return game;
+}
+
+export const updateBoardForInvalidActionTest = async () => {
+	const game = await getTestGame();
+	if (!game) {
+		throw new Error('Game not found');
+	}
+
+	const updatedBoard = [
+		["rs00", "rs00", "rm00", "rs00", "rs00"],
+		["0000", "0000", "0000", "0000", "0000"],
+		["0000", "0000", "0000", "0000", "0000"],
+		["0000", "0000", "0000", "0000", "0000"],
+		["0000", "0000", "0000", "0000", "bs00"],
+	];
+
+	const players: Players = game.players as unknown as Players;
+
+	const updatedPlayers = {
+		red: {
+			...players?.red,
+			cards: game.cards.filter((card: Card) => {
+				return ["Boar", "Dragon"].includes(card.title);
+			})
+		},
+		blue: {
+			...players?.blue,
+			cards: game.cards.filter((card: Card) => {
+				return ["Rabbit", "Cobra"].includes(card.title);
+			})
+		}
+	}
+
+	await prisma.game.update({
+		where: {
+			id: game?.id,
+		},
+		data: {
+			board: updatedBoard,
+			players: updatedPlayers
+		}
+	})
+
 }
