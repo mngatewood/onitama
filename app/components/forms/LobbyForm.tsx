@@ -192,7 +192,7 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 									</div>
 								) : (
 									<div>
-										<p>No pending games to display.</p>
+											<p className="text-slate-700 dark:text-gray-400">No pending games to display.</p>
 									</div>
 								)}
 							</div>
