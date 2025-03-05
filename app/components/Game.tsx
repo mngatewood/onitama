@@ -23,6 +23,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 	const [notifications, setNotifications] = useState<ToastNotification[]>([]);
 	const [renderPassButton, setRenderPassButton] = useState(false);
 	const [neutralCard, setNeutralCard] = useState<Card | null>(null);
+	const [targets, setTargets] = useState<Target[] | null>(null);
 	const previousTurnRef = useRef<string | null>(null);
 	const userColor = ["red", "blue"].find((key) => {
 		return game?.players && game?.players[key as keyof typeof game.players]?.id === userId;
@@ -152,6 +153,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			const cardActions = getCardActions(game, cardId, userId);
 			if (cardActions?.length) {
 				const updatedBoard = getUpdatedBoard(game, cardActions);
+				setTargets(cardActions);
 				setBoard(updatedBoard);
 				setRenderPassButton(false);
 				const notification = {
@@ -178,6 +180,42 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			// socket.emit("select_card", gameId, cardId);
 		}
 	};
+
+	const selectPawn = (origin: { row: number, column: number }) => {
+		if(game !== null) {
+			const pawnTargets = targets?.filter((action: Target) => action.origin.row === origin.row && action.origin.column === origin.column);
+			if (pawnTargets?.length) {
+				const updatedBoard = JSON.parse(JSON.stringify(game.board));
+				updatedBoard[origin.row][origin.column] = updatedBoard[origin.row][origin.column].substring(0, 2) + "h" + updatedBoard[origin.row][origin.column].substring(3);
+				pawnTargets.forEach((target: Target) => {
+					updatedBoard[target.target.row][target.target.column] = updatedBoard[target.target.row][target.target.column].substring(0, 3) + "x";
+				})
+				setBoard(updatedBoard);
+				const notification = {
+					type: "system",
+					message: "Pawn selected. Select a target or click a card to other available pawns and targets.",
+					duration: 0,
+					delay: 0,
+					action: ""
+				};
+				setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+			} else {
+				const updatedBoard = JSON.parse(JSON.stringify(game.board));
+				setBoard(updatedBoard);
+				setSelectedCard(null);
+				setTargets(null);
+				setRenderPassButton(true);
+				const notification = {
+					type: "error",
+					message: "The selected pawn has no valid actions. Select a card to see available pawns and targets.",
+					duration: 0,
+					delay: 0,
+					action: ""
+				}
+				setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+			}
+		}
+	}
 
 	const clickPass = async () => {
 		if(game !== null) {
@@ -217,7 +255,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 							<DefeatedPawns />
 						</div>
 						<div className="basis-[60%] landscape:basis-[80%] flex justify-center items-center h-full">
-							<Board board={board || game.board} userColor={userColor} />
+							<Board board={board || game.board} userColor={userColor} selectPawn={selectPawn} />
 						</div>
 						<div className={`renderPassButton ${renderPassButton ? "visible opacity-100" : "invisible opacity-0"} absolute top-1/2 left-1/2 landscape:left-1/4 -translate-x-1/2 -translate-y-1/2 transition-all duration-300`}>
 							<PassButton clickPass={clickPass} />

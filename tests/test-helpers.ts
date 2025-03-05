@@ -318,3 +318,47 @@ export const updateBoardForInvalidActionTest = async () => {
 	})
 
 }
+
+export const updateBoardForInvalidPawnTest = async () => {
+	const game = await getTestGame();
+	if (!game) {
+		throw new Error('Game not found');
+	}
+
+	const updatedBoard = [
+		["rs00", "rs00", "rm00", "0000", "rs00"],
+		["0000", "0000", "0000", "0000", "0000"],
+		["0000", "0000", "0000", "0000", "0000"],
+		["0000", "0000", "0000", "rs00", "0000"],
+		["0000", "0000", "bm00", "bs00", "bs00"],
+	];
+
+	const players: Players = game.players as unknown as Players;
+
+	const updatedPlayers = {
+		red: {
+			...players?.red,
+			cards: game.cards.filter((card: Card) => {
+				return ["Boar", "Dragon"].includes(card.title);
+			})
+		},
+		blue: {
+			...players?.blue,
+			cards: game.cards.filter((card: Card) => {
+				return ["Rabbit", "Cobra"].includes(card.title);
+			})
+		}
+	}
+
+	const updatedGame = await prisma.game.update({
+		where: {
+			id: game?.id,
+		},
+		data: {
+			board: updatedBoard,
+			players: updatedPlayers
+		}
+	})
+
+	return updatedGame;
+}

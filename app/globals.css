@@ -32,6 +32,9 @@
 
 
 /* Board, card and pawn element styles */
+.highlighted {
+	cursor: pointer;
+}
 
 /* highlighted space with red pawn */
 .highlighted.red{
@@ -64,7 +67,7 @@
 	color: black;
 }
 
-.targeted.student, .targeted.master {
+.targeted.student::after, .targeted.master::after {
 	color: white;
 }
 
