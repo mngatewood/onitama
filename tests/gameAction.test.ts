@@ -47,9 +47,9 @@ test.describe('user can select an action', () => {
 	});
 	
 	test('the user is notified that a card has been selected and prompted to select a pawn', async ({ page }) => {
-		await expect(page.getByText('Action card selected.  Next, select a highlighted pawn.')).not.toBeVisible();
+		await expect(page.getByText('Card selected. Please select a highlighted pawn or click a card to see other available pawns and targets.')).not.toBeVisible();
 		await page.locator(".card").locator("nth=4").click();
-		await expect(page.getByText('Action card selected.  Next, select a highlighted pawn.')).toBeVisible();
+		await expect(page.getByText('Card selected. Please select a highlighted pawn or click a card to see other available pawns and targets.')).toBeVisible();
 		await expect(page.locator(".card").locator("nth=4")).toHaveClass(/hover:scale-125/);
 	});
 
