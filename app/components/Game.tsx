@@ -360,7 +360,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 					</div>
 					<div className="flex flow-row justify-start order-2 w-full h-56 sm:h-auto landscape:w-1/2 my-2 landscape:order-last landscape:items-center">
 						<div className="basis-[20%] landscape:tall:xl:basis-[10%] flex justify-center items-center h-full">
-							<DefeatedPawns />
+							<DefeatedPawns board={board}/>
 						</div>
 						<div className="basis-[60%] landscape:basis-[80%] flex justify-center items-center h-full">
 							<Board 

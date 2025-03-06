@@ -19,10 +19,10 @@ test.describe('user can move a pawn', () => {
 		await page.waitForTimeout(500);
 	});
 
-	// test.afterEach(async ({ page }) => {
-	// 	await logoutUser({ page });
-	// 	await page.waitForTimeout(500);
-	// });
+	test.afterEach(async ({ page }) => {
+		await logoutUser({ page });
+		await page.waitForTimeout(500);
+	});
 
 	test('take a screenshot', async ({ page }, workerInfo) => {
 		await page.screenshot({ path: `./test-results/gameMove.${workerInfo.project.name}.png` });
@@ -299,44 +299,61 @@ test.describe('user can move a pawn', () => {
 					await expect(page.locator(".card").locator("nth=4")).not.toHaveClass(/!shadow-amber-300 !shadow-md/);
 				});
 
+				test('the cards are updated and player names are rendered correctly', async ({ page }) => {
+					await page.locator(".card").locator("nth=5").click();
+					await page.locator("#space-23").click();
+					await page.locator("#space-22").click();
+					await page.getByRole('button', { name: 'Confirm' }).click();
+					
+					await expect(page.locator(".card").locator("nth=0")).toContainText("Cobra");
+					await expect(page.locator(".card").locator("nth=1")).toContainText("Dragon");
+					await expect(page.locator(".card").locator("nth=2")).toContainText("Boar");
+					await expect(page.locator(".card").locator("nth=3")).toHaveClass(/placeholder-card/);
+					await expect(page.locator(".card").locator("nth=4")).toContainText("Mantis");
+					await expect(page.locator(".card").locator("nth=5")).toContainText("Rabbit");
+					await expect(page.locator(".player-color").locator("nth=0")).toContainText("Virtual Opponent");
+					await expect(page.locator(".player-color").locator("nth=1")).toContainText("青TestW@@+青");
+				});
+
 			});
 
 			test.describe('the selected space is occupied by an opponent student pawn', () => {
 				
 				test('the defeated pawn is removed from the board', async ({ page }) => {
-					
+					// test game board should start with 5 red pawns and 3 blue pawns
+					await expect (page.locator("#board").locator(".red")).toHaveCount(5);
+					await expect (page.locator("#board").locator(".blue")).toHaveCount(3);
+
+					await page.locator(".card").locator("nth=5").click();
+					await page.locator("#space-23").click();
+					await page.locator("#space-19").click();
+					await page.getByRole('button', { name: 'Confirm' }).click();
+
+					await expect(page.locator("#space-19")).toHaveClass(/blue/)
+					await expect(page.locator("#space-19")).not.toHaveClass(/red/)
+					await expect(page.locator("#board").locator(".red")).toHaveCount(4);
+					await expect(page.locator("#board").locator(".blue")).toHaveCount(3);
 				});
 				
 				test('the defeated pawn is rendered beside the board', async ({ page }) => {
-					
+					await expect (page.locator("#defeated-pawns > div").first().locator(".sil")).toHaveCount(4);
+					await expect (page.locator("#defeated-pawns > div").locator("nth=1").locator(".sil")).toHaveCount(2);
+
+					await page.locator(".card").locator("nth=5").click();
+					await page.locator("#space-23").click();
+					await page.locator("#space-19").click();
+					await page.getByRole('button', { name: 'Confirm' }).click();
+
+					await expect(page.locator("#defeated-pawns > div").first().locator(".sil")).toHaveCount(3);
+					await expect(page.locator("#defeated-pawns > div").first().locator(".red")).toHaveCount(1);
+					await expect(page.locator("#defeated-pawns > div").first().locator(".blue")).toHaveCount(0);
+					await expect(page.locator("#defeated-pawns > div").locator("nth=1").locator(".sil")).toHaveCount(2);
+					await expect(page.locator("#defeated-pawns > div").locator("nth=1").locator(".red")).toHaveCount(0);
+					await expect(page.locator("#defeated-pawns > div").locator("nth=1").locator(".blue")).toHaveCount(2);
 				});
 
 			});
 			
-			test.describe('the selected space is occupied by an opponent master pawn', () => {
-				
-				test('the defeated pawn is removed from the board', async ({ page }) => {
-					
-				});
-				
-				test('the defeated pawn is rendered beside the board', async ({ page }) => {
-					
-				});
-
-				test('the defeated pawn is highlighted to indicate victory', async ({ page }) => {
-					
-				});
-
-			});
-			
-			test.describe('the selected space is the opponent temple', () => {
-				
-				test('the selected space is highlighted in a special color to indicate victory', async ({ page }) => {
-					
-				});
-
-			});
-
 		});
 
 	});
