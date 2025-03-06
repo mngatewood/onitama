@@ -20,15 +20,12 @@ interface Action {
 }
 
 export const getCardActions = (game: Game, cardId: string, userId: string) => {
-	// const player = game?.users?.find((user) => user.id === userId);
-	// TODO: Flip board or moves matrix for red player
 	const board = game?.board;
-	console.log("board in getCardActions", board);
 	const card = game?.cards?.find((card) => card.id === cardId);
 	const playerColor = Object.keys(game?.players ?? {}).find((key) => game?.players[key as keyof typeof game.players]?.id === userId);
 	const pawnPositions = getPawnPositions(board, playerColor ?? "");
 	const pawnTargets = card?.moves && getPawnTargetsOnBoard(pawnPositions, card.moves);
-	const validTargets = removeFriendlyOccupiedTarts(pawnTargets ?? [], board, playerColor ?? "");
+	const validTargets = removeFriendlyOccupiedTargets(pawnTargets ?? [], board, playerColor ?? "");
 
 	return validTargets;
 };
@@ -62,8 +59,18 @@ const movesMatrix: MovesMatrix = {
 	25: { row: 2, column: 2 },
 };
 
+export const getSpacePositionFromOrigin = (origin: Position) => {
+	const move = Object.keys(movesMatrix).find((key) => {
+		return (
+			movesMatrix[key as unknown as keyof typeof movesMatrix].row === origin.row &&
+			movesMatrix[key as unknown as keyof typeof movesMatrix].column === origin.column
+		);
+	});
+	return move ? parseInt(move) : null;
+}
+
 const getPawnPositions = (board: string[][], playerColor: string) => {
-	const pawnPositions: Array<{ row: number, column: number }> = [];
+	const pawnPositions: Array<Position> = [];
 	board.forEach((row, rowIndex) => {
 		row.forEach((pawn, columnIndex) => {
 			if (pawn[0] === playerColor[0]) {
@@ -102,7 +109,7 @@ const getPawnTargetsOnBoard = (pawns: Position[], moves: number[]) => {
 	return targets;
 }
 
-const removeFriendlyOccupiedTarts = (targets: Action[], board: string[][], playerColor: string) => {
+const removeFriendlyOccupiedTargets = (targets: Action[], board: string[][], playerColor: string) => {
 	const updatedTargets =targets.filter(target => {
 		return board[target.target.row][target.target.column][0] !== playerColor[0];
 	})
@@ -148,7 +155,39 @@ export const passTurn = async (gameId: string, nextTurn: string, selectedCardId:
 		console.log("data", data);
 		return data;
 	} catch (error) {
-		console.error('Error ending the game:', error);
+		console.error('Error passing the turn:', error);
 		throw error;
 	}
 };
+
+export const completeTurn = async (game: Game, selectedCard: Card, selectedPawn: Position, selectedTarget: Position ) => {
+	try {
+		const board = JSON.parse(JSON.stringify(game.board));
+		const pawnType = board[selectedPawn.row][selectedPawn.column][1]
+		board[selectedPawn.row][selectedPawn.column] = "0000"
+		board[selectedTarget.row][selectedTarget.column] = game.turn[0] + pawnType + "00"
+
+		const url = `${apiUrl}/games?id=${game.id}&action=complete_turn`;
+		const update = {
+			gameId: game.id,
+			board,
+			turn: game.turn,
+			selectedCardId: selectedCard.id,
+		}
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(update),
+		})
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error('Error completing the turn:', error);
+		throw error;
+	}
+}
