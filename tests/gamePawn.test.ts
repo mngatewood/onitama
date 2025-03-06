@@ -17,6 +17,7 @@ test.describe('user can select a pawn', () => {
 		updateBoardForInvalidPawnTest();
 		await page.reload();
 		await page.waitForTimeout(500);
+		
 	});
 
 	test.afterEach(async ({ page }) => {
