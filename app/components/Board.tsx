@@ -5,10 +5,14 @@ import { useMemo } from "react";
 interface BoardProps {
 	board: string[][];
 	userColor: string;
-	selectPawn: (origin: { row: number, column: number }) => void
+	selectedPawn: Position | null;
+	selectPawn: (origin: Position) => void;
+	selectTarget: (target: Position) => void;
 }
 
-export const Board = ({ board, userColor, selectPawn }: BoardProps ) => {
+export const Board = ({ board, userColor, selectedPawn, selectPawn, selectTarget }: BoardProps ) => {
+
+	const selectedPawnPosition = selectedPawn ? (selectedPawn?.row * 5 + selectedPawn?.column + 1) : 0;
 
 	const renderedBoard = useMemo(() => {
 		const flatBoard = userColor === "red" ? board.flat().reverse() : board.flat();
@@ -59,15 +63,18 @@ export const Board = ({ board, userColor, selectPawn }: BoardProps ) => {
 				case "x":
 					targeted = "targeted";
 					break
+				case "o":
+					targeted = "targeted selected-target";
+					break
 				default:
 					targeted = "";
 			}
 
 			const selectSpace = (e: React.MouseEvent) => {
 				e.preventDefault();
-				if (e.currentTarget.classList.contains("highlighted")) {
-					const index = parseInt(e.currentTarget.id.split("-")[1])-1;
-					const spaceData = flatBoard[index];
+				const index = parseInt(e.currentTarget.id.split("-")[1])-1;
+				const spaceData = flatBoard[index];
+				if (e.currentTarget.classList.contains("highlighted") && !e.currentTarget.classList.contains("pawn-selected")) {
 					if (spaceData[1] === "s" || spaceData[1] === "m") {
 						const origin = {
 							row: Math.floor(index / 5),
@@ -75,17 +82,27 @@ export const Board = ({ board, userColor, selectPawn }: BoardProps ) => {
 						}
 						return selectPawn(origin);
 					}
+				} else if (e.currentTarget.classList.contains("clickable-target")) {
+					if (spaceData[3] === "x") {
+						const target = {
+							row: Math.floor(index / 5),
+							column: index % 5
+						}
+						return selectTarget(target);
+					}
 				}
 				console.log("not a valid space");
 			};
 
+			const clickableTarget = selectedPawn && targetedCode === "x" ? "clickable-target" : "";
+
 			return (
-				<div onClick={selectSpace} className={`space aspect-square border border-slate-600 ${color} ${pawn} ${highlighted} ${targeted}`} key={index} id={`space-${index + 1}`}>
+				<div onClick={selectSpace} className={`${(selectedPawnPosition === index + 1) && "pawn-selected"} space aspect-square border border-slate-600 ${color} ${pawn} ${highlighted} ${targeted} ${clickableTarget}`} key={index} id={`space-${index + 1}`}>
 				</div>
 			)
 
 		})
-	}, [board, userColor, selectPawn]);
+	}, [board, userColor, selectedPawn, selectedPawnPosition, selectPawn, selectTarget ]);
 
 		return (
 		<div id="board" className="grid grid-cols-5 grid-rows-5 aspect-square outline outline-2 outline-offset-1 outline-slate-600 dark:outline-slate-400 h-full landscape:h-40 landscape:xshort:h-48 landscape:short:h-72 landscape:md:short:h-80 landscape:lg:short:h-96 landscape:tall:xl:h-[36rem]">

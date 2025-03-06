@@ -1,6 +1,17 @@
+"use client";
 
+import { useEffect } from "react";
 
-export const PlayerCard = ({ card, player, clickable, cardClass, selectCard }: { card: Card, player: string, clickable: boolean, cardClass: string, selectCard: (cardId: string) => void }) => {
+interface PlayerCardProps {
+	card: Card;
+	player: string;
+	clickable: boolean;
+	cardClass: string;
+	selectCard: (cardId: string) => void;
+	selectedCard: Card | null;
+}
+
+export const PlayerCard = ({ card, player, clickable, cardClass, selectCard, selectedCard }: PlayerCardProps) => {
 	const renderMoves = () => {
 		const moves = [...Array(25).keys()].map((index) => {
 			let highlighted = "";
@@ -22,17 +33,18 @@ export const PlayerCard = ({ card, player, clickable, cardClass, selectCard }: {
 	const color = card.color === "red" ? "bg-red-300" : "bg-blue-300";
 	const pointer = clickable ? "cursor-pointer" : "cursor-not-allowed";
 
+	useEffect(() => {
+		const cardElement = document.getElementById(`card-${card.id}`);
+		if (selectedCard?.id === card.id && cardElement) {
+			cardElement.classList.add('scale-125');
+		} else {
+			cardElement?.classList.remove('scale-125');
+		}
+	}, [selectedCard, card.id])
+	
+
 	const handleClickCard = () => {
 		if (clickable) {
-			const cardElements = document.querySelectorAll('.card');
-			cardElements.forEach((cardElement) => {
-				cardElement.classList.remove('scale-125');
-			});
-			const cardElement = document.getElementById(`card-${card.id}`);
-			if (cardElement) {
-				cardElement.classList.add('scale-125');
-			}
-
 			selectCard(card.id);
 
 			return;

@@ -32,8 +32,20 @@
 
 
 /* Board, card and pawn element styles */
-.highlighted {
+
+/* Eligible pawns and targets */
+.highlighted, .targeted.clickable-target {
 	cursor: pointer;
+}
+
+/* Hover eligible targets and selected target */
+.targeted.clickable-target:hover, .targeted.selected-target {
+	background-color: theme("colors.neutral.400");
+}
+
+/* Don't highlight selected pawn */
+.highlighted.pawn-selected{
+	cursor: default;
 }
 
 /* highlighted space with red pawn */

@@ -61,7 +61,7 @@ export const POST = async (request: NextRequest ) => {
 	} else if (action === "pass") {
 		try {
 			const data = await request.json();
-			const players = await swapNeutralCard(data.gameId, data.selectedCardId, data.neutralCardId)
+			const players = await swapNeutralCard(data.gameId, data.selectedCardId)
 
 			if (data && players) {
 				const response = await prisma.game.update({
@@ -86,6 +86,36 @@ export const POST = async (request: NextRequest ) => {
 
 			return NextResponse.json(players);
 
+		} catch (error) {
+			if (error instanceof Error) {
+				console.log("Error: ", error.stack)
+			}
+			return NextResponse.json(error);
+		}
+	} else if (action === "complete_turn") {
+		try {
+			const data = await request.json();
+			const players = await swapNeutralCard(data.gameId, data.selectedCardId)
+			const update = {
+				players: players as unknown as Prisma.JsonObject,
+				board: data.board,
+				turn: data.turn === "red" ? "blue" : "red",
+			}
+			const response = await prisma.game.update({
+				where: {
+					id: data.gameId
+				},
+				data: update,
+				include: {
+					users: {
+						omit: {
+							password: true
+						}
+					},
+					cards: true
+				}
+			})
+			return NextResponse.json(response);
 		} catch (error) {
 			if (error instanceof Error) {
 				console.log("Error: ", error.stack)
@@ -341,13 +371,14 @@ const createVirtualOpponent = async () => {
 	}
 }
 
-const swapNeutralCard = async (gameId: string, selectedCardId: string, neutralCardId: string) => {
+const swapNeutralCard = async (gameId: string, selectedCardId: string) => {
 	try {
-
 		const game = await getGame(gameId);
 		if (game && game.players) {
 
 			const players: Players = game.players as unknown as Players;
+			const allPlayerCardIds = players.red.cards.map((card) => card.id).concat(players.blue.cards.map((card) => card.id));
+			const neutralCardId = game.cards.map((card) => {return card.id}).filter((cardId) => !allPlayerCardIds.includes(cardId))[0];
 			const playerColor = game.turn;
 			const opponentColor = playerColor === "red" ? "blue" : "red";
 			const player = players[playerColor as keyof typeof players];
@@ -365,15 +396,11 @@ const swapNeutralCard = async (gameId: string, selectedCardId: string, neutralCa
 			}
 
 			return updatedPlayers
-
 		}
-	}
-
-	catch (error) {
+	} catch (error) {
 		if (error instanceof Error) {
 			console.log("Error: ", error.stack)
 		}
 		throw error;
 	}
-
 };

@@ -64,4 +64,9 @@ declare global {
 		target: Position;
 	}
 
+	interface Position {
+		row: number;
+		column: number;
+	}
+
 };
