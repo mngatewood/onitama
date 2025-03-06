@@ -178,7 +178,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				setNotifications((prevNotifications) => [notification, ...prevNotifications]);
 			} else {
 				const updatedBoard = JSON.parse(JSON.stringify(game.board));
-				setSelectedCard(null);
 				setSelectedPawn(null);
 				setSelectedTarget(null);
 				setTargets(null);
@@ -258,10 +257,15 @@ export const Game = ({ gameId, userId }: GameProps) => {
 	};
 
 	const clickPass = async () => {
+		console.log("clicked pass");
+		console.log(game, selectedCard);
 		if(game !== null) {
 			const nextTurn = game.turn === "red" ? "blue" : "red";
 			if (selectedCard) {
 				const updateGame = await passTurn(gameId, nextTurn, selectedCard?.id, neutralCard?.id ?? '');
+				if(updateGame) {
+					console.log("updateGame", updateGame);
+				}
 				setGame(updateGame);
 				setSelectedCard(null);
 				setSelectedPawn(null);
