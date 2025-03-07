@@ -3,7 +3,7 @@ import { clearTestData,
 	startTestGame, 
 	getEmail, 
 	logoutUser,
-	updateBoardForInvalidActionTest
+	updateInvalidActionGame
 } from './test-helpers';
 
 const email = getEmail();
@@ -118,7 +118,7 @@ test.describe('user can select an action', () => {
 	});
 
 	test('the user is notified that the selected card has no valid actions', async ({ page }) => {
-		updateBoardForInvalidActionTest();
+		await updateInvalidActionGame();
 		await page.reload();
 		await page.locator(".card").locator("nth=4").click();
 		await expect(page.locator("#pass-button")).toBeVisible();
@@ -126,7 +126,7 @@ test.describe('user can select an action', () => {
 	});
 
 	test('when the Pass button is clicked, the game moves to the next player', async ({ page }) => {
-		updateBoardForInvalidActionTest();
+		await updateInvalidActionGame();
 		await page.reload();
 		await page.locator(".card").locator("nth=4").click();
 		await page.locator("#pass-button").click();

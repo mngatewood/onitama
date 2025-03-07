@@ -1,5 +1,6 @@
 import { Page } from '@playwright/test';
 import { prisma } from "../app/lib/prisma";
+import { Prisma } from "@prisma/client";
 
 export const localhost = 'http://localhost:3000/';
 
@@ -12,6 +13,21 @@ const startingBoard = [
 	["0000", "0000", "0000", "0000", "0000"],
 	["bs00", "bs00", "bm00", "bs00", "bs00"],
 ];
+
+const getAllCards = async () => {
+	const cardsArray = await prisma.card.findMany({
+		orderBy: [{
+			title: "asc"
+		}, {
+			color: "asc"
+		}]
+	})
+	const cards: Record<string, Card> = {};
+	for await (const card of cardsArray) {
+		cards[card.title.toLowerCase()] = card;
+	}
+	return cards
+}
 
 const getStartingTestCards = async (cardColor: string) => {
 	if (cardColor === "blue") {
@@ -276,34 +292,21 @@ const getTestGame = async () => {
 	return game;
 }
 
-export const updateBoardForInvalidActionTest = async () => {
+export const updateGame = async (updatedBoard: string[][], cards: Card[]) => {
 	const game = await getTestGame();
 	if (!game) {
 		throw new Error('Game not found');
 	}
-
-	const updatedBoard = [
-		["rs00", "rs00", "rm00", "rs00", "rs00"],
-		["0000", "0000", "0000", "0000", "0000"],
-		["0000", "0000", "0000", "0000", "0000"],
-		["0000", "0000", "0000", "0000", "0000"],
-		["0000", "0000", "0000", "0000", "bs00"],
-	];
-
 	const players: Players = game.players as unknown as Players;
 
 	const updatedPlayers = {
 		red: {
 			...players?.red,
-			cards: game.cards.filter((card: Card) => {
-				return ["Boar", "Dragon"].includes(card.title);
-			})
+			cards: [cards[0], cards[1]]
 		},
 		blue: {
 			...players?.blue,
-			cards: game.cards.filter((card: Card) => {
-				return ["Rabbit", "Cobra"].includes(card.title);
-			})
+			cards: [cards[3], cards[4]]
 		}
 	}
 
@@ -313,52 +316,59 @@ export const updateBoardForInvalidActionTest = async () => {
 		},
 		data: {
 			board: updatedBoard,
-			players: updatedPlayers
+			players: updatedPlayers as unknown as Prisma.JsonObject,
 		}
 	})
 
 }
 
-export const updateBoardForInvalidPawnTest = async () => {
-	const game = await getTestGame();
-	if (!game) {
-		throw new Error('Game not found');
-	}
+const invalidActionBoard = [
+	["rs00", "rs00", "rm00", "rs00", "rs00"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "0000", "bs00"],
+];
 
-	const updatedBoard = [
-		["rs00", "rs00", "rm00", "0000", "rs00"],
-		["0000", "0000", "0000", "0000", "0000"],
-		["0000", "0000", "0000", "0000", "0000"],
-		["0000", "0000", "0000", "rs00", "0000"],
-		["0000", "0000", "bm00", "bs00", "bs00"],
-	];
+const invalidActionCards = async () => {
+	const cards = await getAllCards();
+	return [ cards.boar, cards.dragon, cards.cobra, cards.rabbit, cards.mantis ];
+}
 
-	const players: Players = game.players as unknown as Players;
+export const updateInvalidActionGame = async () => { 
+	return updateGame(invalidActionBoard, await invalidActionCards());
+}
+	
+const invalidPawnBoard = [
+	["rs00", "rs00", "rm00", "0000", "rs00"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "rs00", "0000"],
+	["0000", "0000", "bm00", "bs00", "bs00"],
+]
 
-	const updatedPlayers = {
-		red: {
-			...players?.red,
-			cards: game.cards.filter((card: Card) => {
-				return ["Boar", "Dragon"].includes(card.title);
-			})
-		},
-		blue: {
-			...players?.blue,
-			cards: game.cards.filter((card: Card) => {
-				return ["Rabbit", "Cobra"].includes(card.title);
-			})
-		}
-	}
+const invalidPawnCards = async () => {
+	const allCards = await getAllCards();
+	return [allCards.boar, allCards.dragon, allCards.mantis, allCards.rabbit, allCards.cobra];
+}
 
-	const updatedGame = await prisma.game.update({
-		where: {
-			id: game?.id,
-		},
-		data: {
-			board: updatedBoard,
-			players: updatedPlayers
-		}
-	})
+export const updateInvalidPawnGame = async () => {
+	return updateGame(invalidPawnBoard, await invalidPawnCards());
+}	
 
-	return updatedGame;
+const victoryBoard = [
+	["rs00", "rs00", "rm00", "0000", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "rs00", "rs00"],
+	["0000", "0000", "bm00", "bs00", "bs00"],
+]
+
+const victoryCards = async () => {
+	const allCards = await getAllCards();
+	return [allCards.boar, allCards.dragon, allCards.rabbit, allCards.cobra, allCards.mantis];
+}
+
+export const updateVictoryGame = async () => {
+	return updateGame(victoryBoard, await victoryCards());
 }

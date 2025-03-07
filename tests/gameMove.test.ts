@@ -4,7 +4,7 @@ import {
 	startTestGame,
 	logoutUser,
 	getEmail,
-	updateBoardForInvalidPawnTest
+	updateInvalidPawnGame
 } from './test-helpers';
 
 const email = getEmail();
@@ -14,7 +14,7 @@ test.describe('user can move a pawn', () => {
 	test.beforeEach(async ({ page }) => {
 		await clearTestData();
 		await startTestGame({page}, email);
-		updateBoardForInvalidPawnTest();
+		updateInvalidPawnGame();
 		await page.reload();
 		await page.waitForTimeout(500);
 	});
@@ -306,8 +306,8 @@ test.describe('user can move a pawn', () => {
 					await page.getByRole('button', { name: 'Confirm' }).click();
 					
 					await expect(page.locator(".card").locator("nth=0")).toContainText("Cobra");
-					await expect(page.locator(".card").locator("nth=1")).toContainText("Dragon");
-					await expect(page.locator(".card").locator("nth=2")).toContainText("Boar");
+					await expect(page.locator(".card").locator("nth=1")).toContainText("Boar");
+					await expect(page.locator(".card").locator("nth=2")).toContainText("Dragon");
 					await expect(page.locator(".card").locator("nth=3")).toHaveClass(/placeholder-card/);
 					await expect(page.locator(".card").locator("nth=4")).toContainText("Mantis");
 					await expect(page.locator(".card").locator("nth=5")).toContainText("Rabbit");
