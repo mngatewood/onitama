@@ -42,7 +42,7 @@ export const Board = ({ board, userColor, selectedPawn, selectPawn, selectTarget
 					pawn = "master";
 					break
 				default:
-					pawn = "";
+					pawn = "empty";
 			}
 
 			switch (highlightedCode) {
@@ -96,8 +96,19 @@ export const Board = ({ board, userColor, selectedPawn, selectPawn, selectTarget
 
 			const clickableTarget = selectedPawn && targetedCode === "x" ? "clickable-target" : "";
 
+			const renderThrone = () => {
+				if (index === 2) {
+					return "red-throne"
+				} else if (index === 22) {
+					return "blue-throne"
+				} else {
+					return ""
+				}
+			}
+			const throne = renderThrone();
+
 			return (
-				<div onClick={selectSpace} className={`${(selectedPawnPosition === index + 1) && "pawn-selected"} space aspect-square border border-slate-600 ${color} ${pawn} ${highlighted} ${targeted} ${clickableTarget}`} key={index} id={`space-${index + 1}`}>
+				<div onClick={selectSpace} className={`${(selectedPawnPosition === index + 1) && "pawn-selected"} space aspect-square border border-slate-600 text-xl md:text-2xl lg:text-3xl xl:text-5xl ${color} ${pawn} ${highlighted} ${targeted} ${throne} ${clickableTarget}`} key={index} id={`space-${index + 1}`}>
 				</div>
 			)
 
