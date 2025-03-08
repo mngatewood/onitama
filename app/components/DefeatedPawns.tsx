@@ -10,8 +10,8 @@ export const DefeatedPawns = ( {board}: { board: string[][] | null } ) => {
 	useEffect(() => {
 		if (!board) return
 		const flatBoard = board.flat();
-		const redPawns = flatBoard.filter((row) => row[0] === "r").length;
-		const bluePawns = flatBoard.filter((row) => row[0] === "b").length;
+		const redPawns = flatBoard.filter((row) => ["rs", "rm"].includes(row.slice(0, 2))).length;
+		const bluePawns = flatBoard.filter((row) => ["bs", "bm"].includes(row.slice(0, 2))).length;
 		setDefeatedRedPawns(5 - redPawns);
 		setDefeatedBluePawns(5 - bluePawns);
 	}, [board])
