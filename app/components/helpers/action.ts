@@ -19,12 +19,12 @@ interface Action {
 	target: Position;
 }
 
-export const getCardActions = (game: Game, cardId: string, userId: string) => {
+export const getCardActions = (game: Game, cardId: string, userId: string, invertActions: boolean = false) => {
 	const board = game?.board;
 	const card = game?.cards?.find((card) => card.id === cardId);
 	const playerColor = Object.keys(game?.players ?? {}).find((key) => game?.players[key as keyof typeof game.players]?.id === userId);
 	const pawnPositions = getPawnPositions(board, playerColor ?? "");
-	const pawnTargets = card?.moves && getPawnTargetsOnBoard(pawnPositions, card.moves);
+	const pawnTargets = card?.moves && getPawnTargetsOnBoard(pawnPositions, card.moves, invertActions);
 	const validTargets = removeFriendlyOccupiedTargets(pawnTargets ?? [], board, playerColor ?? "");
 
 	return validTargets;
@@ -59,6 +59,14 @@ const movesMatrix: MovesMatrix = {
 	25: { row: 2, column: 2 },
 };
 
+const invertTarget = (target: Position, invert?: boolean) => {
+	if (!invert) return target;
+	return {
+		row: target.row * -1,
+		column: target.column * -1,
+	};
+}
+
 export const getSpacePositionFromOrigin = (origin: Position) => {
 	const move = Object.keys(movesMatrix).find((key) => {
 		return (
@@ -81,7 +89,7 @@ const getPawnPositions = (board: string[][], playerColor: string) => {
 	return pawnPositions;
 };
 
-const getPawnTargetsOnBoard = (pawns: Position[], moves: number[]) => {
+const getPawnTargetsOnBoard = (pawns: Position[], moves: number[], invertActions: boolean = false) => {
 	const targets: Action[] = [];
 	pawns.forEach(pawn => {
 		const origin: Position = {
@@ -89,9 +97,11 @@ const getPawnTargetsOnBoard = (pawns: Position[], moves: number[]) => {
 			column: pawn.column,
 		}
 		moves.forEach(move => {
+			const moveRow = invertActions ? movesMatrix[move].row * -1 : movesMatrix[move].row;
+			const moveColumn = invertActions ? movesMatrix[move].column * -1 : movesMatrix[move].column;
 			const target: Position = {
-				row: pawn.row + movesMatrix[move].row,
-				column: pawn.column + movesMatrix[move].column,
+				row: pawn.row + moveRow,
+				column: pawn.column + moveColumn,
 			};
 			if (
 				target.row >= 0 &&
@@ -160,12 +170,14 @@ export const passTurn = async (gameId: string, nextTurn: string, selectedCardId:
 	}
 };
 
-export const completeTurn = async (game: Game, selectedCard: Card, selectedPawn: Position, selectedTarget: Position ) => {
+export const completeTurn = async (game: Game, selectedCard: Card, selectedPawn: Position, selectedTarget: Position, updatedBoard?: string[][] ) => {
 	try {
-		const board = JSON.parse(JSON.stringify(game.board));
+		const board = updatedBoard ? updatedBoard : JSON.parse(JSON.stringify(game.board));
 		const pawnType = board[selectedPawn.row][selectedPawn.column][1]
-		board[selectedPawn.row][selectedPawn.column] = "0000"
-		board[selectedTarget.row][selectedTarget.column] = game.turn[0] + pawnType + "00"
+		if(!updatedBoard) {
+			board[selectedPawn.row][selectedPawn.column] = "0000"
+			board[selectedTarget.row][selectedTarget.column] = game.turn[0] + pawnType + "00"
+		}
 
 		const url = `${apiUrl}/games?id=${game.id}&action=complete_turn`;
 		const update = {

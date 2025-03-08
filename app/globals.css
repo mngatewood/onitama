@@ -68,26 +68,26 @@
 }
 
 /* Don't highlight selected pawn */
-.highlighted.pawn-selected{
+.highlighted.pawn-selected {
 	cursor: default;
 }
 
 /* highlighted space with red pawn */
-.highlighted.red{
+.highlighted.red, .action.red {
 	background-color: theme("colors.red.300");
 }
 
 /* highlighted space with blue pawn */
-.highlighted.blue{
+.highlighted.blue, .action.red {
 	background-color: theme("colors.blue.300");
 }
 
 /* unhighlighted space */
-.not-highlighted{
+.not-highlighted {
 	background-color: theme("colors.neutral.300");
 }
 
-.targeted{
+.targeted {
 	background-color: theme("colors.neutral.300");
 }
 

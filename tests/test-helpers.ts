@@ -310,15 +310,22 @@ export const updateGame = async (updatedBoard: string[][], cards: Card[]) => {
 		}
 	}
 
-	await prisma.game.update({
+	const update = await prisma.game.update({
 		where: {
 			id: game?.id,
 		},
 		data: {
 			board: updatedBoard,
 			players: updatedPlayers as unknown as Prisma.JsonObject,
+			turn: cards[2].color,
+			cards: {
+				set: [],
+				connect: cards.map(card => ({ id: card.id }))
+			}
 		}
-	})
+	});
+
+	return update;
 
 }
 
@@ -357,16 +364,16 @@ export const updateInvalidPawnGame = async () => {
 }	
 
 const victoryBoard = [
-	["rs00", "rs00", "rm00", "0000", "0000"],
-	["0000", "0000", "0000", "0000", "0000"],
-	["0000", "0000", "0000", "0000", "0000"],
-	["0000", "0000", "0000", "rs00", "rs00"],
-	["0000", "0000", "bm00", "bs00", "bs00"],
+	["rs00", "rs00", "rm00", "rs00", "0000"],
+	["0000", "bs00", "0000", "0000", "0000"],
+	["0000", "0000", "bm00", "0000", "0000"],
+	["0000", "rs00", "0000", "0000", "0000"],
+	["bs00", "0000", "0000", "bs00", "bs00"],
 ]
 
 const victoryCards = async () => {
 	const allCards = await getAllCards();
-	return [allCards.boar, allCards.dragon, allCards.rabbit, allCards.cobra, allCards.mantis];
+	return [allCards.tiger, allCards.goose, allCards.horse, allCards.monkey, allCards.frog];
 }
 
 export const updateVictoryGame = async () => {

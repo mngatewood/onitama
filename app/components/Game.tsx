@@ -10,6 +10,7 @@ import { ToastMessage } from "./ToastMessage";
 import { getCardActions, getUpdatedBoard, passTurn, completeTurn } from "../components/helpers/action";
 import { PassButton } from "./PassButton";
 import { ConfirmButton } from "./ConfirmButton";
+import { resolveVirtualTurn } from "./helpers/virtualOpponent";
 
 interface GameProps {
 	gameId: string;
@@ -18,10 +19,10 @@ interface GameProps {
 
 export const Game = ({ gameId, userId }: GameProps) => {
 	const [game, setGame] = useState<Game | null>(null);
+	const [board, setBoard] = useState<string[][] | null>(null);
 	const [selectedCard, setSelectedCard] = useState<Card | null>(null);
 	const [selectedPawn, setSelectedPawn] = useState< Position | null>(null);
 	const [selectedTarget, setSelectedTarget] = useState< Position | null>(null);
-	const [board, setBoard] = useState<string[][] | null>(null);
 	const [waiting, setWaiting] = useState(true);
 	const [otherPlayersTurn, setOtherPlayersTurn] = useState(false);
 	const [notifications, setNotifications] = useState<ToastNotification[]>([]);
@@ -93,7 +94,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			}
 		}
 	};
-	
+
 	// Fetch game data
 	useEffect(() => {
 		if (gameId) {
@@ -143,19 +144,39 @@ export const Game = ({ gameId, userId }: GameProps) => {
 
 	// Refresh game when turn changes
 	useEffect(() => {
-		if(game && game.turn !== previousTurnRef.current) {
-			setSelectedCard(null);
-			setBoard(game?.board);
-			setRenderPassButton(false);
-			updateNeutralCard(game);
-			if (game.turn === userColor) {
-				setOtherPlayersTurn(false);
-			} else {
-				setOtherPlayersTurn(true);
+		const updateTurn = async () => {
+			if(game && game.turn !== previousTurnRef.current) {
+				setSelectedCard(null);
+				setBoard(game?.board);
+				setRenderPassButton(false);
+				updateNeutralCard(game);
+				if (game.turn === userColor) {
+					setOtherPlayersTurn(false);
+				} else {
+					setOtherPlayersTurn(true);
+					const updatedGame = await resolveVirtualTurn(game, userId);
+					if (updatedGame) {
+						console.log("game was updated in Game!", updatedGame)
+						setGame(updatedGame);
+						setBoard(updatedGame.board);
+						const allPlayerCards = [...updatedGame?.players.red.cards ?? [], ...updatedGame?.players.blue.cards ?? []];
+						const allPlayerCardsIds = allPlayerCards.map((card: Card) => card.id);
+						setNeutralCard(updatedGame.cards?.find((card: Card) => !allPlayerCardsIds.includes(card.id)) ?? null);
+						const notification = {
+							type: "success",
+							message: "Your opponent has completed their turn.  Please select a card.",
+							duration: 0,
+							delay: 0,
+							action: ""
+						}
+						setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+					}
+				}
+				previousTurnRef.current = game.turn;
 			}
-			previousTurnRef.current = game.turn;
-		}
-	}, [game, userColor]);
+		};
+		updateTurn();
+	}, [game, userId, userColor]);
 
 	const selectCard = (cardId: string) => {
 		if(game !== null) {
