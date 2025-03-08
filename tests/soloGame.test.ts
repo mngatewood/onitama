@@ -31,6 +31,8 @@ test.describe('user can play a solo game', () => {
 		});
 
 		test('The new game menu displays a Solo, Multiplayer, and Cancel buttons', async ({ page }) => {
+			await page.getByRole('button', { name: 'New Game' }).click();
+
 			await expect (page.getByRole('button', { name: 'Solo' })).toBeVisible();
 			await expect(page.getByRole('button', { name: 'Multiplayer' })).toBeVisible();
 			await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
