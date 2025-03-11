@@ -29,7 +29,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 	const [renderPassButton, setRenderPassButton] = useState(false);
 	const [renderConfirmButton, setRenderConfirmButton] = useState(false);
 	const [neutralCard, setNeutralCard] = useState<Card | null>(null);
-	const [targets, setTargets] = useState<Target[] | null>(null);
+	const [actions, setActions] = useState<Action[] | null>(null);
 	const previousTurnRef = useRef<string | null>(null);
 	const userColor = ["red", "blue"].find((key) => {
 		return game?.players && game?.players[key as keyof typeof game.players]?.id === userId;
@@ -186,7 +186,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				const updatedBoard = getUpdatedBoard(game, cardActions);
 				setSelectedPawn(null);
 				setSelectedTarget(null);
-				setTargets(cardActions);
+				setActions(cardActions);
 				setBoard(updatedBoard);
 				setRenderPassButton(false);
 				const notification = {
@@ -201,7 +201,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				const updatedBoard = JSON.parse(JSON.stringify(game.board));
 				setSelectedPawn(null);
 				setSelectedTarget(null);
-				setTargets(null);
+				setActions(null);
 				setBoard(updatedBoard);
 				setRenderPassButton(true);
 				const notification = {
@@ -219,12 +219,12 @@ export const Game = ({ gameId, userId }: GameProps) => {
 
 	const selectPawn = (origin: Position) => {
 		if(game) {
-			const pawnTargets = targets?.filter((action: Target) => action.origin.row === origin.row && action.origin.column === origin.column);
+			const pawnTargets = actions?.filter((action: Action) => action.origin.row === origin.row && action.origin.column === origin.column);
 			if (pawnTargets?.length) {
 				const updatedBoard = JSON.parse(JSON.stringify(game.board));
 				updatedBoard[origin.row][origin.column] = updatedBoard[origin.row][origin.column].substring(0, 2) + "h" + updatedBoard[origin.row][origin.column].substring(3);
-				pawnTargets.forEach((target: Target) => {
-					updatedBoard[target.target.row][target.target.column] = updatedBoard[target.target.row][target.target.column].substring(0, 3) + "x";
+				pawnTargets.forEach((action: Action) => {
+					updatedBoard[action.target.row][action.target.column] = updatedBoard[action.target.row][action.target.column].substring(0, 3) + "x";
 				})
 				setSelectedPawn(origin);
 				setBoard(updatedBoard);
@@ -242,7 +242,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				setSelectedCard(null);
 				setSelectedPawn(null);
 				setSelectedTarget(null);
-				setTargets(null);
+				setActions(null);
 				setRenderPassButton(true);
 				const notification = {
 					type: "error",
@@ -291,7 +291,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				setSelectedCard(null);
 				setSelectedPawn(null);
 				setSelectedTarget(null);
-				setTargets(null);
+				setActions(null);
 				const notification = {
 						type: "system",
 						message: "Your turn has ended. Please wait for your opponent to take their turn.",
@@ -336,7 +336,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			setSelectedCard(null);
 			setSelectedPawn(null);
 			setSelectedTarget(null);
-			setTargets(null);
+			setActions(null);
 			// socket.emit("update_game", gameId, game);
 		}
 	}
@@ -349,7 +349,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			setSelectedCard(null);
 			setSelectedPawn(null);
 			setSelectedTarget(null);
-			setTargets(null);
+			setActions(null);
 			const notification = {
 				type: "success",
 				message: "The board has been reset.  Please select a card.",

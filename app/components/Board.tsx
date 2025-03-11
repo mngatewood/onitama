@@ -54,6 +54,7 @@ export const Board = ({ board, userColor, selectedPawn, selectPawn, selectTarget
 					break
 				case "a":
 					highlighted = "action";
+					break
 				default:
 					highlighted = "not-highlighted";
 			}

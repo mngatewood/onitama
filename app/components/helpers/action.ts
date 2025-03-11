@@ -14,11 +14,6 @@ interface MovesMatrix {
 	};
 }
 
-interface Action {
-	origin: Position;
-	target: Position;
-}
-
 export const getCardActions = (game: Game, cardId: string, userId: string, invertActions: boolean = false) => {
 	const board = game?.board;
 	const card = game?.cards?.find((card) => card.id === cardId);
@@ -59,13 +54,6 @@ const movesMatrix: MovesMatrix = {
 	25: { row: 2, column: 2 },
 };
 
-const invertTarget = (target: Position, invert?: boolean) => {
-	if (!invert) return target;
-	return {
-		row: target.row * -1,
-		column: target.column * -1,
-	};
-}
 
 export const getSpacePositionFromOrigin = (origin: Position) => {
 	const move = Object.keys(movesMatrix).find((key) => {
@@ -90,7 +78,7 @@ const getPawnPositions = (board: string[][], playerColor: string) => {
 };
 
 const getPawnTargetsOnBoard = (pawns: Position[], moves: number[], invertActions: boolean = false) => {
-	const targets: Action[] = [];
+	const actions: Action[] = [];
 	pawns.forEach(pawn => {
 		const origin: Position = {
 			row: pawn.row,
@@ -109,19 +97,19 @@ const getPawnTargetsOnBoard = (pawns: Position[], moves: number[], invertActions
 				target.column >= 0 &&
 				target.column < 5
 			) {
-				targets.push({
+				actions.push({
 					origin,
 					target,
 				} as Action);
 			}
 		});
 	})
-	return targets;
+	return actions;
 }
 
-const removeFriendlyOccupiedTargets = (targets: Action[], board: string[][], playerColor: string) => {
-	const updatedTargets =targets.filter(target => {
-		return board[target.target.row][target.target.column][0] !== playerColor[0];
+const removeFriendlyOccupiedTargets = (actions: Action[], board: string[][], playerColor: string) => {
+	const updatedTargets =actions.filter(action => {
+		return board[action.target.row][action.target.column][0] !== playerColor[0];
 	})
 
 	return updatedTargets;

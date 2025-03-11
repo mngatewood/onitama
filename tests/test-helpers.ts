@@ -376,6 +376,143 @@ const victoryCards = async () => {
 	return [allCards.tiger, allCards.goose, allCards.horse, allCards.monkey, allCards.frog];
 }
 
-export const updateVictoryGame = async () => {
+export const updateGameVictory = async () => {
 	return updateGame(victoryBoard, await victoryCards());
 }
+
+const avoidDefeatBoardThroneAndMaster = [
+	["rs00", "rs00", "0000", "rs00", "rs00"],
+	["0000", "0000", "0000", "bs00", "0000"],
+	["0000", "0000", "rm00", "0000", "0000"],
+	["0000", "0000", "0000", "bs00", "0000"],
+	["bs00", "bs00", "bm00", "0000", "0000"],
+]
+
+const avoidDefeatCardsThroneAndMaster = async () => {
+	const allCards = await getAllCards();
+	return [allCards.monkey, allCards.goose, allCards.horse, allCards.tiger, allCards.frog];
+}
+
+export const updateGameAvoidDefeatGameThroneAndMaster = async () => {
+	return updateGame(avoidDefeatBoardThroneAndMaster, await avoidDefeatCardsThroneAndMaster());
+}
+
+const avoidDefeatBoardThrone = [
+	["rs00", "rs00", "0000", "rs00", "rs00"],
+	["0000", "0000", "rm00", "bs00", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "bs00", "0000"],
+	["bs00", "bs00", "bm00", "0000", "0000"],
+]
+
+const avoidDefeatCardsThrone = async () => {
+	const allCards = await getAllCards();
+	return [allCards.monkey, allCards.goose, allCards.horse, allCards.tiger, allCards.frog];
+}
+
+export const updateGameAvoidDefeatGameThrone = async () => {
+	return updateGame(avoidDefeatBoardThrone, await avoidDefeatCardsThrone());
+}
+
+const avoidDefeatBoardMasterCanAttackThreat = [
+	["rs00", "rs00", "0000", "rs00", "rs00"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "rm00", "0000", "0000"],
+	["0000", "0000", "0000", "bs00", "0000"],
+	["bs00", "bs00", "bm00", "0000", "bs00"],
+]
+
+const avoidDefeatCardsMasterCanAttackThreat = async () => {
+	const allCards = await getAllCards();
+	return [allCards.monkey, allCards.goose, allCards.horse, allCards.tiger, allCards.frog];
+}
+
+export const updateGameAvoidDefeatGameMasterCanAttackThreat = async () => {
+	return updateGame(avoidDefeatBoardMasterCanAttackThreat, await avoidDefeatCardsMasterCanAttackThreat());
+}
+
+const avoidDefeatBoardMasterCannotAttackThreat = [
+	["rs00", "rs00", "0000", "rs00", "rs00"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "rm00", "0000", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["bs00", "bs00", "bm00", "bs00", "bs00"],
+]
+
+const avoidDefeatCardsMasterCannotAttackThreat = async () => {
+	const allCards = await getAllCards();
+	return [allCards.monkey, allCards.goose, allCards.horse, allCards.tiger, allCards.frog];
+}
+
+export const updateGameAvoidDefeatGameMasterCannotAttackThreat = async () => {
+	return updateGame(avoidDefeatBoardMasterCannotAttackThreat, await avoidDefeatCardsMasterCannotAttackThreat());
+}
+
+const attackThreateningPawnBoard = [
+	["rs00", "rs00", "rm00", "0000", "rs00"],
+	["0000", "0000", "0000", "rs00", "0000"],
+	["0000", "0000", "0000", "0000", "bs00"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["bs00", "bs00", "bm00", "bs00", "0000"],
+]
+
+const attackThreateningPawnCards = async () => {
+	const allCards = await getAllCards();
+	return [allCards.monkey, allCards.goose, allCards.horse, allCards.tiger, allCards.frog];
+}
+
+export const updateGameAttackThreateningPawn = async () => {
+	return updateGame(attackThreateningPawnBoard, await attackThreateningPawnCards());
+}
+
+const evadeThreateningPawnBoard = [
+	["rs00", "rs00", "rm00", "0000", "rs00"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "rs00", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["bs00", "bs00", "bm00", "bs00", "bs00"],
+]
+
+const evadeThreateningPawnCards = async () => {
+	const allCards = await getAllCards();
+	return [allCards.monkey, allCards.goose, allCards.horse, allCards.tiger, allCards.frog];
+}
+
+export const updateGameEvadeThreateningPawn = async () => {
+	return updateGame(evadeThreateningPawnBoard, await evadeThreateningPawnCards());
+}
+
+const attackPawnBoard = [
+	["rs00", "rs00", "0000", "rs00", "rs00"],
+	["bs00", "rm00", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "bs00", "bm00", "bs00", "bs00"],
+]
+
+const attackPawnCards = async () => {
+	const allCards = await getAllCards();
+	return [allCards.monkey, allCards.goose, allCards.horse, allCards.tiger, allCards.frog];
+}
+
+export const updateGameAttackPawn = async () => {
+	return updateGame(attackPawnBoard, await attackPawnCards());
+}
+
+const movePawnToSafeLocationBoard = [
+	["0000", "0000", "0000", "0000", "0000"],
+	["rs00", "rs00", "rm00", "rs00", "rs00"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["bs00", "bs00", "bm00", "bs00", "bs00"],
+]
+
+const movePawnToSafeLocationCards = async () => {
+	const allCards = await getAllCards();
+	return [allCards.monkey, allCards.goose, allCards.horse, allCards.tiger, allCards.frog];
+}
+
+export const updateGameMovePawnToSafeLocation = async () => {
+	return updateGame(movePawnToSafeLocationBoard, await movePawnToSafeLocationCards());
+}
+

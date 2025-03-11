@@ -78,7 +78,7 @@
 }
 
 /* highlighted space with blue pawn */
-.highlighted.blue, .action.red {
+.highlighted.blue, .action.blue {
 	background-color: theme("colors.blue.300");
 }
 

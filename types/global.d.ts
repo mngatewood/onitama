@@ -59,7 +59,7 @@ declare global {
 		delay: number; /* how long to wait before redirecting to the action path */
 	}
 
-	interface Target {
+	interface Action {
 		origin: Position;
 		target: Position;
 	}
