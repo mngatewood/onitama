@@ -158,14 +158,9 @@ export const passTurn = async (gameId: string, nextTurn: string, selectedCardId:
 	}
 };
 
-export const completeTurn = async (game: Game, selectedCard: Card, selectedPawn: Position, selectedTarget: Position, updatedBoard?: string[][] ) => {
+export const completeTurn = async (game: Game, selectedCard: Card, selectedPawn: Position, selectedTarget: Position ) => {
 	try {
-		const board = updatedBoard ? updatedBoard : JSON.parse(JSON.stringify(game.board));
-		const pawnType = board[selectedPawn.row][selectedPawn.column][1]
-		if(!updatedBoard) {
-			board[selectedPawn.row][selectedPawn.column] = "0000"
-			board[selectedTarget.row][selectedTarget.column] = game.turn[0] + pawnType + "00"
-		}
+		const board = getEndTurnBoard(game, selectedPawn, selectedTarget);
 
 		const url = `${apiUrl}/games?id=${game.id}&action=complete_turn`;
 		const update = {
@@ -190,4 +185,34 @@ export const completeTurn = async (game: Game, selectedCard: Card, selectedPawn:
 		console.error('Error completing the turn:', error);
 		throw error;
 	}
+}
+
+const getEndTurnBoard = (game: Game, selectedPawn: Position, selectedTarget: Position) => {
+	const board = JSON.parse(JSON.stringify(game.board));
+	const selectedPawnType = board[selectedPawn.row][selectedPawn.column][1];
+	const playerColor = game.turn[0];
+
+	console.log("original board", board)
+	const updatedBoard = board.map((row: string[]) => {
+		return row.map((space: string) => {
+
+			let updatedSpace = space;
+
+			// if space has pawn and action, remove action but leave pawn and color
+			if (updatedSpace.slice(1, 3) === "sa" || updatedSpace.slice(1, 3) === "ma") {
+				updatedSpace = updatedSpace.slice(0, 2) + "0" + updatedSpace.charAt(3);
+
+			// else if space has action only, remove action and color
+			} else if (updatedSpace.charAt(2) === "a") {
+				updatedSpace = "000" + updatedSpace.charAt(3);
+			}
+
+			return updatedSpace;
+		});
+	});
+	updatedBoard[selectedPawn.row][selectedPawn.column] = playerColor + "0a0"
+	updatedBoard[selectedTarget.row][selectedTarget.column] = playerColor + selectedPawnType + "a0"
+
+	return updatedBoard;
+
 }

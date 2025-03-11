@@ -272,12 +272,8 @@ const executeAction = async (action: Action, game: Game) => {
 	try {
 		const selectedCard = getCardFromAction(action, game.players.red.cards)
 		const updatedBoard = JSON.parse(JSON.stringify(game.board));
-		const originColor = updatedBoard[action.origin.row][action.origin.column][0];
-		const originPawn = updatedBoard[action.origin.row][action.origin.column][1];
-		updatedBoard[action.target.row][action.target.column] = originColor + originPawn + "a0";
-		updatedBoard[action.origin.row][action.origin.column] = originColor + "0a0";
 		if (selectedCard && updatedBoard) {
-			const updatedGame = await completeTurn(game, selectedCard, action.origin, action.target, updatedBoard);
+			const updatedGame = await completeTurn(game, selectedCard, action.origin, action.target);
 			return updatedGame
 		} else {
 			return
