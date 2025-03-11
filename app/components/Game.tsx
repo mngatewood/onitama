@@ -261,7 +261,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			const updatedBoard = JSON.parse(JSON.stringify(game.board));
 			updatedBoard[target.row][target.column] = updatedBoard[target.row][target.column].substring(0, 3) + "o";
 			updatedBoard[selectedPawn.row][selectedPawn.column] = updatedBoard[selectedPawn.row][selectedPawn.column].substring(0, 2) + "h" + updatedBoard[selectedPawn.row][selectedPawn.column].substring(3);
-			console.log("updatedBoard", updatedBoard);
 			setBoard(updatedBoard);
 			setSelectedTarget(target);
 			const notification = {
@@ -308,8 +307,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 
 	const clickConfirm = async () => {
 		setRenderConfirmButton(false);
-		console.log("clicked confirm");
-		console.log(game, selectedCard, selectedPawn, selectedTarget);
 		if (game && selectedCard && selectedPawn && selectedTarget) {
 			const updatedGame = await completeTurn(game, selectedCard, selectedPawn, selectedTarget);
 			if(updatedGame) {
@@ -332,7 +329,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				}
 				setNotifications((prevNotifications) => [notification, ...prevNotifications]);
 			}
-			console.log("updatedGame", updatedGame);
 			setSelectedCard(null);
 			setSelectedPawn(null);
 			setSelectedTarget(null);
