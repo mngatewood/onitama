@@ -1,6 +1,6 @@
 import { getCardActions, completeTurn, passTurn } from "./action";
 
-const virtualOpponentEmail = process.env.NEXT_PUBLIC_VIRTUAL_OPPONENT_EMAIL;
+const virtualOpponentEmail = process.env.NEXT_PUBLIC_VIRTUAL_OPPONENT_EMAIL || "virtual_opponent@mngatewood.com";
 
 const getPlayerActions = async (userId: string, game: Game, invertActions: boolean = false) => {
 	const playerColor = Object.keys(game?.players ?? {}).find((key) => game?.players[key as keyof typeof game.players]?.id === userId);
