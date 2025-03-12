@@ -316,6 +316,7 @@ export const resolveVirtualTurn = async (game: Game, userId: string) => {
 	// return if neither user has email virtual_opponent@mngatewood.com
 	const virtualOpponent = game?.users?.find((user) => user.email === virtualOpponentEmail);
 	console.log("virtualOpponentEmail", virtualOpponentEmail)
+	console.log("voe", process.env.VIRTUAL_OPPONENT_EMAIL)
 	console.log("virtual_opponent", virtualOpponent)
 	if (!virtualOpponent) {
 		return;
