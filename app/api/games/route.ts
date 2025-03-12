@@ -134,7 +134,6 @@ export const PUT = async (request: NextRequest) => {
 	if (action === "solo") {
 		try {
 			const virtualOpponent = await createVirtualOpponent();
-			console.log("server virtualOpponent: ", virtualOpponent);
 			data.players.red.id = virtualOpponent.id;
 			data.users.connect.push({
 				id: virtualOpponent.id,
@@ -366,12 +365,8 @@ const createVirtualOpponent = async () => {
 				first_name: "Virtual Opponent"
 			}
 		})
-		console.log("Virtual opponent created")
-		console.log(response)
 		return response;
 	} else {
-		console.log("Virtual opponent already exists")
-		console.log(existingUser)
 		return existingUser;
 	}
 }
