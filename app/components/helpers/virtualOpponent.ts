@@ -2,13 +2,14 @@ import { getCardActions, completeTurn, passTurn } from "./action";
 
 const virtualOpponentEmail = process.env.NEXT_PUBLIC_VIRTUAL_OPPONENT_EMAIL || "virtual_opponent@mngatewood.com";
 
-const getPlayerActions = async (userId: string, game: Game, invertActions: boolean = false) => {
-	const playerColor = Object.keys(game?.players ?? {}).find((key) => game?.players[key as keyof typeof game.players]?.id === userId);
+// return array of all possible actions for a player (invertActions is for virtual opponent)
+const getPlayerActions = async (playerId: string, game: Game, invertActions: boolean = false) => {
+	const playerColor = Object.keys(game?.players ?? {}).find((key) => game?.players[key as keyof typeof game.players]?.id === playerId);
 	const player = game.players[playerColor as keyof typeof game.players];
 	const cards = player.cards
 	const actions: Action[] = [];
 	cards.forEach((card) => {
-		const action = getCardActions(game, card.id, userId, invertActions);
+		const action = getCardActions(game, card.id, playerId, invertActions);
 		actions.push(...action);
 	})
 	return actions;
@@ -24,6 +25,7 @@ const removeDuplicateActions = (actions: Action[]) => {
 	return uniqueActions;
 }
 
+// return array of all actions that will result in victory
 const getVictoryActions = async (actions: Action[], userId: string, game: Game) => {
 	const playerThrone = { row: 4, column: 2 };
 	const playerMaster = game.board.map((row, rowIndex) => {
@@ -44,6 +46,7 @@ const getVictoryActions = async (actions: Action[], userId: string, game: Game) 
 	return victoryActions;
 }
 
+// return array of all actions that will not result in opponent's pawn being attacked
 const getSafeSpaceActions = (virtualOpponentActions: Action[], userActions: Action[]) => {
 	// Filter opponent actions that don't match any user action targets
 	const safeActions = virtualOpponentActions.filter(opponentAction => {
@@ -56,6 +59,7 @@ const getSafeSpaceActions = (virtualOpponentActions: Action[], userActions: Acti
 	return removeDuplicateActions(safeActions);
 };
 
+// return the position of the virtual opponent's master
 const getMasterPosition = (board: string[][]): Position | undefined => {
 	return board.reduce((position, row, rowIndex) => {
 		const columnIndex = row.findIndex(space => space.startsWith("rm"));
@@ -63,6 +67,7 @@ const getMasterPosition = (board: string[][]): Position | undefined => {
 	}, undefined as Position | undefined);
 };
 
+// return array of all actions that will prevent the opponent's master or throne being attacked
 const getPreventDefeatActions = async (virtualOpponentActions: Action[], userActions: Action[], userId: string, game: Game) => {
 	// are there any user actions that target the virtual opponent's throne?
 	const threatenedThroneActions = userActions.filter((action) => action.target.row === 0 && action.target.column === 2)
@@ -141,6 +146,7 @@ const getPreventDefeatActions = async (virtualOpponentActions: Action[], userAct
 	return [];
 }
 
+// return the position of all pawns for a given color
 const getPawnPositions = (board: string[][], color: string): Position[] => {
 	const positions: Position[] = [];
 	board.forEach((row, rowIndex) => {
@@ -154,6 +160,7 @@ const getPawnPositions = (board: string[][], color: string): Position[] => {
 	return positions
 };
 
+// return the position of all threatened opponent pawns
 const getThreatenedPawns = (virtualOpponentActions: Action[], userActions: Action[], game: Game) => {
 	const threatenedPawns: Position[] = [];
 	const pawnPositions = getPawnPositions(game.board, "red");
@@ -167,6 +174,7 @@ const getThreatenedPawns = (virtualOpponentActions: Action[], userActions: Actio
 	return threatenedPawns
 }
 
+// return the position of all user pawns that are threatening an opponent pawn
 const getThreateningPawns = (virtualOpponentActions: Action[], userActions: Action[], game: Game) => {
 	const threatenedPawns = getThreatenedPawns(virtualOpponentActions, userActions, game);
 	const pawnActions = userActions.filter((action) =>
@@ -182,6 +190,7 @@ const getThreateningPawns = (virtualOpponentActions: Action[], userActions: Acti
 	)).values()];
 };
 
+// return an array of all actions that will prevent an opponent pawn from being attacked
 const getPreventAttackActions = (virtualOpponentActions: Action[], userActions: Action[], userId: string, game: Game) => {
 	const threateningPawns = getThreateningPawns(virtualOpponentActions, userActions, game);
 	// determine if any virtual opponent's actions can attack those pawns
@@ -221,6 +230,7 @@ const getPreventAttackActions = (virtualOpponentActions: Action[], userActions: 
 	return [];
 }
 
+// return an array of all actions that will attack a player's pawn
 const getAttackActions = async (virtualOpponentActions: Action[], playerActions: Action[], userId: string, game: Game) => {
 	const enemyPawnLocations = getPawnPositions(game.board, "blue");
 	const attackActions = virtualOpponentActions.filter((action) =>
@@ -232,6 +242,7 @@ const getAttackActions = async (virtualOpponentActions: Action[], playerActions:
 	return removeDuplicateActions(attackActions);
 }
 
+// return an array of all actions that will move a player's pawn to a safe space
 const getMoveActions = async (virtualOpponentActions: Action[], playerActions: Action[], game: Game) => {
 	const safeSpaceActions = getSafeSpaceActions(virtualOpponentActions, playerActions);
 	const moveActions = virtualOpponentActions.filter((action) =>
@@ -255,6 +266,7 @@ const getMoveActions = async (virtualOpponentActions: Action[], playerActions: A
 	return removeDuplicateActions(sortedActionsWithMasterPositionLast);
 };
 
+// find the card that corresponds to the given action
 const getCardFromAction = (action: Action, cards: Card[]) => {
 	const columnChange = action.origin.column - action.target.column;
 	const rowChange = action.origin.row - action.target.row;
@@ -263,10 +275,12 @@ const getCardFromAction = (action: Action, cards: Card[]) => {
 	return card
 }
 
+// get a random index given the length of the array
 const getRandomIndex = (length: number) => {
 	return Math.floor(Math.random() * length);
 }
 
+// update the game with the given action
 const executeAction = async (action: Action, game: Game) => {
 	try {
 		const selectedCard = getCardFromAction(action, game.players.red.cards)
@@ -283,6 +297,7 @@ const executeAction = async (action: Action, game: Game) => {
 	}
 }
 
+// select a random card and pass the turn
 const executePassTurn = async (game: Game): Promise<Game> => {
 	try {
 		const randomCardIndex = getRandomIndex(2);
@@ -309,17 +324,20 @@ const executePassTurn = async (game: Game): Promise<Game> => {
 	}
 };
 
+// determine the appropriate action for the virtual opponent
 export const resolveVirtualTurn = async (game: Game, userId: string) => {
 
-	// return if neither user has email virtual_opponent@mngatewood.com
+	// return if neither user has virtual opponent email
 	const virtualOpponent = game?.users?.find((user) => user.email === virtualOpponentEmail);
 	if (!virtualOpponent) {
 		return;
 	}
 	// get all the actions for the virtual opponent's two cards
 	const virtualOpponentActions = await getPlayerActions(virtualOpponent.id, game, true);
+
 	// get all the actions for the player's two cards
 	const playerActions = await getPlayerActions(userId, game, false);
+
 	// evaluate virtual opponent actions for victory condition
 	const victoryActions = await getVictoryActions(virtualOpponentActions, userId, game);
 	if (victoryActions.length) {
@@ -329,6 +347,7 @@ export const resolveVirtualTurn = async (game: Game, userId: string) => {
 			return updatedGame
 		}
 	}
+
 	// evaluate the player's actions for defeat condition
 	const preventDefeatActions = await getPreventDefeatActions(virtualOpponentActions, playerActions, userId, game);
 	if (preventDefeatActions.length) {
@@ -338,6 +357,8 @@ export const resolveVirtualTurn = async (game: Game, userId: string) => {
 			return updatedGame
 		}
 	}
+
+	// evaluate the player's actions for attacks on opponent's pawns
 	const preventAttackActions = getPreventAttackActions(virtualOpponentActions, playerActions, userId, game);
 	if (preventAttackActions.length) {
 		const randomIndex = getRandomIndex(preventAttackActions.length);
@@ -346,6 +367,8 @@ export const resolveVirtualTurn = async (game: Game, userId: string) => {
 			return updatedGame
 		}
 	}
+
+	// evaluate the virtual opponent's actions for attacks on player's pawns
 	const attackActions = await getAttackActions(virtualOpponentActions, playerActions,userId, game);
 	if (attackActions.length) {
 		const randomIndex = getRandomIndex(attackActions.length);
@@ -354,6 +377,7 @@ export const resolveVirtualTurn = async (game: Game, userId: string) => {
 			return updatedGame
 		}
 	}
+
 	// determine if there are any valid moves that will not result in a threatened pawn
 	const moveActions = await getMoveActions(virtualOpponentActions, playerActions, game);
 	if (moveActions.length) {
@@ -362,6 +386,7 @@ export const resolveVirtualTurn = async (game: Game, userId: string) => {
 		if (updatedGame) {
 			return updatedGame
 		}
+	// if there are no moves that don't result in a threatened pawn, execute a random action
 	} else if (virtualOpponentActions.length) {
 		const randomIndex = getRandomIndex(virtualOpponentActions.length);
 		const updatedGame = executeAction(virtualOpponentActions[randomIndex], game);
@@ -369,6 +394,8 @@ export const resolveVirtualTurn = async (game: Game, userId: string) => {
 			return updatedGame
 		}
 	}
+
+	// if there are no valid moves, execute a pass
 	const passTurn = executePassTurn(game);
 	if (passTurn) {
 		return passTurn
