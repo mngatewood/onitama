@@ -43,27 +43,51 @@
 	background-color: theme("colors.neutral.400");
 }
 
+.blue-throne.empty::after {
+	content: "青";
+	color: theme("colors.blue.900");
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	/* font-size: x-large; */
+	font-weight: bold;
+	width: 100%;
+	height: 100%;
+}
+
+.red-throne.empty::after {
+	content: "赤";
+	color: theme("colors.red.900");
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	/* font-size: x-large; */
+	font-weight: bold;
+	width: 100%;
+	height: 100%;
+}
+
 /* Don't highlight selected pawn */
-.highlighted.pawn-selected{
+.highlighted.pawn-selected {
 	cursor: default;
 }
 
 /* highlighted space with red pawn */
-.highlighted.red{
+.highlighted.red, .action.red {
 	background-color: theme("colors.red.300");
 }
 
 /* highlighted space with blue pawn */
-.highlighted.blue{
+.highlighted.blue, .action.blue {
 	background-color: theme("colors.blue.300");
 }
 
 /* unhighlighted space */
-.not-highlighted{
+.not-highlighted {
 	background-color: theme("colors.neutral.300");
 }
 
-.targeted{
+.targeted {
 	background-color: theme("colors.neutral.300");
 }
 
@@ -72,11 +96,11 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	font-size: large;
 	font-weight: bold;
 	width: 100%;
 	height: 100%;
 	color: black;
+	margin-top: -4%;
 }
 
 .targeted.student::after, .targeted.master::after {

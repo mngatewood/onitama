@@ -10,6 +10,7 @@ import { ToastMessage } from "./ToastMessage";
 import { getCardActions, getUpdatedBoard, passTurn, completeTurn } from "../components/helpers/action";
 import { PassButton } from "./PassButton";
 import { ConfirmButton } from "./ConfirmButton";
+import { resolveVirtualTurn } from "./helpers/virtualOpponent";
 
 interface GameProps {
 	gameId: string;
@@ -18,17 +19,17 @@ interface GameProps {
 
 export const Game = ({ gameId, userId }: GameProps) => {
 	const [game, setGame] = useState<Game | null>(null);
+	const [board, setBoard] = useState<string[][] | null>(null);
 	const [selectedCard, setSelectedCard] = useState<Card | null>(null);
 	const [selectedPawn, setSelectedPawn] = useState< Position | null>(null);
 	const [selectedTarget, setSelectedTarget] = useState< Position | null>(null);
-	const [board, setBoard] = useState<string[][] | null>(null);
 	const [waiting, setWaiting] = useState(true);
 	const [otherPlayersTurn, setOtherPlayersTurn] = useState(false);
 	const [notifications, setNotifications] = useState<ToastNotification[]>([]);
 	const [renderPassButton, setRenderPassButton] = useState(false);
 	const [renderConfirmButton, setRenderConfirmButton] = useState(false);
 	const [neutralCard, setNeutralCard] = useState<Card | null>(null);
-	const [targets, setTargets] = useState<Target[] | null>(null);
+	const [actions, setActions] = useState<Action[] | null>(null);
 	const previousTurnRef = useRef<string | null>(null);
 	const userColor = ["red", "blue"].find((key) => {
 		return game?.players && game?.players[key as keyof typeof game.players]?.id === userId;
@@ -93,7 +94,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			}
 		}
 	};
-	
+
 	// Fetch game data
 	useEffect(() => {
 		if (gameId) {
@@ -143,19 +144,39 @@ export const Game = ({ gameId, userId }: GameProps) => {
 
 	// Refresh game when turn changes
 	useEffect(() => {
-		if(game && game.turn !== previousTurnRef.current) {
-			setSelectedCard(null);
-			setBoard(game?.board);
-			setRenderPassButton(false);
-			updateNeutralCard(game);
-			if (game.turn === userColor) {
-				setOtherPlayersTurn(false);
-			} else {
-				setOtherPlayersTurn(true);
+		const updateTurn = async () => {
+			if(game && game.turn !== previousTurnRef.current) {
+				setSelectedCard(null);
+				setBoard(game?.board);
+				setRenderPassButton(false);
+				updateNeutralCard(game);
+				if (game.turn === userColor) {
+					setOtherPlayersTurn(false);
+				} else {
+					setOtherPlayersTurn(true);
+					const updatedGame = await resolveVirtualTurn(game, userId);
+					if (updatedGame) {
+						console.log("game was updated in Game!", updatedGame)
+						setGame(updatedGame);
+						setBoard(updatedGame.board);
+						const allPlayerCards = [...updatedGame?.players.red.cards ?? [], ...updatedGame?.players.blue.cards ?? []];
+						const allPlayerCardsIds = allPlayerCards.map((card: Card) => card.id);
+						setNeutralCard(updatedGame.cards?.find((card: Card) => !allPlayerCardsIds.includes(card.id)) ?? null);
+						const notification = {
+							type: "success",
+							message: "Your opponent has completed their turn.  Please select a card.",
+							duration: 0,
+							delay: 0,
+							action: ""
+						}
+						setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+					}
+				}
+				previousTurnRef.current = game.turn;
 			}
-			previousTurnRef.current = game.turn;
-		}
-	}, [game, userColor]);
+		};
+		updateTurn();
+	}, [game, userId, userColor]);
 
 	const selectCard = (cardId: string) => {
 		if(game !== null) {
@@ -165,7 +186,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				const updatedBoard = getUpdatedBoard(game, cardActions);
 				setSelectedPawn(null);
 				setSelectedTarget(null);
-				setTargets(cardActions);
+				setActions(cardActions);
 				setBoard(updatedBoard);
 				setRenderPassButton(false);
 				const notification = {
@@ -180,7 +201,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				const updatedBoard = JSON.parse(JSON.stringify(game.board));
 				setSelectedPawn(null);
 				setSelectedTarget(null);
-				setTargets(null);
+				setActions(null);
 				setBoard(updatedBoard);
 				setRenderPassButton(true);
 				const notification = {
@@ -198,12 +219,12 @@ export const Game = ({ gameId, userId }: GameProps) => {
 
 	const selectPawn = (origin: Position) => {
 		if(game) {
-			const pawnTargets = targets?.filter((action: Target) => action.origin.row === origin.row && action.origin.column === origin.column);
+			const pawnTargets = actions?.filter((action: Action) => action.origin.row === origin.row && action.origin.column === origin.column);
 			if (pawnTargets?.length) {
 				const updatedBoard = JSON.parse(JSON.stringify(game.board));
 				updatedBoard[origin.row][origin.column] = updatedBoard[origin.row][origin.column].substring(0, 2) + "h" + updatedBoard[origin.row][origin.column].substring(3);
-				pawnTargets.forEach((target: Target) => {
-					updatedBoard[target.target.row][target.target.column] = updatedBoard[target.target.row][target.target.column].substring(0, 3) + "x";
+				pawnTargets.forEach((action: Action) => {
+					updatedBoard[action.target.row][action.target.column] = updatedBoard[action.target.row][action.target.column].substring(0, 3) + "x";
 				})
 				setSelectedPawn(origin);
 				setBoard(updatedBoard);
@@ -221,7 +242,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				setSelectedCard(null);
 				setSelectedPawn(null);
 				setSelectedTarget(null);
-				setTargets(null);
+				setActions(null);
 				setRenderPassButton(true);
 				const notification = {
 					type: "error",
@@ -240,7 +261,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			const updatedBoard = JSON.parse(JSON.stringify(game.board));
 			updatedBoard[target.row][target.column] = updatedBoard[target.row][target.column].substring(0, 3) + "o";
 			updatedBoard[selectedPawn.row][selectedPawn.column] = updatedBoard[selectedPawn.row][selectedPawn.column].substring(0, 2) + "h" + updatedBoard[selectedPawn.row][selectedPawn.column].substring(3);
-			console.log("updatedBoard", updatedBoard);
 			setBoard(updatedBoard);
 			setSelectedTarget(target);
 			const notification = {
@@ -270,7 +290,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				setSelectedCard(null);
 				setSelectedPawn(null);
 				setSelectedTarget(null);
-				setTargets(null);
+				setActions(null);
 				const notification = {
 						type: "system",
 						message: "Your turn has ended. Please wait for your opponent to take their turn.",
@@ -287,8 +307,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 
 	const clickConfirm = async () => {
 		setRenderConfirmButton(false);
-		console.log("clicked confirm");
-		console.log(game, selectedCard, selectedPawn, selectedTarget);
 		if (game && selectedCard && selectedPawn && selectedTarget) {
 			const updatedGame = await completeTurn(game, selectedCard, selectedPawn, selectedTarget);
 			if(updatedGame) {
@@ -311,11 +329,10 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				}
 				setNotifications((prevNotifications) => [notification, ...prevNotifications]);
 			}
-			console.log("updatedGame", updatedGame);
 			setSelectedCard(null);
 			setSelectedPawn(null);
 			setSelectedTarget(null);
-			setTargets(null);
+			setActions(null);
 			// socket.emit("update_game", gameId, game);
 		}
 	}
@@ -328,7 +345,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			setSelectedCard(null);
 			setSelectedPawn(null);
 			setSelectedTarget(null);
-			setTargets(null);
+			setActions(null);
 			const notification = {
 				type: "success",
 				message: "The board has been reset.  Please select a card.",

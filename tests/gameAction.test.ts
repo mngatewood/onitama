@@ -3,7 +3,7 @@ import { clearTestData,
 	startTestGame, 
 	getEmail, 
 	logoutUser,
-	updateBoardForInvalidActionTest
+	updateInvalidActionGame
 } from './test-helpers';
 
 const email = getEmail();
@@ -62,35 +62,26 @@ test.describe('user can select an action', () => {
 		await expect(page.locator("#space-3")).not.toHaveClass(/targeted/);
 		await expect(page.locator("#space-4")).not.toHaveClass(/targeted/);
 		await expect(page.locator("#space-5")).not.toHaveClass(/targeted/);
-		await expect(page.locator("#space-1")).toHaveClass(/not-highlighted/);
-		await expect(page.locator("#space-2")).toHaveClass(/not-highlighted/);
-		await expect(page.locator("#space-3")).toHaveClass(/not-highlighted/);
-		await expect(page.locator("#space-4")).toHaveClass(/not-highlighted/);
-		await expect(page.locator("#space-5")).toHaveClass(/not-highlighted/);
 
-		// Second row should be unaffected
+		// Two spaces in the first three rows should be highlighted due to opponent taking turn
+		await expect(page.locator("#space-1.action, #space-2.action, #space-3.action, #space-4.action, #space-5.action, #space-6.action, #space-7.action, #space-8.action, #space-9.action, #space-10.action, #space-11.action, #space-12.action, #space-13.action, #space-14.action, #space-15.action")).toHaveCount(2);
+		await expect(page.locator("#space-1.student, #space-2.student, #space-3.student, #space-4.student, #space-5.student, #space-6.student, #space-7.student, #space-8.student, #space-9.student, #space-10.student, #space-11.student, #space-12.student, #space-13.student, #space-14.student, #space-15.student")).toHaveCount(4);
+		await expect(page.locator("#space-1.master, #space-2.master, #space-3.master, #space-4.master, #space-5.master, #space-6.master, #space-7.master, #space-8.master, #space-9.master, #space-10.master #space-11.master, #space-12.master, #space-13.master, #space-14.master, #space-15.master")).toHaveCount(1);
+		await expect(page.locator("#space-1.not-highlighted, #space-2.not-highlighted, #space-3.not-highlighted, #space-4.not-highlighted, #space-5.not-highlighted, #space-6.not-highlighted, #space-7.not-highlighted, #space-8.not-highlighted, #space-9.not-highlighted, #space-10.not-highlighted, #space-11.not-highlighted, #space-12.not-highlighted, #space-13.not-highlighted, #space-14.not-highlighted, #space-15.not-highlighted")).toHaveCount(13);
+
+		// Second row should not be targeted
 		await expect(page.locator("#space-6")).not.toHaveClass(/targeted/);
 		await expect(page.locator("#space-7")).not.toHaveClass(/targeted/);
 		await expect(page.locator("#space-8")).not.toHaveClass(/targeted/);
 		await expect(page.locator("#space-9")).not.toHaveClass(/targeted/);
 		await expect(page.locator("#space-10")).not.toHaveClass(/targeted/);
-		await expect(page.locator("#space-6")).toHaveClass(/not-highlighted/);
-		await expect(page.locator("#space-7")).toHaveClass(/not-highlighted/);
-		await expect(page.locator("#space-8")).toHaveClass(/not-highlighted/);
-		await expect(page.locator("#space-9")).toHaveClass(/not-highlighted/);
-		await expect(page.locator("#space-10")).toHaveClass(/not-highlighted/);
 
-		// Third row should be unaffected
+		// Third row should not be targeted
 		await expect(page.locator("#space-11")).not.toHaveClass(/targeted/);
 		await expect(page.locator("#space-12")).not.toHaveClass(/targeted/);
 		await expect(page.locator("#space-13")).not.toHaveClass(/targeted/);
 		await expect(page.locator("#space-14")).not.toHaveClass(/targeted/);
 		await expect(page.locator("#space-15")).not.toHaveClass(/targeted/);
-		await expect(page.locator("#space-11")).toHaveClass(/not-highlighted/);
-		await expect(page.locator("#space-12")).toHaveClass(/not-highlighted/);
-		await expect(page.locator("#space-13")).toHaveClass(/not-highlighted/);
-		await expect(page.locator("#space-14")).toHaveClass(/not-highlighted/);
-		await expect(page.locator("#space-15")).toHaveClass(/not-highlighted/);
 
 		// Fourth row should all be targeted, but not highlighted
 		await expect(page.locator("#space-16")).toHaveClass(/targeted/);
@@ -118,24 +109,11 @@ test.describe('user can select an action', () => {
 	});
 
 	test('the user is notified that the selected card has no valid actions', async ({ page }) => {
-		updateBoardForInvalidActionTest();
+		await updateInvalidActionGame();
 		await page.reload();
 		await page.locator(".card").locator("nth=4").click();
-		await expect(page.locator("#pass-button")).toBeVisible();
+		await expect(page.locator("#pass-button")).not.toBeVisible();
 		await expect(page.getByText("The selected card contains no valid actions")).toBeVisible();
-	});
-
-	test('when the Pass button is clicked, the game moves to the next player', async ({ page }) => {
-		updateBoardForInvalidActionTest();
-		await page.reload();
-		await page.locator(".card").locator("nth=4").click();
-		await page.locator("#pass-button").click();
-		await expect(page.locator(".card").locator("nth=0")).not.toHaveClass(/shadow-amber-300/);
-		await expect(page.locator(".card").locator("nth=1")).toHaveClass(/shadow-amber-300/);
-		await expect(page.locator(".card").locator("nth=2")).toHaveClass(/shadow-amber-300/);
-		await expect(page.locator(".card").locator("nth=3")).not.toHaveClass(/shadow-amber-300/);
-		await expect(page.locator(".card").locator("nth=4")).not.toHaveClass(/shadow-amber-300/);
-		await expect(page.locator(".card").locator("nth=5")).not.toHaveClass(/shadow-amber-300/);
 	});
 
 });

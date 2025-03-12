@@ -4,7 +4,7 @@ import {
 	startTestGame,
 	logoutUser,
 	getEmail,
-	updateBoardForInvalidPawnTest
+	updateInvalidPawnGame
 } from './test-helpers';
 
 const email = getEmail();
@@ -14,7 +14,7 @@ test.describe('user can select a pawn', () => {
 	test.beforeEach(async ({ page }) => {
 		await clearTestData();
 		await startTestGame({page}, email);
-		updateBoardForInvalidPawnTest();
+		updateInvalidPawnGame();
 		await page.reload();
 		await page.waitForTimeout(500);
 		
@@ -149,10 +149,8 @@ test.describe('user can select a pawn', () => {
 
 			await expect(page.locator("#space-19")).toHaveClass(/targeted/);
 			const opponentSpaceTargetColor = await page.locator('#space-19').evaluate(el => window.getComputedStyle(el, ':after').color);
-			console.log("opponent targetColor", opponentSpaceTargetColor);
 			expect(opponentSpaceTargetColor).toBe("rgb(255, 255, 255)");
 			const emptySpaceTargetColor = await page.locator('#space-22').evaluate(el => window.getComputedStyle(el, ':after').color);
-			console.log("empty targetColor", emptySpaceTargetColor);
 			expect(emptySpaceTargetColor).toBe("rgb(0, 0, 0)");
 
 		});	

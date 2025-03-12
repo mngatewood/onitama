@@ -4,7 +4,7 @@ import {
 	startTestGame,
 	logoutUser,
 	getEmail,
-	updateBoardForInvalidPawnTest
+	updateInvalidPawnGame
 } from './test-helpers';
 
 const email = getEmail();
@@ -14,7 +14,7 @@ test.describe('user can move a pawn', () => {
 	test.beforeEach(async ({ page }) => {
 		await clearTestData();
 		await startTestGame({page}, email);
-		updateBoardForInvalidPawnTest();
+		updateInvalidPawnGame();
 		await page.reload();
 		await page.waitForTimeout(500);
 	});
@@ -34,7 +34,6 @@ test.describe('user can move a pawn', () => {
 			await page.locator(".card").locator("nth=5").click();
 			await page.locator("#space-23").click();
 			await expect(page.locator("#space-19")).toHaveCSS("cursor", "pointer");
-			await expect(page.locator("#space-22")).toHaveCSS("cursor", "pointer");
 		});
 
 		test('invalid spaces do not have a hover state', async ({ page }) => {
@@ -73,9 +72,9 @@ test.describe('user can move a pawn', () => {
 			test('the selected space is highlighted', async ({ page }) => {
 				await page.locator(".card").locator("nth=5").click();
 				await page.locator("#space-23").click();
-				await page.locator("#space-22").click();
+				await page.locator("#space-19").click();
 
-				await expect(page.locator("#space-22")).toHaveClass(/selected-target/);
+				await expect(page.locator("#space-19")).toHaveClass(/selected-target/);
 			});
 
 			test('the space from which the pawn originated is highlighted', async ({ page }) => {
@@ -198,7 +197,7 @@ test.describe('user can move a pawn', () => {
 				test('the board is updated', async ({ page }) => {
 					await page.locator(".card").locator("nth=5").click();
 					await page.locator("#space-23").click();
-					await page.locator("#space-22").click();
+					await page.locator("#space-19").click();
 					await page.getByRole('button', { name: 'Confirm' }).click();
 
 					// First row should be unaffected
@@ -207,25 +206,21 @@ test.describe('user can move a pawn', () => {
 					await expect(page.locator("#space-3")).not.toHaveClass(/targeted/);
 					await expect(page.locator("#space-4")).not.toHaveClass(/targeted/);
 					await expect(page.locator("#space-5")).not.toHaveClass(/targeted/);
-					await expect(page.locator("#space-1")).toHaveClass(/not-highlighted/);
-					await expect(page.locator("#space-2")).toHaveClass(/not-highlighted/);
-					await expect(page.locator("#space-3")).toHaveClass(/not-highlighted/);
-					await expect(page.locator("#space-4")).toHaveClass(/not-highlighted/);
-					await expect(page.locator("#space-5")).toHaveClass(/not-highlighted/);
 
-					// Second row should be unaffected
+					// Two spaces in the first three rows should be highlighted due to opponent taking turn
+					await expect(page.locator("#space-1.action, #space-2.action, #space-3.action, #space-4.action, #space-5.action, #space-6.action, #space-7.action, #space-8.action, #space-9.action, #space-10.action, #space-11.action, #space-12.action, #space-13.action, #space-14.action, #space-15.action")).toHaveCount(2);
+					await expect(page.locator("#space-1.student, #space-2.student, #space-3.student, #space-4.student, #space-5.student, #space-6.student, #space-7.student, #space-8.student, #space-9.student, #space-10.student, #space-11.student, #space-12.student, #space-13.student, #space-14.student, #space-15.student")).toHaveCount(3);
+					await expect(page.locator("#space-1.master, #space-2.master, #space-3.master, #space-4.master, #space-5.master, #space-6.master, #space-7.master, #space-8.master, #space-9.master, #space-10.master #space-11.master, #space-12.master, #space-13.master, #space-14.master, #space-15.master")).toHaveCount(1);
+					await expect(page.locator("#space-1.not-highlighted, #space-2.not-highlighted, #space-3.not-highlighted, #space-4.not-highlighted, #space-5.not-highlighted, #space-6.not-highlighted, #space-7.not-highlighted, #space-8.not-highlighted, #space-9.not-highlighted, #space-10.not-highlighted, #space-11.not-highlighted, #space-12.not-highlighted, #space-13.not-highlighted, #space-14.not-highlighted, #space-15.not-highlighted")).toHaveCount(13);
+
+					// Second row should not be targeted
 					await expect(page.locator("#space-6")).not.toHaveClass(/targeted/);
 					await expect(page.locator("#space-7")).not.toHaveClass(/targeted/);
 					await expect(page.locator("#space-8")).not.toHaveClass(/targeted/);
 					await expect(page.locator("#space-9")).not.toHaveClass(/targeted/);
 					await expect(page.locator("#space-10")).not.toHaveClass(/targeted/);
-					await expect(page.locator("#space-6")).toHaveClass(/not-highlighted/);
-					await expect(page.locator("#space-7")).toHaveClass(/not-highlighted/);
-					await expect(page.locator("#space-8")).toHaveClass(/not-highlighted/);
-					await expect(page.locator("#space-9")).toHaveClass(/not-highlighted/);
-					await expect(page.locator("#space-10")).toHaveClass(/not-highlighted/);
 
-					// Third row should be unaffected
+					// Third row should not be targeted
 					await expect(page.locator("#space-11")).not.toHaveClass(/targeted/);
 					await expect(page.locator("#space-12")).not.toHaveClass(/targeted/);
 					await expect(page.locator("#space-13")).not.toHaveClass(/targeted/);
@@ -262,53 +257,45 @@ test.describe('user can move a pawn', () => {
 					await expect(page.locator("#space-25")).toHaveClass(/not-highlighted/);
 
 					// Red pawns
-					await expect(page.locator("#space-1")).toHaveClass(/red/);
-					await expect(page.locator("#space-1")).toHaveClass(/student/);
-					await expect(page.locator("#space-2")).toHaveClass(/red/);
-					await expect(page.locator("#space-2")).toHaveClass(/student/);
-					await expect(page.locator("#space-3")).toHaveClass(/red/);
+					// Red will take their turn after clicking confirm
+					await expect(page.locator("#space-1.student, #space-2.student, #space-4.student, #space-5.student")).toHaveCount(2);
+					await expect(page.locator("#space-1.red, #space-2.red, #space-3.red, #space-4.red, #space-5.red")).toHaveCount(4);
 					await expect(page.locator("#space-3")).toHaveClass(/master/);
-					await expect(page.locator("#space-5")).toHaveClass(/red/);
-					await expect(page.locator("#space-5")).toHaveClass(/student/);
-					await expect(page.locator("#space-19")).toHaveClass(/red/);
-					await expect(page.locator("#space-19")).toHaveClass(/student/);
 
 					// Blue pawns
-					await expect(page.locator("#space-24")).toHaveClass(/blue/);
 					await expect(page.locator("#space-24")).toHaveClass(/student/);
-					await expect(page.locator("#space-25")).toHaveClass(/blue/);
+					await expect(page.locator("#space-24")).toHaveClass(/blue/);
 					await expect(page.locator("#space-25")).toHaveClass(/student/);
-					await expect(page.locator("#space-22")).toHaveClass(/blue/);
-					await expect(page.locator("#space-22")).toHaveClass(/master/);
+					await expect(page.locator("#space-25")).toHaveClass(/blue/);
+					await expect(page.locator("#space-19")).toHaveClass(/blue/);
+					await expect(page.locator("#space-19")).toHaveClass(/master/);
 				});
 				
 				test('the turn is ended', async ({ page }) => {
 					await page.locator(".card").locator("nth=5").click();
 					await page.locator("#space-23").click();
-					await page.locator("#space-22").click();
+					await page.locator("#space-19").click();
 					await page.getByRole('button', { name: 'Confirm' }).click();
 
-					await expect(page.getByText("Your turn has ended. Please wait for your opponent to take their turn.")).toBeVisible();
-					await expect(page.getByText("Waiting for your opponent to complete their turn...")).toBeVisible();
-					await expect(page.locator(".player-color").locator("nth=0")).toHaveClass(/!shadow-amber-300 !shadow-md/);
-					await expect(page.locator(".player-color").locator("nth=1")).not.toHaveClass(/!shadow-amber-300 !shadow-md/);
+					// Red will immediately take their turn
+					await expect(page.getByText("Your opponent has completed their turn. Please select a card.")).toBeVisible();
+					await expect(page.locator(".player-color").locator("nth=0")).not.toHaveClass(/!shadow-amber-300 !shadow-md/);
+					await expect(page.locator(".player-color").locator("nth=1")).toHaveClass(/!shadow-amber-300 !shadow-md/);
 					await expect(page.locator(".card").locator("nth=0")).not.toHaveClass(/!shadow-amber-300 !shadow-md/);
-					await expect(page.locator(".card").locator("nth=1")).toHaveClass(/!shadow-amber-300 !shadow-md/);
-					await expect(page.locator(".card").locator("nth=2")).toHaveClass(/!shadow-amber-300 !shadow-md/);
+					await expect(page.locator(".card").locator("nth=1")).not.toHaveClass(/!shadow-amber-300 !shadow-md/);
+					await expect(page.locator(".card").locator("nth=2")).not.toHaveClass(/!shadow-amber-300 !shadow-md/);
 					await expect(page.locator(".card").locator("nth=3")).not.toHaveClass(/!shadow-amber-300 !shadow-md/);
-					await expect(page.locator(".card").locator("nth=4")).not.toHaveClass(/!shadow-amber-300 !shadow-md/);
+					await expect(page.locator(".card").locator("nth=4")).toHaveClass(/!shadow-amber-300 !shadow-md/);
 				});
 
 				test('the cards are updated and player names are rendered correctly', async ({ page }) => {
 					await page.locator(".card").locator("nth=5").click();
 					await page.locator("#space-23").click();
-					await page.locator("#space-22").click();
+					await page.locator("#space-19").click();
 					await page.getByRole('button', { name: 'Confirm' }).click();
-					
-					await expect(page.locator(".card").locator("nth=0")).toContainText("Cobra");
-					await expect(page.locator(".card").locator("nth=1")).toContainText("Dragon");
-					await expect(page.locator(".card").locator("nth=2")).toContainText("Boar");
-					await expect(page.locator(".card").locator("nth=3")).toHaveClass(/placeholder-card/);
+
+					await expect(page.locator(".card").locator("nth=0").locator("nth=0")).toHaveClass(/placeholder-card/);
+					await expect(page.locator(".card").locator("nth=3").locator("nth=0")).toHaveClass(/neutral-card/);
 					await expect(page.locator(".card").locator("nth=4")).toContainText("Mantis");
 					await expect(page.locator(".card").locator("nth=5")).toContainText("Rabbit");
 					await expect(page.locator(".player-color").locator("nth=0")).toContainText("Virtual Opponent");
@@ -331,7 +318,7 @@ test.describe('user can move a pawn', () => {
 
 					await expect(page.locator("#space-19")).toHaveClass(/blue/)
 					await expect(page.locator("#space-19")).not.toHaveClass(/red/)
-					await expect(page.locator("#board").locator(".red")).toHaveCount(4);
+					await expect(page.locator("#board").locator(".red.student")).toHaveCount(3);
 					await expect(page.locator("#board").locator(".blue")).toHaveCount(3);
 				});
 				

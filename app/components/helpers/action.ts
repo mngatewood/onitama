@@ -14,17 +14,12 @@ interface MovesMatrix {
 	};
 }
 
-interface Action {
-	origin: Position;
-	target: Position;
-}
-
-export const getCardActions = (game: Game, cardId: string, userId: string) => {
+export const getCardActions = (game: Game, cardId: string, userId: string, invertActions: boolean = false) => {
 	const board = game?.board;
 	const card = game?.cards?.find((card) => card.id === cardId);
 	const playerColor = Object.keys(game?.players ?? {}).find((key) => game?.players[key as keyof typeof game.players]?.id === userId);
 	const pawnPositions = getPawnPositions(board, playerColor ?? "");
-	const pawnTargets = card?.moves && getPawnTargetsOnBoard(pawnPositions, card.moves);
+	const pawnTargets = card?.moves && getPawnTargetsOnBoard(pawnPositions, card.moves, invertActions);
 	const validTargets = removeFriendlyOccupiedTargets(pawnTargets ?? [], board, playerColor ?? "");
 
 	return validTargets;
@@ -59,6 +54,7 @@ const movesMatrix: MovesMatrix = {
 	25: { row: 2, column: 2 },
 };
 
+
 export const getSpacePositionFromOrigin = (origin: Position) => {
 	const move = Object.keys(movesMatrix).find((key) => {
 		return (
@@ -81,17 +77,19 @@ const getPawnPositions = (board: string[][], playerColor: string) => {
 	return pawnPositions;
 };
 
-const getPawnTargetsOnBoard = (pawns: Position[], moves: number[]) => {
-	const targets: Action[] = [];
+const getPawnTargetsOnBoard = (pawns: Position[], moves: number[], invertActions: boolean = false) => {
+	const actions: Action[] = [];
 	pawns.forEach(pawn => {
 		const origin: Position = {
 			row: pawn.row,
 			column: pawn.column,
 		}
 		moves.forEach(move => {
+			const moveRow = invertActions ? movesMatrix[move].row * -1 : movesMatrix[move].row;
+			const moveColumn = invertActions ? movesMatrix[move].column * -1 : movesMatrix[move].column;
 			const target: Position = {
-				row: pawn.row + movesMatrix[move].row,
-				column: pawn.column + movesMatrix[move].column,
+				row: pawn.row + moveRow,
+				column: pawn.column + moveColumn,
 			};
 			if (
 				target.row >= 0 &&
@@ -99,19 +97,19 @@ const getPawnTargetsOnBoard = (pawns: Position[], moves: number[]) => {
 				target.column >= 0 &&
 				target.column < 5
 			) {
-				targets.push({
+				actions.push({
 					origin,
 					target,
 				} as Action);
 			}
 		});
 	})
-	return targets;
+	return actions;
 }
 
-const removeFriendlyOccupiedTargets = (targets: Action[], board: string[][], playerColor: string) => {
-	const updatedTargets =targets.filter(target => {
-		return board[target.target.row][target.target.column][0] !== playerColor[0];
+const removeFriendlyOccupiedTargets = (actions: Action[], board: string[][], playerColor: string) => {
+	const updatedTargets =actions.filter(action => {
+		return board[action.target.row][action.target.column][0] !== playerColor[0];
 	})
 
 	return updatedTargets;
@@ -162,10 +160,7 @@ export const passTurn = async (gameId: string, nextTurn: string, selectedCardId:
 
 export const completeTurn = async (game: Game, selectedCard: Card, selectedPawn: Position, selectedTarget: Position ) => {
 	try {
-		const board = JSON.parse(JSON.stringify(game.board));
-		const pawnType = board[selectedPawn.row][selectedPawn.column][1]
-		board[selectedPawn.row][selectedPawn.column] = "0000"
-		board[selectedTarget.row][selectedTarget.column] = game.turn[0] + pawnType + "00"
+		const board = getEndTurnBoard(game, selectedPawn, selectedTarget);
 
 		const url = `${apiUrl}/games?id=${game.id}&action=complete_turn`;
 		const update = {
@@ -190,4 +185,34 @@ export const completeTurn = async (game: Game, selectedCard: Card, selectedPawn:
 		console.error('Error completing the turn:', error);
 		throw error;
 	}
+}
+
+const getEndTurnBoard = (game: Game, selectedPawn: Position, selectedTarget: Position) => {
+	const board = JSON.parse(JSON.stringify(game.board));
+	const selectedPawnType = board[selectedPawn.row][selectedPawn.column][1];
+	const playerColor = game.turn[0];
+
+	console.log("original board", board)
+	const updatedBoard = board.map((row: string[]) => {
+		return row.map((space: string) => {
+
+			let updatedSpace = space;
+
+			// if space has pawn and action, remove action but leave pawn and color
+			if (updatedSpace.slice(1, 3) === "sa" || updatedSpace.slice(1, 3) === "ma") {
+				updatedSpace = updatedSpace.slice(0, 2) + "0" + updatedSpace.charAt(3);
+
+			// else if space has action only, remove action and color
+			} else if (updatedSpace.charAt(2) === "a") {
+				updatedSpace = "000" + updatedSpace.charAt(3);
+			}
+
+			return updatedSpace;
+		});
+	});
+	updatedBoard[selectedPawn.row][selectedPawn.column] = playerColor + "0a0"
+	updatedBoard[selectedTarget.row][selectedTarget.column] = playerColor + selectedPawnType + "a0"
+
+	return updatedBoard;
+
 }
