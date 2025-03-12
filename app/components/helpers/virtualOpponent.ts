@@ -311,8 +311,11 @@ const executePassTurn = async (game: Game): Promise<Game> => {
 };
 
 export const resolveVirtualTurn = async (game: Game, userId: string) => {
+	console.log("resolving virtual turn")
+
 	// return if neither user has email virtual_opponent@mngatewood.com
 	const virtualOpponent = game?.users?.find((user) => user.email === virtualOpponentEmail);
+	console.log("virtual_opponent", virtualOpponent)
 	if (!virtualOpponent) {
 		return;
 	}
@@ -322,6 +325,7 @@ export const resolveVirtualTurn = async (game: Game, userId: string) => {
 	const playerActions = await getPlayerActions(userId, game, false);
 	// evaluate virtual opponent actions for victory condition
 	const victoryActions = await getVictoryActions(virtualOpponentActions, userId, game);
+	console.log("victoryActions", victoryActions)
 	if (victoryActions.length) {
 		const randomIndex = getRandomIndex(victoryActions.length);
 		const updatedGame = executeAction(victoryActions[randomIndex], game);
@@ -331,6 +335,7 @@ export const resolveVirtualTurn = async (game: Game, userId: string) => {
 	}
 	// evaluate the player's actions for defeat condition
 	const preventDefeatActions = await getPreventDefeatActions(virtualOpponentActions, playerActions, userId, game);
+	console.log("preventDefeatActions", preventDefeatActions)
 	if (preventDefeatActions.length) {
 		const randomIndex = getRandomIndex(preventDefeatActions.length);
 		const updatedGame = executeAction(preventDefeatActions[randomIndex], game);
@@ -339,6 +344,7 @@ export const resolveVirtualTurn = async (game: Game, userId: string) => {
 		}
 	}
 	const preventAttackActions = getPreventAttackActions(virtualOpponentActions, playerActions, userId, game);
+	console.log("preventAttackActions", preventAttackActions)
 	if (preventAttackActions.length) {
 		const randomIndex = getRandomIndex(preventAttackActions.length);
 		const updatedGame = executeAction(preventAttackActions[randomIndex], game);
@@ -347,6 +353,7 @@ export const resolveVirtualTurn = async (game: Game, userId: string) => {
 		}
 	}
 	const attackActions = await getAttackActions(virtualOpponentActions, playerActions,userId, game);
+	console.log("attackActions", attackActions)
 	if (attackActions.length) {
 		const randomIndex = getRandomIndex(attackActions.length);
 		const updatedGame = executeAction(attackActions[randomIndex], game);
@@ -356,6 +363,8 @@ export const resolveVirtualTurn = async (game: Game, userId: string) => {
 	}
 	// determine if there are any valid moves that will not result in a threatened pawn
 	const moveActions = await getMoveActions(virtualOpponentActions, playerActions, game);
+	console.log("moveActions", moveActions)
+	console.log("virtual opponent actions", virtualOpponentActions)
 	if (moveActions.length) {
 		// in order to prioritize moving a student, we don't shuffle here
 		const updatedGame = executeAction(moveActions[0], game);
