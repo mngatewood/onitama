@@ -6,7 +6,7 @@ import {
 	logoutUser,
 	clearTestData,
 	startTestGame,
-	updateGameVictory,
+	updateGameVictoryCondition,
 	updateGameAvoidDefeatGameThroneAndMaster,
 	updateGameAvoidDefeatGameThrone,
 	updateGameAvoidDefeatGameMasterCanAttackThreat,
@@ -75,7 +75,7 @@ test.describe('user can play a solo game', () => {
 			test.beforeEach(async ({ page }) => {
 				await clearTestData();
 				await startTestGame({ page }, email);
-				updateGameVictory();
+				updateGameVictoryCondition();
 				await page.waitForTimeout(500);
 				await page.reload();
 			});
