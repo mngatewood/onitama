@@ -376,7 +376,7 @@ const victoryCards = async () => {
 	return [allCards.tiger, allCards.goose, allCards.horse, allCards.monkey, allCards.frog];
 }
 
-export const updateGameVictory = async () => {
+export const updateGameVictoryCondition = async () => {
 	return updateGame(victoryBoard, await victoryCards());
 }
 
@@ -514,5 +514,22 @@ const movePawnToSafeLocationCards = async () => {
 
 export const updateGameMovePawnToSafeLocation = async () => {
 	return updateGame(movePawnToSafeLocationBoard, await movePawnToSafeLocationCards());
+}
+
+const updateGameVictoryActionBoard = [
+	["rm00", "0000", "0000", "0000", "0000"],
+	["0000", "bs00", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["bs00", "bs00", "bm00", "bs00", "0000"],
+]
+
+const updateGameVictoryActionCards = async () => {
+	const allCards = await getAllCards();
+	return [allCards.rabbit, allCards.boar, allCards.cobra, allCards.mantis, allCards.dragon];
+}
+
+export const updateGameVictoryAction = async () => {
+	return updateGame(updateGameVictoryActionBoard, await updateGameVictoryActionCards());
 }
 

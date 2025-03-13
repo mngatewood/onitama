@@ -194,7 +194,8 @@ export const endGame = async (gameId: string) => {
 	}
 }
 
-const getNewGameData = async (playerId: string) => {
+const getNewGameData = async (playerId?: string) => {
+	// if playerId is provided, get data for new game, otherwise get data for rematch
 	const allCards = await getAllCards();
 	const randomIndexes = utility.shuffleArray([...Array(allCards.length).keys()]).slice(0, 5);
 	const randomCards = allCards.filter((_: Card, index: number) => randomIndexes.includes(index));
@@ -202,7 +203,7 @@ const getNewGameData = async (playerId: string) => {
 	const neutralCard: Card = shuffledCards[4];
 	const players = {
 		"blue": {
-			id: playerId,
+			id: playerId ? playerId : "",
 			cards: [shuffledCards[0], shuffledCards[1]],
 		},
 		"red": {
@@ -210,12 +211,12 @@ const getNewGameData = async (playerId: string) => {
 			cards: [shuffledCards[2], shuffledCards[3]],
 		}
 	}
-	const status = "waiting_for_players"
+	const status = playerId ? "waiting_for_players" : "in_progress";
 	const data = {
 		users: {
 			connect: [
 				{
-					id: playerId,
+					id: playerId ? playerId : "",
 				},
 			],
 		},
@@ -232,3 +233,40 @@ const getNewGameData = async (playerId: string) => {
 
 	return data;
 };
+
+export const restartGame = async (game: Game) => {
+	try {
+		const url = `${apiUrl}/games?id=${game.id}&action=restart_game`;
+		const gameData = await getNewGameData();
+		const players = {
+			"blue": {
+				id: game.players.blue.id,
+				cards: gameData.players.blue.cards,
+			},
+			"red": {
+				id: game.players.red.id,
+				cards: gameData.players.red.cards,
+			}
+		}
+		gameData.players = players
+		const update = {
+			gameId: game.id,
+			...gameData
+		}
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(update),
+		})
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error('Error restarting the game:', error);
+		throw error;
+	}
+}

@@ -192,7 +192,6 @@ const getEndTurnBoard = (game: Game, selectedPawn: Position, selectedTarget: Pos
 	const selectedPawnType = board[selectedPawn.row][selectedPawn.column][1];
 	const playerColor = game.turn[0];
 
-	console.log("original board", board)
 	const updatedBoard = board.map((row: string[]) => {
 		return row.map((space: string) => {
 
@@ -215,4 +214,21 @@ const getEndTurnBoard = (game: Game, selectedPawn: Position, selectedTarget: Pos
 
 	return updatedBoard;
 
+}
+
+export const getGameWinner = (game: Game) => {
+	const blueMaster = game.board.flat().find(space => space[0] === "b" && space[1] === "m");
+	const redMaster = game.board.flat().find(space => space[0] === "r" && space[1] === "m");
+	const blueThrone = game.board[4][2];
+	const redThrone = game.board[0][2];
+	const blueThroneDefeated = blueThrone[0] === "r" && ["s", "m"].includes(blueThrone[1]);
+	const redThroneDefeated = redThrone[0] === "b" && ["s", "m"].includes(redThrone[1]);
+
+	if (!blueMaster || blueThroneDefeated) {
+		return "red";
+	} else if (!redMaster || redThroneDefeated) {
+		return "blue";
+	} else {
+		return "";
+	}
 }
