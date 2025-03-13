@@ -2,12 +2,14 @@
 
 import { useEffect, useState, useRef } from "react";
 import { WaitingModal } from "./WaitingModal";
+import { WinnerModal } from "./WinnerModal";
 import { Board } from "./Board";
 import { DefeatedPawns } from "./DefeatedPawns";
 import { PlayerCards } from "./PlayerCards";
 import { socket } from "../lib/socketClient";
 import { ToastMessage } from "./ToastMessage";
-import { getCardActions, getUpdatedBoard, passTurn, completeTurn } from "../components/helpers/action";
+import { getCardActions, getUpdatedBoard, passTurn, completeTurn, getGameWinner } from "../components/helpers/action";
+import { endGame, restartGame } from "../components/helpers/lobby";
 import { PassButton } from "./PassButton";
 import { ConfirmButton } from "./ConfirmButton";
 import { resolveVirtualTurn } from "./helpers/virtualOpponent";
@@ -30,6 +32,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 	const [renderConfirmButton, setRenderConfirmButton] = useState(false);
 	const [neutralCard, setNeutralCard] = useState<Card | null>(null);
 	const [actions, setActions] = useState<Action[] | null>(null);
+	const [winner, setWinner] = useState<string | null>(null);
 	const previousTurnRef = useRef<string | null>(null);
 	const userColor = ["red", "blue"].find((key) => {
 		return game?.players && game?.players[key as keyof typeof game.players]?.id === userId;
@@ -145,7 +148,20 @@ export const Game = ({ gameId, userId }: GameProps) => {
 	// Refresh game when turn changes
 	useEffect(() => {
 		const updateTurn = async () => {
-			if(game && game.turn !== previousTurnRef.current) {
+			if(game && !winner && game.turn !== previousTurnRef.current) {
+				const winner = getGameWinner(game);
+				if (winner) {
+					await endGame(game.id);
+					setWinner(winner);
+					const notification = {
+						type: "system",
+						message: `${winner.toUpperCase()} won the game!`,
+						duration: 0,
+						delay: 0,
+						action: ""
+					}
+					return setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+				}
 				setSelectedCard(null);
 				setBoard(game?.board);
 				setRenderPassButton(false);
@@ -156,7 +172,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 					setOtherPlayersTurn(true);
 					const updatedGame = await resolveVirtualTurn(game, userId);
 					if (updatedGame) {
-						console.log("game was updated in Game!", updatedGame)
 						setGame(updatedGame);
 						setBoard(updatedGame.board);
 						const allPlayerCards = [...updatedGame?.players.red.cards ?? [], ...updatedGame?.players.blue.cards ?? []];
@@ -364,6 +379,29 @@ export const Game = ({ gameId, userId }: GameProps) => {
 		setNeutralCard(gameData.cards?.find((card: Card) => !allPlayerCardsIds.includes(card.id)) ?? null);
 	}
 
+	const playAgain = async () => {
+		if (game) {
+			const updatedGame = await restartGame(JSON.parse(JSON.stringify(game)));
+			if(updatedGame) {
+				setGame(updatedGame);
+				setBoard(updatedGame?.board);
+				const message = userColor === updatedGame.turn 
+				? "The game has been restarted.  Please select a card." 
+				: "The game has been restarted.  Please wait for your opponent to complete their turn.";
+				const notification = {
+					type: "success",
+					message: message,
+					duration: 0,
+					delay: 0,
+					action: ""
+				}
+				setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+			}
+			previousTurnRef.current = null;
+			setWinner(null);
+		}
+	}
+
 	return (
 		<>
 			{game && game.board &&
@@ -429,6 +467,11 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			{game && otherPlayersTurn &&
 				<div className="absolute top-0 left-0 right-0 bottom-0 flex items-center">
 					<WaitingModal text="Waiting for your opponent to complete their turn..." />
+				</div>
+			}
+			{game && winner &&
+				<div className="absolute top-0 left-0 right-0 bottom-0 flex items-center">
+					<WinnerModal userColor={userColor} winner={winner} playAgain={playAgain} />
 				</div>
 			}
 			<ToastMessage notifications={notifications} />

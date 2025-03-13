@@ -122,6 +122,39 @@ export const POST = async (request: NextRequest ) => {
 			}
 			return NextResponse.json(error);
 		}
+	} else if (action === "restart_game") {
+		try {
+			const data = await request.json();
+			const response = await prisma.game.update({
+				where: {
+					id: data.gameId
+				},
+				data: {
+					board: data.board,
+					cards: {
+						set: [],
+						connect: data.cards.connect
+					},
+					players: data.players,
+					status: data.status,
+					turn: data.turn,
+				},
+				include: {
+					users: {
+						omit: {
+							password: true
+						}
+					},
+					cards: true
+				}
+			})
+			return NextResponse.json(response);
+		} catch (error) {
+			if (error instanceof Error) {
+				console.log("Error: ", error.stack)
+			}
+			return NextResponse.json(error);
+		}
 	} else {
 		return NextResponse.json({ message: "No valid action parameter provided" }, { status: 400 });
 	}
