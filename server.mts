@@ -189,19 +189,24 @@ const getUserGames = async (userId: string) => {
 	}
 };
 
-const endGame = async (gameId: string) => {
+export const endGame = async (gameId: string) => {
 	try {
-		const url = `${apiUrl}/games?id=${gameId}&action=change_status`;
-		const update = {
+		const body = JSON.stringify({ 
 			gameId: gameId,
 			status: "ended"
-		}
+		 });
+		const url = `${apiUrl}/games?id=${gameId}&action=change_status`;
+		// const update = {
+		// 	gameId: gameId,
+		// 	status: "ended"
+		// }
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
+				'Content-Length': Buffer.byteLength(body).toString(),
 			},
-			body: JSON.stringify(update),
+			body: body,
 		})
 		if (!response.ok) {
 			throw new Error(`HTTP error! status: ${response.status}`);
@@ -209,9 +214,8 @@ const endGame = async (gameId: string) => {
 		const data = await response.json();
 		return data;
 	} catch (error) {
-		if (error instanceof Error) {
-			console.log("Error: ", error.stack)
-		}
+		console.error('Error ending the game:', error);
 		throw error;
 	}
-};
+}
+
