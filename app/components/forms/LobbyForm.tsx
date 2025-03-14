@@ -86,10 +86,9 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 					});
 				});
 			}
-			
+
 			const newGame = await createMultiplayerGame(session?.user.id);
 			if(newGame) {
-				console.log("newGame", newGame);
 				socket.emit("game_created", newGame);
 				redirect(`/play/${newGame.id}`);
 			}
@@ -118,17 +117,8 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 	// Socket.io event listeners
 	useEffect(() => {
 
-		socket.on("connect", () => {
-			console.log("Socket connected:", socket.id);
-		});
-
-		socket.on("connect_error", (error) => {
-			console.log("Socket connection error:", error);
-		});
-
 		// Listen for game_created event to add new games to the list of pending games
 		socket.on("game_created", (newGame: Game) => {
-			console.log("Received game_created event:", newGame);
 			setPendingGames((prevGames) => [newGame, ...prevGames]);
 		});
 		
@@ -158,8 +148,6 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 
 		// Clean up the event listeners on unmount
 		return () => {
-			socket.off("connect");
-			socket.off("connect_error");
 			socket.off("game_created");
 			socket.off("game_full");
 			socket.off("game_ended");

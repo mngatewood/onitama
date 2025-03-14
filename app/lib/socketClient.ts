@@ -8,11 +8,3 @@ export const socket = io(socketHost, {
 	withCredentials: true,
 	transports: ["websocket"],
 });
-
-socket.on("connect", () => {
-	console.log("Connected to socket server");
-});
-
-socket.on("connect_error", (err) => {
-	console.error("Socket connection error:", err);
-});
