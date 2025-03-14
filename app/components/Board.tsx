@@ -75,8 +75,12 @@ export const Board = ({ board, userColor, selectedPawn, selectPawn, selectTarget
 
 			const selectSpace = (e: React.MouseEvent) => {
 				e.preventDefault();
-				const index = parseInt(e.currentTarget.id.split("-")[1])-1;
-				const spaceData = flatBoard[index];
+				let index = parseInt(e.currentTarget.id.split("-")[1])-1;
+				// if the board is reversed for red player, flip the index
+				if (userColor === "red") {
+					index = 24 - index;
+				}
+				const spaceData = board.flat()[index];
 				if (e.currentTarget.classList.contains("highlighted") && !e.currentTarget.classList.contains("pawn-selected")) {
 					if (spaceData[1] === "s" || spaceData[1] === "m") {
 						const origin = {
@@ -94,16 +98,15 @@ export const Board = ({ board, userColor, selectedPawn, selectPawn, selectTarget
 						return selectTarget(target);
 					}
 				}
-				console.log("not a valid space");
 			};
 
 			const clickableTarget = selectedPawn && targetedCode === "x" ? "clickable-target" : "";
 
 			const renderThrone = () => {
-				if (index === 2) {
-					return "red-throne"
-				} else if (index === 22) {
+				if ((userColor === "red" && index === 2) || (userColor === "blue" && index === 22)) {
 					return "blue-throne"
+				} else if ((userColor === "blue" && index === 2) || (userColor === "red" && index === 22)) {
+					return "red-throne"
 				} else {
 					return ""
 				}
