@@ -72,23 +72,23 @@ app.prepare()
 			})
 			
 			socket.on("user_joined", (gameId, firstName) => {
-				console.log("[Server] User joined event received:", game);
+				console.log("[Server] User joined event received:", gameId);
 				socket.to(gameId).emit("user_joined", `${firstName} joined the game`);
 			});
 
 			socket.on("leave", (gameId) => {
-				console.log("[Server] Leave event received:", game);
+				console.log("[Server] Leave event received:", gameId);
 				socket.leave(gameId);
 				io.emit("game_ended", gameId);
 			})
 			
 			socket.on("user_left", (gameId, firstName) => {
-				console.log("[Server] User left event received:", game);
+				console.log("[Server] User left event received:", gameId);
 				socket.to(gameId).emit("user_left", `${firstName} left the game. Returning to the lobby...`);
 			});
 
 			socket.on("game_full", (gameId) => {
-				console.log("[Server] Game full event received:", game);
+				console.log("[Server] Game full event received:", gameId);
 				io.emit("game_full", gameId);
 			});
 
