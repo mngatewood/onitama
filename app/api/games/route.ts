@@ -43,6 +43,7 @@ export const POST = async (request: NextRequest ) => {
 	} else if (action === "change_status") {
 		try {
 			const data = await request.json();
+			console.log("[Game] Changing game status to:", data.status)
 			const response = await prisma.game.update({
 				where: {
 					id: data.gameId
@@ -61,6 +62,7 @@ export const POST = async (request: NextRequest ) => {
 	} else if (action === "pass") {
 		try {
 			const data = await request.json();
+			console.log("[Game] Passing turn")
 			const players = await swapNeutralCard(data.gameId, data.selectedCardId)
 
 			if (data && players) {
@@ -95,6 +97,7 @@ export const POST = async (request: NextRequest ) => {
 	} else if (action === "complete_turn") {
 		try {
 			const data = await request.json();
+			console.log("[Game] Completing turn")
 			const players = await swapNeutralCard(data.gameId, data.selectedCardId)
 			const update = {
 				players: players as unknown as Prisma.JsonObject,
@@ -125,6 +128,7 @@ export const POST = async (request: NextRequest ) => {
 	} else if (action === "restart_game") {
 		try {
 			const data = await request.json();
+			console.log("[Game] Restarting game")
 			const response = await prisma.game.update({
 				where: {
 					id: data.gameId

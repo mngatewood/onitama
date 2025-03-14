@@ -53,43 +53,48 @@ app.prepare()
 
 		io.on("connection", (socket) => {
 
-			// console.log("A user connected:", socket.id);
-			// console.log("Authenticated User Data:", socket.data.user);
+			console.log("A user connected:", socket.id);
+			console.log("Authenticated User Data:", socket.data.user);
 
 			socket.on("game_created", (game) => {
-				// console.log("socket.on: game created", game);
+				console.log("[Server] Game created event received:", game);
 				io.emit("game_created", game);
 			});
 
+			socket.on("game_updated", (game) => {
+				console.log("[Server] Game updated event received:", game);
+				io.emit("game_updated", game);
+			});
+
 			socket.on("join", (gameId) => {
-				// console.log("socket.on: join", gameId);
+				console.log("[Server] Join event received:", game);
 				socket.join(gameId);
 			})
 			
 			socket.on("user_joined", (gameId, firstName) => {
-				// console.log(`${firstName} joined the game`);
+				console.log("[Server] User joined event received:", game);
 				socket.to(gameId).emit("user_joined", `${firstName} joined the game`);
 			});
 
 			socket.on("leave", (gameId) => {
-				// console.log("socket.on: leave", gameId);
+				console.log("[Server] Leave event received:", game);
 				socket.leave(gameId);
 				io.emit("game_ended", gameId);
 			})
 			
 			socket.on("user_left", (gameId, firstName) => {
-				// console.log("socket.on: user_left", gameId, firstName);
+				console.log("[Server] User left event received:", game);
 				socket.to(gameId).emit("user_left", `${firstName} left the game. Returning to the lobby...`);
 			});
 
 			socket.on("game_full", (gameId) => {
-				// console.log("game_full", gameId);
+				console.log("[Server] Game full event received:", game);
 				io.emit("game_full", gameId);
 			});
 
 			socket.on("disconnect", () => {
-				// console.log("A user disconnected");
-				// console.log("Authenticated User Data:", socket.data.user);
+				console.log("A user disconnected");
+				console.log("Authenticated User Data:", socket.data.user);
 				if(socket.data.user.id) {
 					const gameIds = getUserPendingGameIds(socket.data.user.id);
 					gameIds.then((ids) => {
