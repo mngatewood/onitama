@@ -53,10 +53,13 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 
 	// Socket.io event listeners
 	useEffect(() => {
+		console.log("[Lobby] Setting up socket listeners");
+
 		const handleGameCreated = (newGame: Game) => {
-			// console.log("[Lobby] Game created event received:", newGame);
+			console.log("[Lobby] Game created event received:", newGame);
 			setPendingGames(prevGames => {
 				// Check if game already exists
+				console.log("[Lobby] Updating pending games:", prevGames);
 				if (prevGames.some(game => game.id === newGame.id)) {
 					return prevGames;
 				}
@@ -105,6 +108,7 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 		socket.on("game_ended", handleGameEnded);
 
 		return () => {
+			console.log("[Lobby] Removing socket listeners");
 			socket.off("game_created", handleGameCreated);
 			socket.off("game_updated", handleGameUpdated);
 			socket.off("game_full", handleGameFull);
@@ -174,60 +178,80 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 	// }
 
 	// wait for game to appear in state
-	const waitForGameInState = (gameId: string) => {
-		return new Promise<void>((resolve, reject) => {
-			const startTime = Date.now();
-			
-			// check if game is in state, if so, resolve the promise
-			const checkState = () => {
-				if (pendingGamesRef.current.some(game => game.id === gameId)) {
-					resolve();
-					return;
-				}
-				
-				// if game has not appeared in state after 200ms, reject the promise
-				if (Date.now() - startTime > 200) {
-					reject(new Error(`Timeout waiting for game ${gameId} to appear in state`));
-					return;
-				}
-				
-				// check again in the next frame
-				requestAnimationFrame(checkState);
-			};
-			
-			checkState();
-		});
-	};
 
 	const handleNewMultiplayerGame = async () => {
 		if(session?.user.id) {
 			try {
+				console.log("[Lobby] Starting new multiplayer game creation");
 				setLoading(true);
 				setShowNewGameModal(false);
+
+				console.log("[Lobby] Calling createMultiplayerGame");
 				const newGame = await createMultiplayerGame(session?.user.id);
+
 				if(newGame) {
-					// emit with acknowledgment
+					console.log("[Lobby] Game created on server:", newGame.id);
+					
+					// Wait for socket.io server to acknowledge game creation
+					console.log("[Lobby] Waiting for socket acknowledgment");
 					await new Promise<void>((resolve, reject) => {
 						socket.emit("game_created", newGame, (error?: Error) => {
+							console.log("[Lobby] Socket acknowledgment received", error ? "with error" : "successfully");
 							if (error) reject(error);
 							else resolve();
 						});
 					});
 
-					// wait for state update
+					// Wait for the game to appear in our local state
+					console.log("[Lobby] Waiting for game to appear in state");
 					await waitForGameInState(newGame.id);
+					console.log("[Lobby] Game found in state");
 
+					console.log("[Lobby] Redirecting to game");
 					redirect(`/play/${newGame.id}`);
+				} else {
+					throw new Error("Failed to create game - no game data returned");
 				}
 			} catch (error) {
-				console.error("[Lobby] Error creating game:", error);
+				console.error("[Lobby] Error in handleNewMultiplayerGame:", error);
+				setShowNewGameModal(true);
 			} finally {
+				console.log("[Lobby] Cleaning up - setting loading to false");
 				setLoading(false);
 			}
 		} else {
 			redirect('/login');
 		}
 	};
+
+// Also update waitForGameInState with more logging
+const waitForGameInState = (gameId: string, timeout = 200) => {
+    return new Promise<void>((resolve, reject) => {
+        console.log("[Lobby] Starting waitForGameInState for game:", gameId);
+        const startTime = Date.now();
+        
+        const checkState = () => {
+            console.log("[Lobby] Checking state for game:", gameId);
+            console.log("[Lobby] Current games in ref:", pendingGamesRef.current);
+            
+            if (pendingGamesRef.current.some(game => game.id === gameId)) {
+                console.log("[Lobby] Game found in state!");
+                resolve();
+                return;
+            }
+            
+            if (Date.now() - startTime > timeout) {
+                console.log("[Lobby] Timeout waiting for game state");
+                reject(new Error(`Timeout waiting for game ${gameId} to appear in state`));
+                return;
+            }
+            
+            requestAnimationFrame(checkState);
+        };
+        
+        checkState();
+    });
+};
 
 
 	const handleJoinGame = async (game: Game) => {
