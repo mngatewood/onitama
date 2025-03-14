@@ -138,7 +138,6 @@ export const passTurn = async (gameId: string, nextTurn: string, selectedCardId:
 			selectedCardId,
 			neutralCardId
 		}
-		console.log("update", update);
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
@@ -150,7 +149,6 @@ export const passTurn = async (gameId: string, nextTurn: string, selectedCardId:
 			throw new Error(`HTTP error! status: ${response.status}`);
 		}
 		const data = await response.json();
-		console.log("data", data);
 		return data;
 	} catch (error) {
 		console.error('Error passing the turn:', error);

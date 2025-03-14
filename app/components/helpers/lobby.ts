@@ -81,7 +81,6 @@ export const createMultiplayerGame = async (playerId: string) => {
 		if (response.ok) {
 			return response.json();
 		} else {
-			console.log(response)
 			throw new Error(`HTTP error! status: ${response.status}`);
 		}
 	} catch (error) {
