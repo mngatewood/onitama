@@ -105,14 +105,26 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 			});
 		};
 
+		const handleGameEnded = (gameId: string) => {
+			console.log("[Lobby] Game ended event received:", gameId);
+			setPendingGames(prevGames => {
+				const newGames = prevGames.filter(game => game.id !== gameId);
+				pendingGamesRef.current = newGames;
+				console.log("[Lobby] Updated games after removal:", newGames);
+				return newGames;
+			});
+		};
+
 		socket.on("game_created", handleGameCreated);
 		socket.on("game_updated", handleGameUpdated);
 		socket.on("game_full", handleGameFull);
+		socket.on("game_ended", handleGameEnded);
 
 		return () => {
 			socket.off("game_created", handleGameCreated);
 			socket.off("game_updated", handleGameUpdated);
 			socket.off("game_full", handleGameFull);
+			socket.off("game_ended", handleGameEnded);
 		};
 	}, []);
 
