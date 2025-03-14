@@ -53,48 +53,48 @@ app.prepare()
 
 		io.on("connection", (socket) => {
 
-			console.log("A user connected:", socket.id);
-			console.log("Authenticated User Data:", socket.data.user);
+			// console.log("A user connected:", socket.id);
+			// console.log("Authenticated User Data:", socket.data.user);
 
 			socket.on("game_created", (game) => {
-				console.log("[Server] Game created event received:", game);
+				// console.log("[Server] Game created event received:", game);
 				io.emit("game_created", game);
 			});
 
 			socket.on("game_updated", (game) => {
-				console.log("[Server] Game updated event received:", game);
+				// console.log("[Server] Game updated event received:", game);
 				io.emit("game_updated", game);
 			});
 
 			socket.on("join", (gameId) => {
-				console.log("[Server] Join event received:", gameId);
+				// console.log("[Server] Join event received:", gameId);
 				socket.join(gameId);
 			})
 			
 			socket.on("user_joined", (gameId, firstName) => {
-				console.log("[Server] User joined event received:", gameId);
+				// console.log("[Server] User joined event received:", gameId);
 				socket.to(gameId).emit("user_joined", `${firstName} joined the game`);
 			});
 
 			socket.on("leave", (gameId) => {
-				console.log("[Server] Leave event received:", gameId);
+				// console.log("[Server] Leave event received:", gameId);
 				socket.leave(gameId);
 				io.emit("game_ended", gameId);
 			})
 			
 			socket.on("user_left", (gameId, firstName) => {
-				console.log("[Server] User left event received:", gameId);
+				// console.log("[Server] User left event received:", gameId);
 				socket.to(gameId).emit("user_left", `${firstName} left the game. Returning to the lobby...`);
 			});
 
 			socket.on("game_full", (gameId) => {
-				console.log("[Server] Game full event received:", gameId);
+				// console.log("[Server] Game full event received:", gameId);
 				io.emit("game_full", gameId);
 			});
 
 			socket.on("disconnect", () => {
-				console.log("A user disconnected");
-				console.log("Authenticated User Data:", socket.data.user);
+				// console.log("A user disconnected");
+				// console.log("Authenticated User Data:", socket.data.user);
 				if(socket.data.user.id) {
 					const gameIds = getUserPendingGameIds(socket.data.user.id);
 					gameIds.then((ids) => {
@@ -109,22 +109,22 @@ app.prepare()
 			});
 
 			socket.on("board_updated", (gameId, board) => {	
-				console.log("board_updated", gameId, board);
+				// console.log("board_updated", gameId, board);
 				socket.to(gameId).emit("board_updated", board);
 			});
 
 			socket.on("action_cancelled", (gameId) => {
-				console.log("action_cancelled", gameId);
+				// console.log("action_cancelled", gameId);
 				socket.to(gameId).emit("action_cancelled");
 			});
 
 			socket.on("turn_completed", (gameId) => {
-				console.log("turn_completed", gameId);
+				// console.log("turn_completed", gameId);
 				socket.to(gameId).emit("turn_completed", gameId);
 			});
 
 			socket.on("game_restarted", (gameId, gameTurn) => {
-				console.log("game_restarted", gameId);
+				// console.log("game_restarted", gameId);
 				socket.to(gameId).emit("game_restarted", gameId, gameTurn);
 			});
 		});
