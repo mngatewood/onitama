@@ -162,7 +162,7 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 						checkGameAdded();
 						setTimeout(checkGameAdded, 100);
 					});
-					setTimeout(resolve, 500);
+					// setTimeout(resolve, 500);
 				});
 
 				redirect(`/play/${newGame.id}`);
