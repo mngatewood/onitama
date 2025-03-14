@@ -42,21 +42,21 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 		}
 	}, [searchParams, pathname]);
 
-	// Fetch initial list of pending games
-	useEffect(() => {
-		const loadGames = async () => {
-			try {
-				const response = await fetch('/api/games?status=pending');
-				const games = await response.json();
-				console.log("[Lobby] Initial games loaded:", games);
-				setPendingGames(games);
-				pendingGamesRef.current = games;
-			} catch (error) {
-				console.error("[Lobby] Error loading initial games:", error);
-			}
-		};
-		loadGames();
-	}, []);
+	// // Fetch initial list of pending games
+	// useEffect(() => {
+	// 	const loadGames = async () => {
+	// 		try {
+	// 			const response = await fetch('/api/games?status=waiting_for_players');
+	// 			const games = await response.json();
+	// 			console.log("[Lobby] Initial games loaded:", games);
+	// 			setPendingGames(games);
+	// 			pendingGamesRef.current = games;
+	// 		} catch (error) {
+	// 			console.error("[Lobby] Error loading initial games:", error);
+	// 		}
+	// 	};
+	// 	loadGames();
+	// }, []);
 
 	// Update pending games when initialPendingGames prop changes
 	useEffect(() => {
