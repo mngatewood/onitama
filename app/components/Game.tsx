@@ -142,7 +142,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 		socket.on("action_cancelled", () => {
 			// Trigger on clickCancel
 			if (game) {
-				// TODO: unhighlight call cards
 				setBoard(game.board)
 			}
 		})
