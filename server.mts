@@ -67,7 +67,7 @@ app.prepare()
 			});
 
 			socket.on("join", (gameId) => {
-				console.log("[Server] Join event received:", game);
+				console.log("[Server] Join event received:", gameId);
 				socket.join(gameId);
 			})
 			
