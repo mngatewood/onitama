@@ -1,4 +1,4 @@
-import { getCardActions, completeTurn, passTurn } from "./action";
+import { getCardActions, completeTurn } from "./action";
 
 const virtualOpponentEmail = process.env.NEXT_PUBLIC_VIRTUAL_OPPONENT_EMAIL || "virtual_opponent@mngatewood.com";
 
@@ -297,33 +297,6 @@ const executeAction = async (action: Action, game: Game) => {
 	}
 }
 
-// select a random card and pass the turn
-const executePassTurn = async (game: Game): Promise<Game> => {
-	try {
-		const randomCardIndex = getRandomIndex(2);
-		const selectedCard = game.players.red.cards[randomCardIndex];
-		const nextTurn = game.turn === "red" ? "blue" : "red";
-		const neutralCard = game.cards?.find(card =>
-			!game.players.red.cards.some(redCard => redCard.id === card.id) &&
-			!game.players.blue.cards.some(blueCard => blueCard.id === card.id)
-		);
-		if (selectedCard && neutralCard) {
-			const updatedGame = await passTurn(
-				game.id,
-				nextTurn,
-				selectedCard.id,
-				neutralCard.id
-			);
-			return updatedGame;
-		} else {
-			return game;
-		}
-	} catch (error) {
-		console.error('Error executing pass turn:', error);
-		throw error;
-	}
-};
-
 // determine the appropriate action for the virtual opponent
 export const resolveVirtualTurn = async (game: Game, userId: string) => {
 
@@ -393,11 +366,5 @@ export const resolveVirtualTurn = async (game: Game, userId: string) => {
 		if (updatedGame) {
 			return updatedGame
 		}
-	}
-
-	// if there are no valid moves, execute a pass
-	const passTurn = executePassTurn(game);
-	if (passTurn) {
-		return passTurn
 	}
 };
