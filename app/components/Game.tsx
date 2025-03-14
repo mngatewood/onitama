@@ -10,7 +10,6 @@ import { socket } from "../lib/socketClient";
 import { ToastMessage } from "./ToastMessage";
 import { getCardActions, getUpdatedBoard, completeTurn, getGameWinner } from "../components/helpers/action";
 import { endGame, restartGame } from "../components/helpers/lobby";
-import { ConfirmButton } from "./ConfirmButton";
 import { resolveVirtualTurn } from "./helpers/virtualOpponent";
 
 interface GameProps {
@@ -23,11 +22,10 @@ export const Game = ({ gameId, userId }: GameProps) => {
 	const [board, setBoard] = useState<string[][] | null>(null);
 	const [selectedCard, setSelectedCard] = useState<Card | null>(null);
 	const [selectedPawn, setSelectedPawn] = useState< Position | null>(null);
-	const [selectedTarget, setSelectedTarget] = useState< Position | null>(null);
 	const [waiting, setWaiting] = useState(true);
+	const [initialTurn, setInitialTurn] = useState<boolean>(true);
 	const [otherPlayersTurn, setOtherPlayersTurn] = useState(false);
 	const [notifications, setNotifications] = useState<ToastNotification[]>([]);
-	const [renderConfirmButton, setRenderConfirmButton] = useState(false);
 	const [neutralCard, setNeutralCard] = useState<Card | null>(null);
 	const [actions, setActions] = useState<Action[] | null>(null);
 	const [winner, setWinner] = useState<string | null>(null);
@@ -35,62 +33,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 	const userColor = ["red", "blue"].find((key) => {
 		return game?.players && game?.players[key as keyof typeof game.players]?.id === userId;
 	}) || "";
-
-	const getPlayerData = (identifier: string) => {
-		if (game?.players) {
-			const data = {
-				turn: game.turn,
-				userId: userId,
-				firstName: "" as string | undefined,
-				color: "",
-				id: "",
-				cards: [] as Card[],
-			}
-			if((game.players.red.id === userId && identifier === "self") || (game.players.blue.id === userId && identifier === "opponent")) {
-				data.color = "red";
-				data.id = game.players.red.id;
-				data.cards = game.players.red.cards;
-				data.firstName = game.users?.find((user) => user.id === game.players.red.id)?.first_name ?? undefined;
-			} else if ((game.players.blue.id === userId && identifier === "self") || (game.players.red.id === userId && identifier === "opponent")) {
-				data.color = "blue";
-				data.id = game.players.blue.id;
-				data.cards = game.players.blue.cards;
-				data.firstName = game.users?.find((user) => user.id === game.players.blue.id)?.first_name ?? undefined;
-			}
-			if (!data) {
-				return null;;
-			}
-			return data;
-		};
-	};
-
-	const fetchGame = async (id: string) => {
-		const response = await fetch(`/api/games/?id=${id}`, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-			},
-		});
-		if (!response.ok) {
-			const notification: ToastNotification = {
-				type: "error",
-				message: "Game not found.  Redirecting to lobby...",
-				duration: 3000,
-				delay: 3000,
-				action: "/"
-			}
-			return setNotifications((prevNotifications) => [notification, ...prevNotifications]);
-		}
-		const gameData: Game = await response.json();
-		if(gameData) {
-			setGame(gameData);
-			setBoard(gameData.board);
-			const allPlayerCards = [...gameData?.players.red.cards ?? [], ...gameData?.players.blue.cards ?? []];
-			const allPlayerCardsIds = allPlayerCards.map((card: Card) => card.id);
-			setNeutralCard(gameData.cards?.find((card: Card) => !allPlayerCardsIds.includes(card.id)) ?? null);
-			setWaiting(gameData.users?.length !== 2);
-		}
-	};
 
 	// Fetch game data
 	useEffect(() => {
@@ -187,6 +129,19 @@ export const Game = ({ gameId, userId }: GameProps) => {
 
 	// Refresh game when turn changes
 	useEffect(() => {
+		const startGame = async (gameData: Game) => {
+			setWaiting(false);
+			const message = userColor === gameData.turn ? "The game has started.  Please select a card." : "The game has started.  Please wait for your opponent to complete their turn.";
+			const notification = {
+				type: "system",
+				message: message,
+				duration: 0,
+				delay: 0,
+				action: ""
+			}
+			setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+			setInitialTurn(false)
+		}
 		const updateTurn = async () => {
 			if(game && !winner && game.turn !== previousTurnRef.current) {
 				const winner = getGameWinner(game);
@@ -230,7 +185,66 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			}
 		};
 		updateTurn();
-	}, [game, userId, userColor, winner]);
+		if (initialTurn && (game?.users?.length === 2)) {
+			startGame(game);
+		}
+	}, [game, userId, userColor, winner, initialTurn]);
+
+	const getPlayerData = (identifier: string) => {
+		if (game?.players) {
+			const data = {
+				turn: game.turn,
+				userId: userId,
+				firstName: "" as string | undefined,
+				color: "",
+				id: "",
+				cards: [] as Card[],
+			}
+			if ((game.players.red.id === userId && identifier === "self") || (game.players.blue.id === userId && identifier === "opponent")) {
+				data.color = "red";
+				data.id = game.players.red.id;
+				data.cards = game.players.red.cards;
+				data.firstName = game.users?.find((user) => user.id === game.players.red.id)?.first_name ?? undefined;
+			} else if ((game.players.blue.id === userId && identifier === "self") || (game.players.red.id === userId && identifier === "opponent")) {
+				data.color = "blue";
+				data.id = game.players.blue.id;
+				data.cards = game.players.blue.cards;
+				data.firstName = game.users?.find((user) => user.id === game.players.blue.id)?.first_name ?? undefined;
+			}
+			if (!data) {
+				return null;;
+			}
+			return data;
+		};
+	};
+
+	const fetchGame = async (id: string) => {
+		const response = await fetch(`/api/games/?id=${id}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+		if (!response.ok) {
+			const notification: ToastNotification = {
+				type: "error",
+				message: "Game not found.  Redirecting to lobby...",
+				duration: 3000,
+				delay: 3000,
+				action: "/"
+			}
+			return setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+		}
+		const gameData: Game = await response.json();
+		if (gameData) {
+			setGame(gameData);
+			setBoard(gameData.board);
+			const allPlayerCards = [...gameData?.players.red.cards ?? [], ...gameData?.players.blue.cards ?? []];
+			const allPlayerCardsIds = allPlayerCards.map((card: Card) => card.id);
+			setNeutralCard(gameData.cards?.find((card: Card) => !allPlayerCardsIds.includes(card.id)) ?? null);
+			setWaiting(gameData.users?.length !== 2);
+		}
+	};
 
 	const selectCard = (cardId: string) => {
 		if(game !== null) {
@@ -240,7 +254,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			if (cardActions?.length) {
 				const updatedBoard = getUpdatedBoard(game, cardActions);
 				setSelectedPawn(null);
-				setSelectedTarget(null);
 				setActions(cardActions);
 				setBoard(updatedBoard);
 				const notification = {
@@ -255,7 +268,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			} else {
 				const updatedBoard = JSON.parse(JSON.stringify(game.board));
 				setSelectedPawn(null);
-				setSelectedTarget(null);
 				setActions(null);
 				setBoard(updatedBoard);
 				const notification = {
@@ -296,7 +308,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				setBoard(updatedBoard);
 				setSelectedCard(null);
 				setSelectedPawn(null);
-				setSelectedTarget(null);
 				setActions(null);
 				const notification = {
 					type: "error",
@@ -317,24 +328,22 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			updatedBoard[target.row][target.column] = updatedBoard[target.row][target.column].substring(0, 3) + "o";
 			updatedBoard[selectedPawn.row][selectedPawn.column] = updatedBoard[selectedPawn.row][selectedPawn.column].substring(0, 2) + "h" + updatedBoard[selectedPawn.row][selectedPawn.column].substring(3);
 			setBoard(updatedBoard);
-			setSelectedTarget(target);
 			const notification = {
 				type: "success",
-				message: "Target selected. Click Confirm to end your turn or Cancel to reset the board.",
+				message: "Target selected. Ending your turn.",
 				duration: 0,
 				delay: 0,
 				action: ""
 			};
 			setNotifications((prevNotifications) => [notification, ...prevNotifications]);
-			setRenderConfirmButton(true);
 			socket.emit("board_updated", gameId, updatedBoard);
+			submitAction(target);
 		}
 	};
 
-	const clickConfirm = async () => {
-		setRenderConfirmButton(false);
-		if (game && selectedCard && selectedPawn && selectedTarget) {
-			const updatedGame = await completeTurn(game, selectedCard, selectedPawn, selectedTarget);
+	const submitAction = async (target: Position) => {
+		if (game && selectedCard && selectedPawn && target) {
+			const updatedGame = await completeTurn(game, selectedCard, selectedPawn, target);
 			if(updatedGame) {
 				fetchGame(updatedGame.id)
 				const notification = {
@@ -357,30 +366,8 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			}
 			setSelectedCard(null);
 			setSelectedPawn(null);
-			setSelectedTarget(null);
 			setActions(null);
 			socket.emit("turn_completed", gameId);
-		}
-	}
-
-	const clickCancel = async () => {
-		setRenderConfirmButton(false);
-		if (game) {
-			const updatedBoard = JSON.parse(JSON.stringify(game.board));
-			setBoard(updatedBoard);
-			setSelectedCard(null);
-			setSelectedPawn(null);
-			setSelectedTarget(null);
-			setActions(null);
-			const notification = {
-				type: "success",
-				message: "The board has been reset.  Please select a card.",
-				duration: 0,
-				delay: 0,
-				action: ""
-			}
-			setNotifications((prevNotifications) => [notification, ...prevNotifications]);
-			socket.emit("action_cancelled", gameId);
 		}
 	}
 
@@ -452,13 +439,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 								selectedPawn={selectedPawn} 
 								selectTarget={selectTarget}
 							/>
-						</div>
-						<div className="absolute top-1/2 left-1/2 landscape:left-1/4 -translate-x-1/2 -translate-y-1/2 transition-all duration-300">
-							<div className={`${renderConfirmButton ? "visible opacity-100" : "invisible opacity-0"} absolute top-1/2 left-1/2 landscape:left-1/4 -translate-x-1/2 -translate-y-1/2 transition-all duration-300`}>
-								<ConfirmButton clickConfirm={clickConfirm} clickCancel={clickCancel} />
-							</div>
-						</div>
-						<div className={`${renderConfirmButton ? "visible opacity-100" : "invisible opacity-0"} absolute top-1/2 left-1/2 landscape:left-1/4 -translate-x-1/2 -translate-y-1/2 transition-all duration-300`}>
 						</div>
 					</div>
 					<div className="player-bottom order-3 landscape:order-2 landscape:w-1/2 flex justify-center flex-grow">
