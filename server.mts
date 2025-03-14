@@ -196,10 +196,6 @@ export const endGame = async (gameId: string) => {
 			status: "ended"
 		 });
 		const url = `${apiUrl}/games?id=${gameId}&action=change_status`;
-		// const update = {
-		// 	gameId: gameId,
-		// 	status: "ended"
-		// }
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {

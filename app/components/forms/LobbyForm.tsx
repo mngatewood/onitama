@@ -135,43 +135,100 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 		setShowNewGameModal(false);
 	}
 
+	// const handleNewMultiplayerGame = async () => {
+
+	// 	if(session?.user.id) {
+	// 		setLoading(true);
+	// 		setShowNewGameModal(false);
+
+	// 		if (!socket.connected) {
+	// 			await new Promise<void>((resolve) => {
+	// 				socket.on("connect", () => {
+	// 					resolve();
+	// 				});
+	// 			});
+	// 		}
+
+	// 		const newGame = await createMultiplayerGame(session?.user.id);
+	// 		if(newGame) {
+	// 			await new Promise<void>((resolve) => {
+	// 				const checkGameAdded = () => {
+	// 					if (pendingGamesRef.current.some(game => game.id === newGame.id)) {
+	// 						resolve();
+	// 					} 
+	// 				}
+
+	// 				socket.emit("game_created", newGame, () => {
+	// 					checkGameAdded();
+	// 					setTimeout(checkGameAdded, 100);
+	// 				});
+	// 				setTimeout(resolve, 500);
+	// 			});
+
+	// 			redirect(`/play/${newGame.id}`);
+	// 		}
+	// 		setLoading(false);
+	// 	} else {
+	// 		redirect('/login');
+	// 	}
+	// }
+
+	// wait for game to appear in state
+	const waitForGameInState = (gameId: string) => {
+		return new Promise<void>((resolve, reject) => {
+			const startTime = Date.now();
+			
+			// check if game is in state, if so, resolve the promise
+			const checkState = () => {
+				if (pendingGamesRef.current.some(game => game.id === gameId)) {
+					resolve();
+					return;
+				}
+				
+				// if game has not appeared in state after 200ms, reject the promise
+				if (Date.now() - startTime > 200) {
+					reject(new Error(`Timeout waiting for game ${gameId} to appear in state`));
+					return;
+				}
+				
+				// check again in the next frame
+				requestAnimationFrame(checkState);
+			};
+			
+			checkState();
+		});
+	};
+
 	const handleNewMultiplayerGame = async () => {
-
 		if(session?.user.id) {
-			setLoading(true);
-			setShowNewGameModal(false);
-
-			if (!socket.connected) {
-				await new Promise<void>((resolve) => {
-					socket.on("connect", () => {
-						resolve();
+			try {
+				setLoading(true);
+				setShowNewGameModal(false);
+				const newGame = await createMultiplayerGame(session?.user.id);
+				if(newGame) {
+					// emit with acknowledgment
+					await new Promise<void>((resolve, reject) => {
+						socket.emit("game_created", newGame, (error?: Error) => {
+							if (error) reject(error);
+							else resolve();
+						});
 					});
-				});
+
+					// wait for state update
+					await waitForGameInState(newGame.id);
+
+					redirect(`/play/${newGame.id}`);
+				}
+			} catch (error) {
+				console.error("[Lobby] Error creating game:", error);
+			} finally {
+				setLoading(false);
 			}
-
-			const newGame = await createMultiplayerGame(session?.user.id);
-			if(newGame) {
-				await new Promise<void>((resolve) => {
-					const checkGameAdded = () => {
-						if (pendingGamesRef.current.some(game => game.id === newGame.id)) {
-							resolve();
-						} 
-					}
-
-					socket.emit("game_created", newGame, () => {
-						checkGameAdded();
-						setTimeout(checkGameAdded, 100);
-					});
-					setTimeout(resolve, 500);
-				});
-
-				redirect(`/play/${newGame.id}`);
-			}
-			setLoading(false);
 		} else {
 			redirect('/login');
 		}
-	}
+	};
+
 
 	const handleJoinGame = async (game: Game) => {
 		if(!session?.user.id) {
