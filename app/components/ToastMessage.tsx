@@ -54,7 +54,7 @@ export const ToastMessage = ({ notifications }: { notifications: ToastNotificati
 		<div id="toast" className="absolute top-2 -left-[350%] -translate-x-1 mr-4 transition-all duration-300 flex flex-col justify-center items-start z-50">
 			<div className={`${toastClass()} flex justify-between items-start opacity-90 w-full shadow-[2px_2px_5px_0px_rgba(0,0,0,0.7)] dark:shadow-[2px_2px_5px_0px_rgba(255,255,255,0.7)] rounded-r-2xl p-4`}>
 				<p className="mx-4 text-white font-bold">{notification?.message || ""}</p>
-				<div onClick={handleCloseNotification}className="h-6 aspect-square text-sm bg-white rounded-full flex justify-center items-center cursor-pointer">
+				<div onClick={handleCloseNotification}className="h-6 aspect-square text-[0.7rem] bg-white rounded-full flex justify-center items-center cursor-pointer">
 					❌
 				</div>
 			</div>
