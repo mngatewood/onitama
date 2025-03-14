@@ -108,7 +108,7 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 		socket.on("game_ended", handleGameEnded);
 
 		return () => {
-			console.log("[Lobby] Removing socket listeners");
+			// console.log("[Lobby] Removing socket listeners");
 			socket.off("game_created", handleGameCreated);
 			socket.off("game_updated", handleGameUpdated);
 			socket.off("game_full", handleGameFull);
