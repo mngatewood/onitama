@@ -98,7 +98,6 @@ export const registerUser = async ( { page }: { page: Page }, email: string) => 
 }
 
 export const loginUser = async ({ page }: { page: Page }, email: string) => {
-	console.log("logging in user", email);
 	await page.goto('/login');
 	await page.waitForTimeout(1000);
 	await page.locator('#email').fill(email);
@@ -531,5 +530,22 @@ const updateGameVictoryActionCards = async () => {
 
 export const updateGameVictoryAction = async () => {
 	return updateGame(updateGameVictoryActionBoard, await updateGameVictoryActionCards());
+}
+
+const updateGameStartBoard = [
+	["rs00", "rs00", "rm00", "rs00", "rs00"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["bs00", "bs00", "bm00", "bs00", "bs00"],
+]
+
+const updateGameStartCards = async () => {
+	const allCards = await getAllCards();
+	return [allCards.rabbit, allCards.boar, allCards.cobra, allCards.mantis, allCards.dragon];
+}
+
+export const updateGameStart = async () => {
+	return updateGame(updateGameStartBoard, await updateGameStartCards());
 }
 

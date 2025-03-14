@@ -15,8 +15,8 @@ test.describe('user can move a pawn', () => {
 		await clearTestData();
 		await startTestGame({page}, email);
 		updateInvalidPawnGame();
-		await page.reload();
 		await page.waitForTimeout(500);
+		await page.reload();
 	});
 
 	test.afterEach(async ({ page }) => {
@@ -103,7 +103,7 @@ test.describe('user can move a pawn', () => {
 			test('the Confirm and Cancel buttons are visible along with a message', async ({ page }) => {
 				await page.locator(".card").locator("nth=5").click();
 				await page.locator("#space-23").click();
-				await page.locator("#space-22").click();
+				await page.locator("#space-19").click();
 
 				await expect(page.getByText("Target selected. Click Confirm to end your turn or Cancel to reset the board.")).toBeVisible();
 				await expect(page.getByRole('button', { name: 'Confirm' })).toBeVisible();
@@ -115,7 +115,7 @@ test.describe('user can move a pawn', () => {
 				test('the board is reset', async ({ page }) => {
 					await page.locator(".card").locator("nth=5").click();
 					await page.locator("#space-23").click();
-					await page.locator("#space-22").click();
+					await page.locator("#space-19").click();
 					await page.getByRole('button', { name: 'Cancel' }).click();
 	
 					// First row should be unaffected
@@ -124,35 +124,12 @@ test.describe('user can move a pawn', () => {
 					await expect(page.locator("#space-3")).not.toHaveClass(/targeted/);
 					await expect(page.locator("#space-4")).not.toHaveClass(/targeted/);
 					await expect(page.locator("#space-5")).not.toHaveClass(/targeted/);
-					await expect(page.locator("#space-1")).toHaveClass(/not-highlighted/);
-					await expect(page.locator("#space-2")).toHaveClass(/not-highlighted/);
-					await expect(page.locator("#space-3")).toHaveClass(/not-highlighted/);
-					await expect(page.locator("#space-4")).toHaveClass(/not-highlighted/);
-					await expect(page.locator("#space-5")).toHaveClass(/not-highlighted/);
 
-					// Second row should be unaffected
-					await expect(page.locator("#space-6")).not.toHaveClass(/targeted/);
-					await expect(page.locator("#space-7")).not.toHaveClass(/targeted/);
-					await expect(page.locator("#space-8")).not.toHaveClass(/targeted/);
-					await expect(page.locator("#space-9")).not.toHaveClass(/targeted/);
-					await expect(page.locator("#space-10")).not.toHaveClass(/targeted/);
-					await expect(page.locator("#space-6")).toHaveClass(/not-highlighted/);
-					await expect(page.locator("#space-7")).toHaveClass(/not-highlighted/);
-					await expect(page.locator("#space-8")).toHaveClass(/not-highlighted/);
-					await expect(page.locator("#space-9")).toHaveClass(/not-highlighted/);
-					await expect(page.locator("#space-10")).toHaveClass(/not-highlighted/);
-
-					// Third row should be unaffected
-					await expect(page.locator("#space-11")).not.toHaveClass(/targeted/);
-					await expect(page.locator("#space-12")).not.toHaveClass(/targeted/);
-					await expect(page.locator("#space-13")).not.toHaveClass(/targeted/);
-					await expect(page.locator("#space-14")).not.toHaveClass(/targeted/);
-					await expect(page.locator("#space-15")).not.toHaveClass(/targeted/);
-					await expect(page.locator("#space-11")).toHaveClass(/not-highlighted/);
-					await expect(page.locator("#space-12")).toHaveClass(/not-highlighted/);
-					await expect(page.locator("#space-13")).toHaveClass(/not-highlighted/);
-					await expect(page.locator("#space-14")).toHaveClass(/not-highlighted/);
-					await expect(page.locator("#space-15")).toHaveClass(/not-highlighted/);
+					// Opponent does not take action, no spaces in first three rows are highlighted or changed
+					await expect(page.locator(".space.action")).toHaveCount(0);
+					await expect(page.locator("#space-1.student, #space-2.student, #space-3.student, #space-4.student, #space-5.student, #space-6.student, #space-7.student, #space-8.student, #space-9.student, #space-10.student, #space-11.student, #space-12.student, #space-13.student, #space-14.student, #space-15.student")).toHaveCount(3);
+					await expect(page.locator("#space-1.master, #space-2.master, #space-3.master, #space-4.master, #space-5.master, #space-6.master, #space-7.master, #space-8.master, #space-9.master, #space-10.master #space-11.master, #space-12.master, #space-13.master, #space-14.master, #space-15.master")).toHaveCount(1);
+					await expect(page.locator("#space-1.not-highlighted, #space-2.not-highlighted, #space-3.not-highlighted, #space-4.not-highlighted, #space-5.not-highlighted, #space-6.not-highlighted, #space-7.not-highlighted, #space-8.not-highlighted, #space-9.not-highlighted, #space-10.not-highlighted, #space-11.not-highlighted, #space-12.not-highlighted, #space-13.not-highlighted, #space-14.not-highlighted, #space-15.not-highlighted")).toHaveCount(15);
 
 					// Fourth row, fifth column should be targeted, but none highlighted
 					await expect(page.locator("#space-16")).not.toHaveClass(/targeted/);
@@ -182,7 +159,7 @@ test.describe('user can move a pawn', () => {
 				test('a notification is displayed', async ({ page }) => {
 					await page.locator(".card").locator("nth=5").click();
 					await page.locator("#space-23").click();
-					await page.locator("#space-22").click();
+					await page.locator("#space-19").click();
 					await page.getByRole('button', { name: 'Cancel' }).click();
 	
 					await expect(page.getByText("The board has been reset.  Please select a card.")).toBeVisible();
