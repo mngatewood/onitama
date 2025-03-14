@@ -15,8 +15,8 @@ test.describe('user can select a pawn', () => {
 		await clearTestData();
 		await startTestGame({page}, email);
 		updateInvalidPawnGame();
-		await page.reload();
 		await page.waitForTimeout(500);
+		await page.reload();
 		
 	});
 

@@ -24,6 +24,7 @@ app.prepare()
 			},
 		});
 
+		// Middleware to attach user data to the socket
 		io.use(async (socket, next) => {
 			try {
 				const cookies = parse(socket.handshake.headers.cookie || "");
@@ -100,6 +101,26 @@ app.prepare()
 						}
 					});
 				}
+			});
+
+			socket.on("board_updated", (gameId, board) => {	
+				console.log("board_updated", gameId, board);
+				socket.to(gameId).emit("board_updated", board);
+			});
+
+			socket.on("action_cancelled", (gameId) => {
+				console.log("action_cancelled", gameId);
+				socket.to(gameId).emit("action_cancelled");
+			});
+
+			socket.on("turn_completed", (gameId) => {
+				console.log("turn_completed", gameId);
+				socket.to(gameId).emit("turn_completed", gameId);
+			});
+
+			socket.on("game_restarted", (gameId, gameTurn) => {
+				console.log("game_restarted", gameId);
+				socket.to(gameId).emit("game_restarted", gameId, gameTurn);
 			});
 		});
 

@@ -8,9 +8,8 @@ import { DefeatedPawns } from "./DefeatedPawns";
 import { PlayerCards } from "./PlayerCards";
 import { socket } from "../lib/socketClient";
 import { ToastMessage } from "./ToastMessage";
-import { getCardActions, getUpdatedBoard, passTurn, completeTurn, getGameWinner } from "../components/helpers/action";
+import { getCardActions, getUpdatedBoard, completeTurn, getGameWinner } from "../components/helpers/action";
 import { endGame, restartGame } from "../components/helpers/lobby";
-import { PassButton } from "./PassButton";
 import { ConfirmButton } from "./ConfirmButton";
 import { resolveVirtualTurn } from "./helpers/virtualOpponent";
 
@@ -28,7 +27,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 	const [waiting, setWaiting] = useState(true);
 	const [otherPlayersTurn, setOtherPlayersTurn] = useState(false);
 	const [notifications, setNotifications] = useState<ToastNotification[]>([]);
-	const [renderPassButton, setRenderPassButton] = useState(false);
 	const [renderConfirmButton, setRenderConfirmButton] = useState(false);
 	const [neutralCard, setNeutralCard] = useState<Card | null>(null);
 	const [actions, setActions] = useState<Action[] | null>(null);
@@ -90,11 +88,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			const allPlayerCards = [...gameData?.players.red.cards ?? [], ...gameData?.players.blue.cards ?? []];
 			const allPlayerCardsIds = allPlayerCards.map((card: Card) => card.id);
 			setNeutralCard(gameData.cards?.find((card: Card) => !allPlayerCardsIds.includes(card.id)) ?? null);
-			if (gameData.users?.length === 2) {
-				setWaiting(false);
-			} else {
-				setWaiting(true);
-			}
+			setWaiting(gameData.users?.length !== 2);
 		}
 	};
 
@@ -140,10 +134,56 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			setNotifications((prevNotifications) => [notification, ...prevNotifications]);
 		});
 
+		socket.on("board_updated", (updatedBoard: string[][]) => {
+			// Trigger on selectCard, selectPawn and selectAction
+			setBoard(updatedBoard)
+		})
+
+		socket.on("action_cancelled", () => {
+			// Trigger on clickCancel
+			if (game) {
+				setBoard(game.board)
+			}
+		})
+
+		socket.on("turn_completed", (gameId: string) => {
+			// Trigger on clickConfirm and clickPass
+			fetchGame(gameId);
+			const notification = {
+				type: "system",
+				message: "Your opponent has completed their turn.  Please select a card.",
+				duration: 0,
+				delay: 0,
+				action: ""
+			};
+			setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+		})
+
+		socket.on("game_restarted", async (gameId: string, gameTurn: string) => {
+			// Trigger on playAgain
+			await fetchGame(gameId);
+			setWinner(null);
+			const message = userColor === gameTurn 
+				? "The game has been restarted.  Please select a card." 
+				: "The game has been restarted.  Please wait for your opponent to complete their turn.";
+			const notification = {
+				type: "system",
+				message: message,
+				duration: 0,
+				delay: 0,
+				action: ""
+			};
+			setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+		})
+
 		return () => {
 			socket.off("user_joined");
+			socket.off("board_updated");
+			socket.off("action_cancelled");
+			socket.off("turn_completed");
+			socket.off("game_restarted");
 		}
-	}, [gameId]);
+	}, [game, gameId, userColor]);
 
 	// Refresh game when turn changes
 	useEffect(() => {
@@ -164,7 +204,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				}
 				setSelectedCard(null);
 				setBoard(game?.board);
-				setRenderPassButton(false);
 				updateNeutralCard(game);
 				if (game.turn === userColor) {
 					setOtherPlayersTurn(false);
@@ -178,7 +217,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 						const allPlayerCardsIds = allPlayerCards.map((card: Card) => card.id);
 						setNeutralCard(updatedGame.cards?.find((card: Card) => !allPlayerCardsIds.includes(card.id)) ?? null);
 						const notification = {
-							type: "success",
+							type: "system",
 							message: "Your opponent has completed their turn.  Please select a card.",
 							duration: 0,
 							delay: 0,
@@ -191,19 +230,19 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			}
 		};
 		updateTurn();
-	}, [game, userId, userColor]);
+	}, [game, userId, userColor, winner]);
 
 	const selectCard = (cardId: string) => {
 		if(game !== null) {
 			setSelectedCard(game.cards?.find((card: Card) => card.id === cardId) ?? null);
-			const cardActions = getCardActions(game, cardId, userId);
+			const invertActions = userColor === "red"
+			const cardActions = getCardActions(game, cardId, userId, invertActions);
 			if (cardActions?.length) {
 				const updatedBoard = getUpdatedBoard(game, cardActions);
 				setSelectedPawn(null);
 				setSelectedTarget(null);
 				setActions(cardActions);
 				setBoard(updatedBoard);
-				setRenderPassButton(false);
 				const notification = {
 					type: "success",
 					message: "Card selected.  Please select a highlighted pawn or click a card to see other available pawns and targets.",
@@ -212,13 +251,13 @@ export const Game = ({ gameId, userId }: GameProps) => {
 					action: ""
 				}
 				setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+				socket.emit("board_updated", gameId, updatedBoard);
 			} else {
 				const updatedBoard = JSON.parse(JSON.stringify(game.board));
 				setSelectedPawn(null);
 				setSelectedTarget(null);
 				setActions(null);
 				setBoard(updatedBoard);
-				setRenderPassButton(true);
 				const notification = {
 					type: "error",
 					message: "The selected card contains no valid actions. Select another card or click Pass to skip your turn and pass the selected card to your opponent.",
@@ -227,8 +266,8 @@ export const Game = ({ gameId, userId }: GameProps) => {
 					action: ""
 				}
 				setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+				socket.emit("board_updated", gameId, updatedBoard);
 			}
-			// socket.emit("update_board", gameId, board);
 		}
 	};
 
@@ -251,6 +290,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 					action: ""
 				};
 				setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+				socket.emit("board_updated", gameId, updatedBoard);
 			} else {
 				const updatedBoard = JSON.parse(JSON.stringify(game.board));
 				setBoard(updatedBoard);
@@ -258,7 +298,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				setSelectedPawn(null);
 				setSelectedTarget(null);
 				setActions(null);
-				setRenderPassButton(true);
 				const notification = {
 					type: "error",
 					message: "The selected pawn has no valid actions. Select a card to see available pawns and targets.",
@@ -267,6 +306,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 					action: ""
 				}
 				setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+				socket.emit("board_updated", gameId, updatedBoard);
 			}
 		}
 	}
@@ -287,38 +327,9 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			};
 			setNotifications((prevNotifications) => [notification, ...prevNotifications]);
 			setRenderConfirmButton(true);
-			// socket.emit("update_board", gameId, board);
+			socket.emit("board_updated", gameId, updatedBoard);
 		}
 	};
-
-	const clickPass = async () => {
-		console.log("clicked pass");
-		console.log(game, selectedCard);
-		if(game !== null) {
-			const nextTurn = game.turn === "red" ? "blue" : "red";
-			if (selectedCard) {
-				const updateGame = await passTurn(gameId, nextTurn, selectedCard?.id, neutralCard?.id ?? '');
-				if(updateGame) {
-					console.log("updateGame", updateGame);
-				}
-				setGame(updateGame);
-				setSelectedCard(null);
-				setSelectedPawn(null);
-				setSelectedTarget(null);
-				setActions(null);
-				const notification = {
-						type: "system",
-						message: "Your turn has ended. Please wait for your opponent to take their turn.",
-						duration: 0,
-						delay: 0,
-						action: ""
-				}
-				setNotifications((prevNotifications) => [notification, ...prevNotifications]);
-				setRenderPassButton(false);
-				// socket.emit("update_board", gameId, board);
-			}
-		}
-	}
 
 	const clickConfirm = async () => {
 		setRenderConfirmButton(false);
@@ -327,7 +338,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			if(updatedGame) {
 				fetchGame(updatedGame.id)
 				const notification = {
-					type: "success",
+					type: "system",
 					message: "Your turn has ended. Please wait for your opponent to take their turn.",
 					duration: 0,
 					delay: 0,
@@ -348,7 +359,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			setSelectedPawn(null);
 			setSelectedTarget(null);
 			setActions(null);
-			// socket.emit("update_game", gameId, game);
+			socket.emit("turn_completed", gameId);
 		}
 	}
 
@@ -369,7 +380,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				action: ""
 			}
 			setNotifications((prevNotifications) => [notification, ...prevNotifications]);
-			// socket.emit("update_board", gameId, board);
+			socket.emit("action_cancelled", gameId);
 		}
 	}
 
@@ -383,23 +394,35 @@ export const Game = ({ gameId, userId }: GameProps) => {
 		if (game) {
 			const updatedGame = await restartGame(JSON.parse(JSON.stringify(game)));
 			if(updatedGame) {
+				setWinner(null);
 				setGame(updatedGame);
 				setBoard(updatedGame?.board);
+				previousTurnRef.current = null;
 				const message = userColor === updatedGame.turn 
 				? "The game has been restarted.  Please select a card." 
 				: "The game has been restarted.  Please wait for your opponent to complete their turn.";
 				const notification = {
-					type: "success",
+					type: "system",
 					message: message,
 					duration: 0,
 					delay: 0,
 					action: ""
 				}
 				setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+				socket.emit("game_restarted", gameId, updatedGame.turn);
 			}
-			previousTurnRef.current = null;
-			setWinner(null);
 		}
+	}
+
+	const waitForYourTurn = () => {
+		const notification = {
+			type: "error",
+			message: "Please wait for your opponent to complete their turn.",
+			duration: 3000,
+			delay: 0,
+			action: ""
+		}
+		setNotifications((prevNotifications) => [notification, ...prevNotifications]);
 	}
 
 	return (
@@ -431,9 +454,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 							/>
 						</div>
 						<div className="absolute top-1/2 left-1/2 landscape:left-1/4 -translate-x-1/2 -translate-y-1/2 transition-all duration-300">
-							<div className={`${renderPassButton ? "visible opacity-100" : "invisible opacity-0"} absolute top-1/2 left-1/2 landscape:left-1/4 -translate-x-1/2 -translate-y-1/2 transition-all duration-300`}>
-								<PassButton clickPass={clickPass} />
-							</div>
 							<div className={`${renderConfirmButton ? "visible opacity-100" : "invisible opacity-0"} absolute top-1/2 left-1/2 landscape:left-1/4 -translate-x-1/2 -translate-y-1/2 transition-all duration-300`}>
 								<ConfirmButton clickConfirm={clickConfirm} clickCancel={clickCancel} />
 							</div>
@@ -464,9 +484,8 @@ export const Game = ({ gameId, userId }: GameProps) => {
 					<WaitingModal text="Waiting for another player to join..." />
 				</div>
 			}
-			{game && otherPlayersTurn &&
-				<div className="absolute top-0 left-0 right-0 bottom-0 flex items-center">
-					<WaitingModal text="Waiting for your opponent to complete their turn..." />
+			{game && !waiting && otherPlayersTurn &&
+				<div onClick={waitForYourTurn} className="absolute top-0 left-0 right-0 bottom-0">
 				</div>
 			}
 			{game && winner &&
