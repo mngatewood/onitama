@@ -11,9 +11,10 @@ import { NewGameModal } from "./NewGameModal";
 
 interface LobbyFormProps {
 	session: AppendedSession;
+	initialPendingGames: Game[];
 }
 
-export const LobbyForm = ({session}: LobbyFormProps) => {
+export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 	const searchParams = useSearchParams();
 	const pathname = usePathname();
 	const [pendingGames, setPendingGames] = React.useState<Game[]>([]);
@@ -58,13 +59,13 @@ export const LobbyForm = ({session}: LobbyFormProps) => {
 	}, []);
 
 	// Update pending games when initialPendingGames prop changes
-	// useEffect(() => {
-	// 	if (initialPendingGames) {
-	// 		setPendingGames(initialPendingGames);
-	// 	} else {
-	// 		setPendingGames([]);
-	// 	}
-	// }, [initialPendingGames]);
+	useEffect(() => {
+		if (initialPendingGames) {
+			setPendingGames(initialPendingGames);
+		} else {
+			setPendingGames([]);
+		}
+	}, [initialPendingGames]);
 
 	// Socket.io event listeners
 	useEffect(() => {
