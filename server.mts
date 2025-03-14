@@ -17,6 +17,7 @@ const apiUrl = process.env.BASE_URL + "/api";
 app.prepare()
 	.then(() => {
 		const httpServer = createServer(app.getRequestHandler());
+		console.log("process.env.BASE_URL", process.env.BASE_URL)
 		const io = new Server(httpServer, {
 			cors: {
 				origin: process.env.BASE_URL,
@@ -53,11 +54,12 @@ app.prepare()
 
 		io.on("connection", (socket) => {
 
-			// console.log("A user connected:", socket.id);
-			// console.log("Authenticated User Data:", socket.data.user);
+			console.log("A user connected:", socket.id);
+			console.log("Authenticated User Data:", socket.data.user);
 
 			socket.on("game_created", (game) => {
-				// console.log("socket.on: game created", game);
+				console.log("Received game_created event from socket:", socket.id);
+				console.log("socket.on: game created", game);
 				io.emit("game_created", game);
 			});
 
