@@ -129,33 +129,6 @@ export const getUpdatedBoard = (game: Game, cardActions: Action[]) => {
 	return board;
 }
 
-export const passTurn = async (gameId: string, nextTurn: string, selectedCardId: string, neutralCardId: string) => {
-	try {
-		const url = `${apiUrl}/games?id=${gameId}&action=pass`;
-		const update = {
-			gameId,
-			nextTurn,
-			selectedCardId,
-			neutralCardId
-		}
-		const response = await fetch(url, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(update),
-		})
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
-		const data = await response.json();
-		return data;
-	} catch (error) {
-		console.error('Error passing the turn:', error);
-		throw error;
-	}
-};
-
 export const completeTurn = async (game: Game, selectedCard: Card, selectedPawn: Position, selectedTarget: Position ) => {
 	try {
 		const board = getEndTurnBoard(game, selectedPawn, selectedTarget);

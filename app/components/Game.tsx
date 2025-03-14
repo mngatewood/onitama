@@ -8,9 +8,8 @@ import { DefeatedPawns } from "./DefeatedPawns";
 import { PlayerCards } from "./PlayerCards";
 import { socket } from "../lib/socketClient";
 import { ToastMessage } from "./ToastMessage";
-import { getCardActions, getUpdatedBoard, passTurn, completeTurn, getGameWinner } from "../components/helpers/action";
+import { getCardActions, getUpdatedBoard, completeTurn, getGameWinner } from "../components/helpers/action";
 import { endGame, restartGame } from "../components/helpers/lobby";
-import { PassButton } from "./PassButton";
 import { ConfirmButton } from "./ConfirmButton";
 import { resolveVirtualTurn } from "./helpers/virtualOpponent";
 
@@ -28,7 +27,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 	const [waiting, setWaiting] = useState(true);
 	const [otherPlayersTurn, setOtherPlayersTurn] = useState(false);
 	const [notifications, setNotifications] = useState<ToastNotification[]>([]);
-	const [renderPassButton, setRenderPassButton] = useState(false);
 	const [renderConfirmButton, setRenderConfirmButton] = useState(false);
 	const [neutralCard, setNeutralCard] = useState<Card | null>(null);
 	const [actions, setActions] = useState<Action[] | null>(null);
@@ -207,7 +205,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				}
 				setSelectedCard(null);
 				setBoard(game?.board);
-				setRenderPassButton(false);
 				updateNeutralCard(game);
 				if (game.turn === userColor) {
 					setOtherPlayersTurn(false);
@@ -247,7 +244,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				setSelectedTarget(null);
 				setActions(cardActions);
 				setBoard(updatedBoard);
-				setRenderPassButton(false);
 				const notification = {
 					type: "success",
 					message: "Card selected.  Please select a highlighted pawn or click a card to see other available pawns and targets.",
@@ -263,7 +259,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				setSelectedTarget(null);
 				setActions(null);
 				setBoard(updatedBoard);
-				setRenderPassButton(true);
 				const notification = {
 					type: "error",
 					message: "The selected card contains no valid actions. Select another card or click Pass to skip your turn and pass the selected card to your opponent.",
@@ -304,7 +299,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 				setSelectedPawn(null);
 				setSelectedTarget(null);
 				setActions(null);
-				setRenderPassButton(true);
 				const notification = {
 					type: "error",
 					message: "The selected pawn has no valid actions. Select a card to see available pawns and targets.",
@@ -337,30 +331,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 			socket.emit("board_updated", gameId, updatedBoard);
 		}
 	};
-
-	const clickPass = async () => {
-		if(game !== null) {
-			const nextTurn = game.turn === "red" ? "blue" : "red";
-			if (selectedCard) {
-				const updateGame = await passTurn(gameId, nextTurn, selectedCard?.id, neutralCard?.id ?? '');
-				setGame(updateGame);
-				setSelectedCard(null);
-				setSelectedPawn(null);
-				setSelectedTarget(null);
-				setActions(null);
-				const notification = {
-						type: "system",
-						message: "Your turn has ended. Please wait for your opponent to take their turn.",
-						duration: 0,
-						delay: 0,
-						action: ""
-				}
-				setNotifications((prevNotifications) => [notification, ...prevNotifications]);
-				setRenderPassButton(false);
-				socket.emit("turn_completed", gameId);
-			}
-		}
-	}
 
 	const clickConfirm = async () => {
 		setRenderConfirmButton(false);
@@ -485,9 +455,6 @@ export const Game = ({ gameId, userId }: GameProps) => {
 							/>
 						</div>
 						<div className="absolute top-1/2 left-1/2 landscape:left-1/4 -translate-x-1/2 -translate-y-1/2 transition-all duration-300">
-							<div className={`${renderPassButton ? "visible opacity-100" : "invisible opacity-0"} absolute top-1/2 left-1/2 landscape:left-1/4 -translate-x-1/2 -translate-y-1/2 transition-all duration-300`}>
-								<PassButton clickPass={clickPass} />
-							</div>
 							<div className={`${renderConfirmButton ? "visible opacity-100" : "invisible opacity-0"} absolute top-1/2 left-1/2 landscape:left-1/4 -translate-x-1/2 -translate-y-1/2 transition-all duration-300`}>
 								<ConfirmButton clickConfirm={clickConfirm} clickCancel={clickCancel} />
 							</div>
