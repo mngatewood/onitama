@@ -81,8 +81,6 @@ test.describe('user can play a solo game', () => {
 			});
 
 			test('the game will select an action that will result in a victory', async ({ page }) => {
-				// TODO: notification that the virtual opponent has won the game (need to add victory conditions logic)
-				// await expect(page.getByText("The Virtual Opponent has won the game.  Please click Exit Game to return to the lobby."))
 				// player cards should have amber shadow
 				await expect(page.locator(".player-color").locator("nth=0")).not.toHaveClass(/!shadow-amber-300 !shadow-md/);
 				await expect(page.locator(".player-color").locator("nth=1")).toHaveClass(/!shadow-amber-300 !shadow-md/);
@@ -95,6 +93,11 @@ test.describe('user can play a solo game', () => {
 				await expect(page.locator("#space-13.red.master, #space-3.red.master")).toHaveCount(1);
 				// origin and target spaces should be highlighted red
 				await expect(page.locator("#space-3.action, #space-17.action")).toHaveCount(1);
+				// winner modal should be visible
+				await expect(page.getByText("RED won the game!")).toBeVisible();
+				await expect(page.getByRole('heading', { name: 'Better luck next time! You have lost.' })).toBeVisible();
+				await expect(page.getByRole('button', { name: 'Exit', exact: true })).toBeVisible();
+				await expect(page.getByRole('button', { name: 'Play Again' })).toBeVisible();
 			});
 
 		});
