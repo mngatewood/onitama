@@ -170,17 +170,22 @@ export const deleteGame = async (gameId: string) => {
 
 export const endGame = async (gameId: string) => {
 	try {
-		const url = `${apiUrl}/games?id=${gameId}&action=change_status`;
-		const update = {
+		const body = JSON.stringify({ 
 			gameId: gameId,
 			status: "ended"
-		}
+		 });
+		const url = `${apiUrl}/games?id=${gameId}&action=change_status`;
+		// const update = {
+		// 	gameId: gameId,
+		// 	status: "ended"
+		// }
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
+				'Content-Length': Buffer.byteLength(body).toString(),
 			},
-			body: JSON.stringify(update),
+			body: body,
 		})
 		if (!response.ok) {
 			throw new Error(`HTTP error! status: ${response.status}`);

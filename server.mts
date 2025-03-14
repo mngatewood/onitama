@@ -57,33 +57,38 @@ app.prepare()
 			// console.log("Authenticated User Data:", socket.data.user);
 
 			socket.on("game_created", (game) => {
-				// console.log("socket.on: game created", game);
+				// console.log("[Server] Game created event received:", game);
 				io.emit("game_created", game);
 			});
 
+			socket.on("game_updated", (game) => {
+				// console.log("[Server] Game updated event received:", game);
+				io.emit("game_updated", game);
+			});
+
 			socket.on("join", (gameId) => {
-				// console.log("socket.on: join", gameId);
+				// console.log("[Server] Join event received:", gameId);
 				socket.join(gameId);
 			})
 			
 			socket.on("user_joined", (gameId, firstName) => {
-				// console.log(`${firstName} joined the game`);
+				// console.log("[Server] User joined event received:", gameId);
 				socket.to(gameId).emit("user_joined", `${firstName} joined the game`);
 			});
 
 			socket.on("leave", (gameId) => {
-				// console.log("socket.on: leave", gameId);
+				// console.log("[Server] Leave event received:", gameId);
 				socket.leave(gameId);
 				io.emit("game_ended", gameId);
 			})
 			
 			socket.on("user_left", (gameId, firstName) => {
-				// console.log("socket.on: user_left", gameId, firstName);
+				// console.log("[Server] User left event received:", gameId);
 				socket.to(gameId).emit("user_left", `${firstName} left the game. Returning to the lobby...`);
 			});
 
 			socket.on("game_full", (gameId) => {
-				// console.log("game_full", gameId);
+				// console.log("[Server] Game full event received:", gameId);
 				io.emit("game_full", gameId);
 			});
 
@@ -104,22 +109,22 @@ app.prepare()
 			});
 
 			socket.on("board_updated", (gameId, board) => {	
-				console.log("board_updated", gameId, board);
+				// console.log("board_updated", gameId, board);
 				socket.to(gameId).emit("board_updated", board);
 			});
 
 			socket.on("action_cancelled", (gameId) => {
-				console.log("action_cancelled", gameId);
+				// console.log("action_cancelled", gameId);
 				socket.to(gameId).emit("action_cancelled");
 			});
 
 			socket.on("turn_completed", (gameId) => {
-				console.log("turn_completed", gameId);
+				// console.log("turn_completed", gameId);
 				socket.to(gameId).emit("turn_completed", gameId);
 			});
 
 			socket.on("game_restarted", (gameId, gameTurn) => {
-				console.log("game_restarted", gameId);
+				// console.log("game_restarted", gameId);
 				socket.to(gameId).emit("game_restarted", gameId, gameTurn);
 			});
 		});
@@ -184,19 +189,24 @@ const getUserGames = async (userId: string) => {
 	}
 };
 
-const endGame = async (gameId: string) => {
+export const endGame = async (gameId: string) => {
 	try {
-		const url = `${apiUrl}/games?id=${gameId}&action=change_status`;
-		const update = {
+		const body = JSON.stringify({ 
 			gameId: gameId,
 			status: "ended"
-		}
+		 });
+		const url = `${apiUrl}/games?id=${gameId}&action=change_status`;
+		// const update = {
+		// 	gameId: gameId,
+		// 	status: "ended"
+		// }
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
+				'Content-Length': Buffer.byteLength(body).toString(),
 			},
-			body: JSON.stringify(update),
+			body: body,
 		})
 		if (!response.ok) {
 			throw new Error(`HTTP error! status: ${response.status}`);
@@ -204,9 +214,8 @@ const endGame = async (gameId: string) => {
 		const data = await response.json();
 		return data;
 	} catch (error) {
-		if (error instanceof Error) {
-			console.log("Error: ", error.stack)
-		}
+		console.error('Error ending the game:', error);
 		throw error;
 	}
-};
+}
+
