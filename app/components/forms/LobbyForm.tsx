@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { redirect } from "next/navigation";
 import { createSoloGame, createMultiplayerGame, joinGame } from "../helpers/lobby";
 import { socket } from "../../lib/socketClient";
@@ -11,13 +11,13 @@ import { NewGameModal } from "./NewGameModal";
 
 interface LobbyFormProps {
 	session: AppendedSession;
-	initialPendingGames: Game[];
 }
 
-export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
+export const LobbyForm = ({session}: LobbyFormProps) => {
 	const searchParams = useSearchParams();
 	const pathname = usePathname();
 	const [pendingGames, setPendingGames] = React.useState<Game[]>([]);
+	const pendingGamesRef = useRef<Game[]>([]);
 	const [loading, setLoading] = React.useState(false);
 	const [notifications, setNotifications] = useState<ToastNotification[]>([]);
 	const [showNewGameModal, setShowNewGameModal] = useState(false);
@@ -41,76 +41,142 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 		}
 	}, [searchParams, pathname]);
 
-	// Update pending games when initialPendingGames prop changes
+	// Fetch initial list of pending games
 	useEffect(() => {
-		if (initialPendingGames) {
-			setPendingGames(initialPendingGames);
-		} else {
-			setPendingGames([]);
-		}
-	}, [initialPendingGames]);
+		const loadGames = async () => {
+			try {
+				const response = await fetch('/api/games?status=pending');
+				const games = await response.json();
+				console.log("[Lobby] Initial games loaded:", games);
+				setPendingGames(games);
+				pendingGamesRef.current = games;
+			} catch (error) {
+				console.error("[Lobby] Error loading initial games:", error);
+			}
+		};
+		loadGames();
+	}, []);
+
+	// Update pending games when initialPendingGames prop changes
+	// useEffect(() => {
+	// 	if (initialPendingGames) {
+	// 		setPendingGames(initialPendingGames);
+	// 	} else {
+	// 		setPendingGames([]);
+	// 	}
+	// }, [initialPendingGames]);
 
 	// Socket.io event listeners
 	useEffect(() => {
-
-		// Listen for game_created event to add new games to the list of pending games
-		socket.on("game_created", (newGame: Game) => {
-			console.log("[LobbyForm] Game created event received:", newGame);
-			setPendingGames((prevGames) => {
-				console.log("[Lobby] Previous games:", prevGames);
+		const handleGameCreated = (newGame: Game) => {
+			console.log("[Lobby] Game created event received:", newGame);
+			setPendingGames(prevGames => {
+				// Check if game already exists
+				if (prevGames.some(game => game.id === newGame.id)) {
+					return prevGames;
+				}
 				const newGames = [newGame, ...prevGames];
-				console.log("[Lobby] New games state:", newGames);
+				pendingGamesRef.current = newGames; // Update ref
+				console.log("[Lobby] Updated games after creation:", newGames);
 				return newGames;
 			});
-		});
+		};
 
-		socket.on("game_updated", (updatedGame: Game) => {
+		const handleGameUpdated = (updatedGame: Game) => {
 			console.log("[Lobby] Game updated event received:", updatedGame);
-			setPendingGames((prevGames) => {
-				console.log("[Lobby] Previous games before update:", prevGames);
-				const newGames = prevGames.map(game =>
+			setPendingGames(prevGames => {
+				const newGames = prevGames.map(game => 
 					game.id === updatedGame.id ? updatedGame : game
 				);
-				console.log("[Lobby] Games after update:", newGames);
+				pendingGamesRef.current = newGames;
+				console.log("[Lobby] Updated games after update:", newGames);
 				return newGames;
 			});
-		});
+		};
 
-		// Listen for game_full event to remove games with two players from the list of pending games
-		socket.on("game_full", (filledGameId: string) => {
-			console.log("[LobbyForm] Game full event received:", filledGameId);
-			// Remove full game from state
-			setPendingGames((prevGames) => {
-				console.log("[Lobby] Previous games before removal:", prevGames);
-				const newGames = prevGames.filter(game => game.id !== filledGameId);
-				console.log("[Lobby] Games after removal:", newGames);
+		const handleGameFull = (gameId: string) => {
+			console.log("[Lobby] Game full event received:", gameId);
+			setPendingGames(prevGames => {
+				const newGames = prevGames.filter(game => game.id !== gameId);
+				pendingGamesRef.current = newGames;
+				console.log("[Lobby] Updated games after removal:", newGames);
 				return newGames;
 			});
-		});
+		};
 
-		// Listen for game_ended event to remove games that have ended
-		socket.on("game_ended", (endedGameId: string) => {
-			console.log("[LobbyForm] Game ended event received:", endedGameId);
-			// Remove full game from state
-			setPendingGames((prevGames) =>
-				// Filter out games that are older than 1 hour
-				prevGames.filter(game =>
-					game.createdAt > new Date(Date.now() - 60 * 60 * 1000) &&
-					game.id !== endedGameId
-				)
-			);
-		});
+		socket.on("game_created", handleGameCreated);
+		socket.on("game_updated", handleGameUpdated);
+		socket.on("game_full", handleGameFull);
 
-
-
-		// Clean up the event listeners on unmount
 		return () => {
-			socket.off("game_created");
-			socket.off("game_updated");
-			socket.off("game_full");
-			socket.off("game_ended");
+			socket.off("game_created", handleGameCreated);
+			socket.off("game_updated", handleGameUpdated);
+			socket.off("game_full", handleGameFull);
 		};
 	}, []);
+
+
+	// Socket.io event listeners
+	// useEffect(() => {
+
+	// 	// Listen for game_created event to add new games to the list of pending games
+	// 	socket.on("game_created", (newGame: Game) => {
+	// 		console.log("[LobbyForm] Game created event received:", newGame);
+	// 		setPendingGames((prevGames) => {
+	// 			console.log("[Lobby] Previous games:", prevGames);
+	// 			const newGames = [newGame, ...prevGames];
+	// 			console.log("[Lobby] New games state:", newGames);
+	// 			return newGames;
+	// 		});
+	// 	});
+
+	// 	socket.on("game_updated", (updatedGame: Game) => {
+	// 		console.log("[Lobby] Game updated event received:", updatedGame);
+	// 		setPendingGames((prevGames) => {
+	// 			console.log("[Lobby] Previous games before update:", prevGames);
+	// 			const newGames = prevGames.map(game =>
+	// 				game.id === updatedGame.id ? updatedGame : game
+	// 			);
+	// 			console.log("[Lobby] Games after update:", newGames);
+	// 			return newGames;
+	// 		});
+	// 	});
+
+	// 	// Listen for game_full event to remove games with two players from the list of pending games
+	// 	socket.on("game_full", (filledGameId: string) => {
+	// 		console.log("[LobbyForm] Game full event received:", filledGameId);
+	// 		// Remove full game from state
+	// 		setPendingGames((prevGames) => {
+	// 			console.log("[Lobby] Previous games before removal:", prevGames);
+	// 			const newGames = prevGames.filter(game => game.id !== filledGameId);
+	// 			console.log("[Lobby] Games after removal:", newGames);
+	// 			return newGames;
+	// 		});
+	// 	});
+
+	// 	// Listen for game_ended event to remove games that have ended
+	// 	socket.on("game_ended", (endedGameId: string) => {
+	// 		console.log("[LobbyForm] Game ended event received:", endedGameId);
+	// 		// Remove full game from state
+	// 		setPendingGames((prevGames) =>
+	// 			// Filter out games that are older than 1 hour
+	// 			prevGames.filter(game =>
+	// 				game.createdAt > new Date(Date.now() - 60 * 60 * 1000) &&
+	// 				game.id !== endedGameId
+	// 			)
+	// 		);
+	// 	});
+
+
+
+	// 	// Clean up the event listeners on unmount
+	// 	return () => {
+	// 		socket.off("game_created");
+	// 		socket.off("game_updated");
+	// 		socket.off("game_full");
+	// 		socket.off("game_ended");
+	// 	};
+	// }, []);
 
 	const handleNewSoloGame = async () => {
 		if(session?.user.id) {
@@ -153,11 +219,19 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 			const newGame = await createMultiplayerGame(session?.user.id);
 			if(newGame) {
 				await new Promise<void>((resolve) => {
+					const checkGameAdded = () => {
+						if (pendingGamesRef.current.some(game => game.id === newGame.id)) {
+							resolve();
+						} 
+					}
+
 					socket.emit("game_created", newGame, () => {
-						resolve();
+						checkGameAdded();
+						setTimeout(checkGameAdded, 100);
 					});
-					setTimeout(resolve, 100);
+					setTimeout(resolve, 500);
 				});
+
 				redirect(`/play/${newGame.id}`);
 			}
 			setLoading(false);
