@@ -152,9 +152,12 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 			console.log("[Create] Creating new multiplayer game...");
 			const newGame = await createMultiplayerGame(session?.user.id);
 			if(newGame) {
-				console.log("[Create] New game created:", newGame);
-				socket.emit("game_created", newGame);
-				console.log("[Create] Game created event emitted");
+				await new Promise<void>((resolve) => {
+					socket.emit("game_created", newGame, () => {
+						resolve();
+					});
+					setTimeout(resolve, 100);
+				});
 				redirect(`/play/${newGame.id}`);
 			}
 			setLoading(false);
