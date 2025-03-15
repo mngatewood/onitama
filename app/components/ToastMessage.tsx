@@ -22,7 +22,8 @@ export const ToastMessage = ({ notifications }: { notifications: ToastNotificati
 	useEffect(() => {
 		if (notifications.length > 0) {
 			const toast = document.getElementById("toast");
-			toast?.classList.replace('left-0', '-left-[350%]')
+			toast?.classList.replace('left-0', '-left-[350%]');
+			toast?.classList.replace('opacity-1', 'opacity-0');
 			setTimeout(() => {
 				setNotification(notifications[0]);
 			}, 300);
@@ -32,6 +33,7 @@ export const ToastMessage = ({ notifications }: { notifications: ToastNotificati
 	useEffect(() => {
 		const toast = document.getElementById("toast");
 		toast?.classList.replace('-left-[350%]', 'left-0')
+		toast?.classList.replace('opacity-0', 'opacity-1')
 		if(notification?.action) {
 			const timer = setTimeout(() => {
 				redirect(notification.action);
@@ -39,7 +41,8 @@ export const ToastMessage = ({ notifications }: { notifications: ToastNotificati
 			return () => clearTimeout(timer);
 		} else if (notification?.duration) {
 			const timer = setTimeout(() => {
-				toast?.classList.replace('left-0', '-left-[350%]')
+				toast?.classList.replace('left-0', '-left-[350%]');
+				toast?.classList.replace('opacity-1', 'opacity-0');
 			}, notification?.duration);
 			return () => clearTimeout(timer);
 		}
@@ -47,14 +50,15 @@ export const ToastMessage = ({ notifications }: { notifications: ToastNotificati
 
 	const handleCloseNotification = () => {
 		const toast = document.getElementById("toast");
-		toast?.classList.replace('left-0', '-left-[350%]')
+		toast?.classList.replace('left-0', '-left-[350%]');
+		toast?.classList.replace('opacity-1', 'opacity-0');
 	}
 	
 	return (
-		<div id="toast" className="absolute top-2 -left-[350%] -translate-x-1 mr-4 transition-all duration-300 flex flex-col justify-center items-start z-50">
+		<div id="toast" className="absolute top-2 -left-[350%] -translate-x-1 mr-4 transition-all duration-[600ms] flex flex-col justify-center items-start z-50 opacity-0">
 			<div className={`${toastClass()} flex justify-between items-start opacity-90 w-full shadow-[2px_2px_5px_0px_rgba(0,0,0,0.7)] dark:shadow-[2px_2px_5px_0px_rgba(255,255,255,0.7)] rounded-r-2xl p-4`}>
 				<p className="mx-4 text-white font-bold">{notification?.message || ""}</p>
-				<div onClick={handleCloseNotification}className="h-6 aspect-square text-[0.7rem] bg-white rounded-full flex justify-center items-center cursor-pointer">
+				<div onClick={handleCloseNotification}className="h-6 aspect-square text-[0.8rem] bg-white rounded-full flex justify-center items-center cursor-pointer">
 					❌
 				</div>
 			</div>
