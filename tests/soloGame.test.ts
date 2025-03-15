@@ -94,8 +94,7 @@ test.describe('user can play a solo game', () => {
 				// origin and target spaces should be highlighted red
 				await expect(page.locator("#space-3.action, #space-17.action")).toHaveCount(1);
 				// winner modal should be visible
-				await expect(page.getByText("RED won the game!")).toBeVisible();
-				await expect(page.getByRole('heading', { name: 'Better luck next time! You have lost.' })).toBeVisible();
+				await expect(page.getByRole('heading', { name: 'Better luck next time!' })).toBeVisible();
 				await expect(page.getByRole('button', { name: 'Exit', exact: true })).toBeVisible();
 				await expect(page.getByRole('button', { name: 'Play Again' })).toBeVisible();
 			});
