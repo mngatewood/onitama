@@ -44,7 +44,7 @@ const Home = () => {
 					<Image src={spirit} width={640} height={640} alt="Spirit" priority />
 				</div>
 			</main>
-			<footer className="container w-full h-10 portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center gap-4 text-sky-700 dark:text-sky-300">
+			<footer className="container w-full h-10 portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center gap-4 text-sky-700 dark:text-sky-300 bg-neutral-200 dark:bg-blue-1 z-50">
 				<button className="w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
 					<Link href="/login" className="relative">
 						<span>Login</span>
