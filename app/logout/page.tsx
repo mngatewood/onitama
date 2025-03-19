@@ -30,7 +30,7 @@ const Logout = async () => {
 					<LogoutForm />
 				</div>
 			</main>
-			<footer className="w-full h-10 portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center text-sky-700 dark:text-sky-300">
+			<footer className="container w-full h-10 portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center text-sky-700 dark:text-sky-300">
 				<button className="w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
 					<Link href="/" className="relative">
 						<span>Cancel</span>
