@@ -8,6 +8,7 @@ import { DefeatedPawns } from "./DefeatedPawns";
 import { PlayerCards } from "./PlayerCards";
 import { socket } from "../lib/socketClient";
 import { ToastMessage } from "./ToastMessage";
+import { NotificationsToggle } from "@/app/components/NotificationsToggle";
 import { getCardActions, getUpdatedBoard, completeTurn, getGameWinner } from "../components/helpers/action";
 import { endGame, restartGame } from "../components/helpers/lobby";
 import { resolveVirtualTurn } from "./helpers/virtualOpponent";
@@ -26,6 +27,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 	const [initialTurn, setInitialTurn] = useState<boolean>(true);
 	const [otherPlayersTurn, setOtherPlayersTurn] = useState(false);
 	const [notifications, setNotifications] = useState<ToastNotification[]>([]);
+	const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 	const [neutralCard, setNeutralCard] = useState<Card | null>(null);
 	const [actions, setActions] = useState<Action[] | null>(null);
 	const [winner, setWinner] = useState<string | null>(null);
@@ -412,6 +414,10 @@ export const Game = ({ gameId, userId }: GameProps) => {
 		setNotifications((prevNotifications) => [notification, ...prevNotifications]);
 	}
 
+	const toggleNotifications = () => {
+		setNotificationsEnabled(!notificationsEnabled);
+	}
+
 	return (
 		<>
 			{game && game.board &&
@@ -473,7 +479,10 @@ export const Game = ({ gameId, userId }: GameProps) => {
 					<WinnerModal userColor={userColor} winner={winner} playAgain={playAgain} />
 				</div>
 			}
-			<ToastMessage notifications={notifications} />
+			{notificationsEnabled &&
+				<ToastMessage notifications={notifications} />
+			}
+			<NotificationsToggle enabled={notificationsEnabled} toggleNotifications={toggleNotifications} />
 		</>
 	)
 }
