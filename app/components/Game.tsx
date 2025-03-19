@@ -460,25 +460,19 @@ export const Game = ({ gameId, userId }: GameProps) => {
 					</div>
 				</div>
 			}
-			{!game &&
-				<div className="absolute top-0 left-0 right-0 bottom-0 flex items-center">
-					<WaitingModal text="Loading game..." />
-				</div>
-				}
-			{game && waiting &&
-				<div className="absolute top-0 left-0 right-0 bottom-0 flex items-center">
-					<WaitingModal text="Waiting for another player to join..." />
-				</div>
-			}
+			<div className={`${game ? "hidden" : "flex"} absolute top-0 left-0 right-0 bottom-0 items-center`}>
+				<WaitingModal text="Loading game..." isVisible={!game}/>
+			</div>
+			<div className={`${waiting ? "flex" : "hidden"} absolute top-0 left-0 right-0 bottom-0 items-center`}>
+				<WaitingModal text="Waiting for another player to join..." isVisible={!!waiting} />
+			</div>
 			{game && !waiting && otherPlayersTurn &&
 				<div onClick={waitForYourTurn} className="absolute top-0 left-0 right-0 bottom-0">
 				</div>
 			}
-			{game && winner &&
-				<div className="absolute top-0 left-0 right-0 bottom-0 flex items-center">
-					<WinnerModal userColor={userColor} winner={winner} playAgain={playAgain} />
-				</div>
-			}
+			<div className={`${winner ? "flex" : "hidden"} absolute top-0 left-0 right-0 bottom-0 items-center`}>
+				<WinnerModal userColor={userColor} winner={winner ?? ""} playAgain={playAgain} isVisible={!!winner}/>
+			</div>
 			{notificationsEnabled &&
 				<ToastMessage notifications={notifications} />
 			}
