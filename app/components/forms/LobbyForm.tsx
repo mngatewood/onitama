@@ -193,8 +193,8 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 		<>
 			{ loading 
 				?
-				<div className="absolute top-0 left-0 right-0 bottom-0 flex items-center">
-					<WaitingModal text="Loading..." />
+				<div className={`${loading ?"flex" : "hidden"} absolute top-0 left-0 right-0 bottom-0 items-center`}>
+					<WaitingModal text="Loading..." isVisible={!loading} />
 				</div>
 				:
 				<div>
