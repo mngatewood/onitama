@@ -41,6 +41,7 @@
 /* Hover eligible targets and selected target */
 .targeted.clickable-target:hover, .targeted.selected-target {
 	background-color: theme("colors.neutral.400");
+	transition: all 0.3s ease-in-out;
 }
 
 .blue-throne.empty::after {
@@ -53,6 +54,7 @@
 	width: 100%;
 	height: 100%;
 	margin-top: -4%;
+	transition: all 0.3s ease-in-out;
 }
 
 .red-throne.empty::after {
@@ -65,6 +67,7 @@
 	width: 100%;
 	height: 100%;
 	margin-top: -4%;
+	transition: all 0.3s ease-in-out;
 }
 
 .red-throne.empty.targeted::after {
@@ -73,6 +76,7 @@
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
+	transition: all 0.3s ease-in-out;
 }
 
 .blue-throne.empty.targeted::after {
@@ -81,6 +85,7 @@
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
+	transition: all 0.3s ease-in-out;
 }
 
 /* Don't highlight selected pawn */
@@ -91,20 +96,24 @@
 /* highlighted space with red pawn */
 .highlighted.red, .action.red {
 	background-color: theme("colors.red.300");
+	transition: all 0.3s ease-in-out;
 }
 
 /* highlighted space with blue pawn */
 .highlighted.blue, .action.blue {
 	background-color: theme("colors.blue.300");
+	transition: all 0.3s ease-in-out;
 }
 
 /* unhighlighted space */
 .not-highlighted {
 	background-color: theme("colors.neutral.300");
+	transition: all 0.3s ease-in-out;
 }
 
 .targeted {
 	background-color: theme("colors.neutral.300");
+	transition: all 0.3s ease-in-out;
 }
 
 .targeted::after {
@@ -118,10 +127,12 @@
 	color: black;
 	margin-top: -4%;
 	margin-left: 2%;
+	transition: all 0.3s ease-in-out;
 }
 
 .targeted.student::after, .targeted.master::after {
 	color: white;
+	transition: all 0.3s ease-in-out;
 }
 
 /* pawns styles for student and master */
@@ -129,26 +140,31 @@
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
 	background-position: center;
+	transition: all 0.3s ease-in-out;
 }
 
 /* red student pawn */
 .student.red {
 	background-image: url('../public/red-student.png');
+	transition: all 0.3s ease-in-out;
 }
 
 /* blue student pawn */
 .student.blue {
 	background-image: url('../public/blue-student.png');
+	transition: all 0.3s ease-in-out;
 }
 
 /* red master pawn */
 .master.red {
 	background-image: url('../public/red-master.png');
+	transition: all 0.3s ease-in-out;
 }
 
 /* blue master pawn */
 .master.blue {
 	background-image: url('../public/blue-master.png');
+	transition: all 0.3s ease-in-out;
 }
 
 /* defeated pawns styles */
@@ -156,32 +172,39 @@
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
 	background-position: center;
+	transition: all 0.3s ease-in-out;
 }
 
 /* defeated student placeholder background image */
 .defeated.sil {
 	background-image: url('../public/sil-student-light.png');
+	transition: all 0.3s ease-in-out;
 }
 
 /* defeated red student background image */
 .defeated.red {
 	background-image: url('../public/red-student.png');
+	transition: all 0.3s ease-in-out;
 }
 
 /* defeated blue student background image */
 .defeated.blue {
 	background-image: url('../public/blue-student.png');
+	transition: all 0.3s ease-in-out;
 }
 
 .highlighted-move {
 	background-color: theme("colors.gray.500");
+	transition: all 0.3s ease-in-out;
 }
 
 .highlighted-center {
 	background-color: theme("colors.gray.900");
+	transition: all 0.3s ease-in-out;
 }
 
 .text-shadow-xs {
 	text-shadow: 1px 1px darkgray;
+	transition: all 0.3s ease-in-out;
 }
 

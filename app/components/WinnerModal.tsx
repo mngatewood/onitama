@@ -3,16 +3,18 @@ import React from "react";
 interface WinnerModalProps {
 	winner: string;
 	userColor: string;
-	playAgain: () => void
+	playAgain: () => void;
+	isVisible: boolean;
 }
 
-export const WinnerModal = ({ winner, userColor, playAgain }: WinnerModalProps) => {
+export const WinnerModal = ({ winner, userColor, playAgain, isVisible }: WinnerModalProps) => {
 
 	const heading = userColor === winner ? "Congratulations!" : "Better luck next time!";
 	const [position, setPosition] = React.useState<string>("upOrLeft");
 	const positionClass = position === "upOrLeft" 
 		? "absolute transition-all duration-500 ease-in-out top-0 bottom-0 left-1/4 -translate-x-1/2 portrait:top-0 portrait:bottom-0 portrait:left-0 portrait:right-0 portrait:translate-x-0 portrait:translate-y-0"
 		: "absolute transition-all duration-500 ease-in-out top-0 bottom-0 left-1/2 translate-x-1/4 portrait:top-0 portrait:bottom-0 portrait:left-0 portrait:right-0 portrait:translate-x-0 portrait:translate-y-[50%]"; 
+	const visibility = isVisible ? "opacity-100 visible scale-100" : "opacity-0 invisible scale-95";
 
 	const handleExit = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
@@ -30,7 +32,7 @@ export const WinnerModal = ({ winner, userColor, playAgain }: WinnerModalProps) 
 	}
 
 	return (
-		<div className={`${positionClass} flex flex-col justify-center items-center mx-auto landscape:max-w-[50%]`}>
+		<div className={`${positionClass} ${visibility} flex flex-col justify-center items-center mx-auto landscape:max-w-[50%] transition-all duration-500 ease-in-out`}>
 			<div className="flex flex-col justify-center items-center mx-auto mt-6 p-8 border border-neutral-800 text-neutral-800 bg-gray-200 shadow-[2px_2px_5px_0px_rgba(0,0,0,0.7)] dark:shadow-[2px_2px_5px_0px_rgba(255,255,255,0.7)] rounded-2xl">
 				<div className="relative top-0 left-1/2 w-0 h-0 flex justify-center items-center">
 

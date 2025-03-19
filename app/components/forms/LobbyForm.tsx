@@ -245,7 +245,7 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 				</div>
 			}
 			<ToastMessage notifications={notifications} />
-			{showNewGameModal && <NewGameModal handleNewSoloGame={handleNewSoloGame} handleNewMultiplayerGame={handleNewMultiplayerGame} handleCancelNewGame={handleCancelNewGame} />}
+			<NewGameModal handleNewSoloGame={handleNewSoloGame} handleNewMultiplayerGame={handleNewMultiplayerGame} handleCancelNewGame={handleCancelNewGame} isVisible={showNewGameModal} />
 		</>
 	)
 }

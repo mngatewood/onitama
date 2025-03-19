@@ -8,6 +8,7 @@ import { DefeatedPawns } from "./DefeatedPawns";
 import { PlayerCards } from "./PlayerCards";
 import { socket } from "../lib/socketClient";
 import { ToastMessage } from "./ToastMessage";
+import { NotificationsToggle } from "@/app/components/NotificationsToggle";
 import { getCardActions, getUpdatedBoard, completeTurn, getGameWinner } from "../components/helpers/action";
 import { endGame, restartGame } from "../components/helpers/lobby";
 import { resolveVirtualTurn } from "./helpers/virtualOpponent";
@@ -26,6 +27,7 @@ export const Game = ({ gameId, userId }: GameProps) => {
 	const [initialTurn, setInitialTurn] = useState<boolean>(true);
 	const [otherPlayersTurn, setOtherPlayersTurn] = useState(false);
 	const [notifications, setNotifications] = useState<ToastNotification[]>([]);
+	const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 	const [neutralCard, setNeutralCard] = useState<Card | null>(null);
 	const [actions, setActions] = useState<Action[] | null>(null);
 	const [winner, setWinner] = useState<string | null>(null);
@@ -412,6 +414,10 @@ export const Game = ({ gameId, userId }: GameProps) => {
 		setNotifications((prevNotifications) => [notification, ...prevNotifications]);
 	}
 
+	const toggleNotifications = () => {
+		setNotificationsEnabled(!notificationsEnabled);
+	}
+
 	return (
 		<>
 			{game && game.board &&
@@ -454,26 +460,23 @@ export const Game = ({ gameId, userId }: GameProps) => {
 					</div>
 				</div>
 			}
-			{!game &&
-				<div className="absolute top-0 left-0 right-0 bottom-0 flex items-center">
-					<WaitingModal text="Loading game..." />
-				</div>
-				}
-			{game && waiting &&
-				<div className="absolute top-0 left-0 right-0 bottom-0 flex items-center">
-					<WaitingModal text="Waiting for another player to join..." />
-				</div>
-			}
+			<div className={`${game ? "hidden" : "flex"} absolute top-0 left-0 right-0 bottom-0 items-center`}>
+				<WaitingModal text="Loading game..." isVisible={!game}/>
+			</div>
+			<div className={`${waiting ? "flex" : "hidden"} absolute top-0 left-0 right-0 bottom-0 items-center`}>
+				<WaitingModal text="Waiting for another player to join..." isVisible={!!waiting} />
+			</div>
 			{game && !waiting && otherPlayersTurn &&
 				<div onClick={waitForYourTurn} className="absolute top-0 left-0 right-0 bottom-0">
 				</div>
 			}
-			{game && winner &&
-				<div className="absolute top-0 left-0 right-0 bottom-0 flex items-center">
-					<WinnerModal userColor={userColor} winner={winner} playAgain={playAgain} />
-				</div>
+			<div className={`${winner ? "flex" : "hidden"} absolute top-0 left-0 right-0 bottom-0 items-center`}>
+				<WinnerModal userColor={userColor} winner={winner ?? ""} playAgain={playAgain} isVisible={!!winner}/>
+			</div>
+			{notificationsEnabled &&
+				<ToastMessage notifications={notifications} />
 			}
-			<ToastMessage notifications={notifications} />
+			<NotificationsToggle enabled={notificationsEnabled} toggleNotifications={toggleNotifications} />
 		</>
 	)
 }
