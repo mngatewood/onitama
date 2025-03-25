@@ -25,7 +25,7 @@ const GuidePageOne = () => {
 					</ul>
 					<p className="my-4">With each passing turn, the duel unfolds like a story of discipline and adaptability. The battlefield is small, but the depth of possibilities is vast, making every match a unique test of foresight and skill. Only one master will emerge victorious, their name forever etched in the annals of Onitama’s sacred tradition.</p>
 					<div className="flex flex-col items-center">
-						<button className="my-4 px-4 py-2group hover:font-bold hover:scale-125 transition-all duration-500 rounded-lg bg-slate-500">
+						<button className="my-4 px-4 py-2 group hover:font-bold hover:scale-125 transition-all duration-500 rounded-lg bg-slate-500 text-neutral-200">
 							<Link href="/guide/2" className="relative">
 								<span>Continue</span>
 								<span className="absolute -bottom-1 right-0 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-full"></span>
@@ -37,7 +37,7 @@ const GuidePageOne = () => {
 					<Image src={spirit} width={640} height={640} alt="Spirit" priority />
 				</div>
 			</main>
-			<footer className="container w-full h-10 portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center gap-4 text-sky-700 dark:text-sky-300 bg-neutral-200 dark:bg-blue-1 z-50">
+			<footer className="w-full h-10 portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center gap-4 text-sky-700 dark:text-sky-300 bg-neutral-200 dark:bg-blue-1 z-50">
 				<div className="w-1/3">
 				</div>
 				<button className="w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
@@ -48,7 +48,7 @@ const GuidePageOne = () => {
 				</button>
 				<button className="w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
 					<Link href="/guide/2" className="relative">
-						<span>Page 2</span>
+						<span>Page 2 &nbsp;&nbsp;&gt;&gt;</span>
 						<span className="absolute -bottom-1 right-0 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-full"></span>
 					</Link>
 				</button>
