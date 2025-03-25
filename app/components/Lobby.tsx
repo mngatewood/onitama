@@ -29,7 +29,7 @@ const Lobby = async () => {
 				</div>
 				<LobbyForm session={session} initialPendingGames={pendingGames} />
 			</main>
-			<footer className="container w-full h-10 portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center gap-4 text-sky-700 dark:text-sky-300 bg-neutral-200 dark:bg-blue-1 z-50">
+			<footer className="w-full h-10 portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center gap-4 text-sky-700 dark:text-sky-300 bg-neutral-200 dark:bg-blue-1 z-50">
 				<button className="w-1/2 group hover:font-bold hover:scale-125 transition-all duration-500">
 					<Link href="/logout" className="relative">
 						<span>Logout</span>
