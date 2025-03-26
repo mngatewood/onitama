@@ -40,6 +40,7 @@ export default {
 				},
 				blue: {
 					1: "#01092b",
+					2: "#010722"
 				},
 			},
 			fontFamily: {
