@@ -52,18 +52,18 @@ export const GuideHome = ({modal, tooltip, stage, updateStage}: GuideHomeProps) 
 							<Image src={spirit} width={640} height={640} alt="Spirit" priority />
 						</div>
 					</main>
-					<div className="w-full h-10 portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center gap-4 text-sky-700 dark:text-sky-300  z-50 rounded-full">
-						<button className="guide w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
+					<div className="w-full h-10 portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center gap-4 text-sky-700 dark:text-sky-300 z-50 rounded-full">
+						<button className="guide w-1/3 group cursor-default">
 							<div id="login-button" className="relative">
 								<span>Login</span>
 							</div>
 						</button>
-						<button className="guide w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
+						<button className="guide w-1/3 group cursor-default">
 							<div className="relative">
 								<span>Guide</span>
 							</div>
 						</button>
-						<button id="register-button" className="w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
+						<button id="register-button" className="w-1/3 group cursor-default">
 							<div className="relative">
 								<span>Register</span>
 							</div>
