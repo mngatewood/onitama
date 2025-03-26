@@ -25,10 +25,9 @@ const GuidePageOne = () => {
 					</ul>
 					<p className="my-4">With each passing turn, the duel unfolds like a story of discipline and adaptability. The battlefield is small, but the depth of possibilities is vast, making every match a unique test of foresight and skill. Only one master will emerge victorious, their name forever etched in the annals of Onitama’s sacred tradition.</p>
 					<div className="flex flex-col items-center">
-						<button className="my-4 px-4 py-2 group hover:font-bold hover:scale-125 transition-all duration-500 rounded-lg bg-slate-500 text-neutral-200">
+						<button className="my-4 px-4 py-2 group hover:bg-slate-600 transition-all duration-500 ease-in-out rounded-lg bg-slate-500 text-neutral-200">
 							<Link href="/guide/2" className="relative">
 								<span>Continue</span>
-								<span className="absolute -bottom-1 right-0 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-full"></span>
 							</Link>
 						</button>
 					</div>
@@ -43,7 +42,8 @@ const GuidePageOne = () => {
 				<button className="w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
 					<Link href="/" className="relative">
 						<span>Exit Guide</span>
-						<span className="absolute -bottom-1 right-0 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-full"></span>
+						<span className="absolute -bottom-1 left-1/2 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-1/2"></span>
+						<span className="absolute -bottom-1 right-1/2 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-1/2"></span>
 					</Link>
 				</button>
 				<button className="w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
