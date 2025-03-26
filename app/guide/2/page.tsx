@@ -83,13 +83,14 @@ const GuidePageTwo = () => {
 				<button className="w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
 					<Link href="/guide/1" className="relative">
 						<span>&lt;&lt;&nbsp;&nbsp; Page 1</span>
-						<span className="absolute -bottom-1 right-0 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-full"></span>
+						<span className="absolute -bottom-1 left-0 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-full"></span>
 					</Link>
 				</button>
 				<button className="w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
 					<Link href="/" className="relative">
 						<span>Exit Guide</span>
-						<span className="absolute -bottom-1 right-0 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-full"></span>
+						<span className="absolute -bottom-1 left-1/2 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-1/2"></span>
+						<span className="absolute -bottom-1 right-1/2 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-1/2"></span>
 					</Link>
 				</button>
 				<button className="w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
