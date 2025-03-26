@@ -8,7 +8,7 @@ import { GuideHome } from "../../components/guide/GuideHome";
 import { GuideRegister } from "../../components/guide/GuideRegister";
 import { GuideLogin } from "../../components/guide/GuideLogin";
 import { GuideLobby } from "../../components/guide/GuideLobby";
-import * as data from "../guideData"
+import * as data from "../../components/guide/guideData";
 
 const GuidePageTwo = () => {
 
@@ -32,48 +32,48 @@ const GuidePageTwo = () => {
 			<main className="w-full min-w-[370px] mx-auto p-4 pr-6 overflow-hidden flex flex-col justify-center items-center h-[calc(100vh-140px)] landscape:p-2">
 				{stage === 1 && 
 					<GuideHome 
-						modal={data.stageOneModal}
-						tooltip={data.stageOneTooltip}
+						modal={data.pageTwoStageOneModal}
+						tooltip={data.pageTwoStageOneTooltip}
 						stage={stage}
 						updateStage={updateStage}
 					/>
 				}
 				{stage === 2 && 
 					<GuideRegister 
-						modal={data.stageTwoModal}
-						tooltip={data.stageTwoTooltip}
+						modal={data.pageTwoStageTwoModal}
+						tooltip={data.pageTwoStageTwoTooltip}
 						stage={stage}
 						updateStage={updateStage}
 					/>
 				}
 				{stage === 3 && 
 					<GuideLogin 
-						modal={data.stageThreeModal}
-						tooltip={data.stageThreeTooltip}
+						modal={data.pageTwoStageThreeModal}
+						tooltip={data.pageTwoStageThreeTooltip}
 						stage={stage}
 						updateStage={updateStage}
 					/>
 				}
 				{stage === 4 && 
 					<GuideLobby 
-						modal={data.stageFourModal}
-						tooltip={data.stageFourTooltip}
+						modal={data.pageTwoStageFourModal}
+						tooltip={data.pageTwoStageFourTooltip}
 						stage={stage}
 						updateStage={updateStage}
 					/>
 				}
 				{stage === 5 && 
 					<GuideLobby 
-						modal={data.stageFiveModal}
-						tooltip={data.stageFiveTooltip}
+						modal={data.pageTwoStageFiveModal}
+						tooltip={data.pageTwoStageFiveTooltip}
 						stage={stage}
 						updateStage={updateStage}
 					/>
 				}
 				{stage === 6 && 
 					<GuideLobby 
-						modal={data.stageSixModal}
-						tooltip={data.stageSixTooltip}
+						modal={data.pageTwoStageSixModal}
+						tooltip={data.pageTwoStageSixTooltip}
 						stage={stage}
 						updateStage={updateStage}
 					/>
