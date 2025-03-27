@@ -1,4 +1,4 @@
-import { PlayerCard } from "../PlayerCard";
+import { GuidePlayerCard } from "./GuidePlayerCard";
 
 interface Player {
 	color: string;
@@ -85,20 +85,18 @@ export const GuidePlayerCards = ({ player, neutralCard, userColor, selectCard, s
 				w-full flex justify-around my-2 gap-2 landscape:flex-wrap tall:flex-wrap`}>
 				<div className={`${playerIdentifier === "self" ? "landscape:order-2" : "landscape:order-last"} ${!(page === 3 && stage === 9) && "guide"} opacity-50 landscape:basis-0 landscape:xshort:basis-full landscape:sm:basis-0 landscape:md:xshort:basis-0 landscape:lg:xshort:basis-full landscape:lg:basis-full tall:sm:basis-0 2xtall:basis-full [&>*:first-child]:mx-auto [&>*:first-child]:tall:sm:my-0 [&>*:first-child]:landscape:xshort:my-4  [[&>*:first-child]:landscape:md:xshort:my-0 [[&>*:first-child]:landscape:lg:my-4 [&>*:first-child]:2xtall:my-4`}>
 					{ renderNeutralCard
-						? <PlayerCard 
+						? <GuidePlayerCard 
 							card={neutralCard!} 
 							player={playerIdentifier} 
 							clickable={false} 
 							cardClass="neutral-card" 
-							selectCard={selectCard}
 							selectedCard={selectedCard}
 						/>
-						: <PlayerCard 
+						: <GuidePlayerCard 
 							card={neutralCardPlaceholder!} 
 							player={playerIdentifier} 
 							clickable={false} 
 							cardClass="placeholder-card" 
-							selectCard={selectCard}
 							selectedCard={selectedCard}
 						/>
 					}
@@ -106,22 +104,20 @@ export const GuidePlayerCards = ({ player, neutralCard, userColor, selectCard, s
 				{ player &&
 					<>
 						<div className={`${blurPlayerCards()} `}>
-							<PlayerCard 
+							<GuidePlayerCard 
 								card={player.cards[0]!} 
 								player={playerIdentifier} 
 								clickable={clickable} 
 								cardClass={`${playerIdentifier}-card ${playerTurnClass}`} 
-								selectCard={selectCard}
 								selectedCard={selectedCard}
 							/>
 						</div>
 					<div className={`${blurPlayerCards()} ${focusSecondCard()}`}>
-							<PlayerCard 
+							<GuidePlayerCard 
 								card={player.cards[1]!} 
 								player={playerIdentifier} 
 								clickable={clickable} 
 								cardClass={`${playerIdentifier}-card ${playerTurnClass}`} 
-								selectCard={selectCard}
 								selectedCard={selectedCard}
 							/>
 						</div>

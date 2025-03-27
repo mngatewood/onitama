@@ -10,7 +10,7 @@ export const pageTwoStageOneModal = {
 
 export const pageTwoStageOneTooltip = {
 	elementId: "register-button",
-	child: [1, 2],
+	child: [],
 	position: {
 		top: 24,
 		right: 0,
@@ -36,7 +36,7 @@ export const pageTwoStageTwoModal = {
 
 export const pageTwoStageTwoTooltip = {
 	elementId: "submit-register",
-	child: [1, 2],
+	child: [],
 	position: {
 		top: 16,
 		right: 0,
@@ -62,7 +62,7 @@ export const pageTwoStageThreeModal = {
 
 export const pageTwoStageThreeTooltip = {
 	elementId: "submit-login",
-	child: [1, 2],
+	child: [],
 	position: {
 		top: 16,
 		right: 0,
@@ -88,7 +88,7 @@ export const pageTwoStageFourModal = {
 
 export const pageTwoStageFourTooltip = {
 	elementId: "new-game-button",
-	child: [1, 2],
+	child: [],
 	position: {
 		top: null,
 		right: 0,
@@ -114,7 +114,7 @@ export const pageTwoStageFiveModal = {
 
 export const pageTwoStageFiveTooltip = {
 	elementId: "new-game-container",
-	child: [1, 2],
+	child: [],
 	position: {
 		top: null,
 		right: 0,
@@ -140,7 +140,7 @@ export const pageTwoStageSixModal = {
 
 export const pageTwoStageSixTooltip = {
 	elementId: "join-game-container",
-	child: [1, 2],
+	child: [],
 	position: {
 		top: null,
 		right: 0,
@@ -166,7 +166,7 @@ export const pageThreeStageOneModal = {
 
 export const pageThreeStageOneTooltip = {
 	elementId: "toast",
-	child: [1, 2],
+	child: [],
 	position: {
 		top: null,
 		right: 0,
@@ -192,7 +192,7 @@ export const pageThreeStageTwoModal = {
 
 export const pageThreeStageTwoTooltip = {
 	elementId: "data-mute-notifications",
-	child: [1, 2],
+	child: [],
 	position: {
 		top: null,
 		right: null,
@@ -218,7 +218,7 @@ export const pageThreeStageThreeModal = {
 
 export const pageThreeStageThreeTooltip = {
 	elementId: "data-dark-mode-toggle",
-	child: [1, 2],
+	child: [],
 	position: {
 		top: null,
 		right: 0,
@@ -244,7 +244,7 @@ export const pageThreeStageFourModal = {
 
 export const pageThreeStageFourTooltip = {
 	elementId: "data-board",
-	child: [1, 2],
+	child: [],
 	position: {
 		top: null,
 		right: 0,
@@ -270,7 +270,7 @@ export const pageThreeStageFiveModal = {
 
 export const pageThreeStageFiveTooltip = {
 	elementId: "data-board",
-	child: [1, 2],
+	child: [],
 	position: {
 		top: 12,
 		right: 0,
@@ -296,25 +296,25 @@ export const pageThreeStageSixModal = {
 
 // No tooltip rendered in this stage
 export const pageThreeStageSixTooltip = {
-	elementId: "",
-	child: [1, 2],
+	elementId: "defeated-pawns",
+	child: [],
 	position: {
 		top: null,
-		right: null,
+		right: 0,
 		bottom: null,
 		left: null,
 	},
-	text: "",
+	text: "Defeated pawns",
 	arrowPosition: {
-		x: "",
-		y: "",
+		x: "left",
+		y: "center",
 	}
 }
 
 export const pageThreeStageSevenModal = {
 	position: {
 		x: 0, // percentage of screen
-		y: 25 // percentage of screen
+		y: 0 // percentage of screen
 	},
 	moveable: false,
 	headline: "Game Layout",
@@ -323,24 +323,24 @@ export const pageThreeStageSevenModal = {
 
 export const pageThreeStageSevenTooltip = {
 	elementId: "player-cards",
-	child: [1, 2],
+	child: [0, 1],
 	position: {
-		top: 0,
+		top: null,
 		right: 0,
-		bottom: null,
+		bottom: 0,
 		left: 0,
 	},
 	text: "These are your scrolls.",
 	arrowPosition: {
 		x: "center",
-		y: "bottom",
+		y: "top",
 	}
 }
 
 export const pageThreeStageEightModal = {
 	position: {
 		x: 0, // percentage of screen
-		y: 60 // percentage of screen
+		y: 0 // percentage of screen
 	},
 	moveable: false,
 	headline: "Game Layout",
@@ -349,44 +349,43 @@ export const pageThreeStageEightModal = {
 
 export const pageThreeStageEightTooltip = {
 	elementId: "opponent-cards",
-	child: [1, 2],
+	child: [0, 1],
 	position: {
-		top: null,
+		top: 0,
 		right: 0,
-		bottom: 0,
+		bottom: null,
 		left: 0,
 	},
 	text: "These are your opponent's scrolls.",
 	arrowPosition: {
 		x: "center",
-		y: "top",
+		y: "bottom",
 	}
 }
 
 export const pageThreeStageNineModal = {
 	position: {
 		x: 0, // percentage of screen
-		y: 0 // percentage of screen
+		y: 20 // percentage of screen
 	},
 	moveable: false,
 	headline: "Game Layout",
 	body: "Notice the dimmed scroll in your player area below. This is a passive scroll.  When it is your turn, the passive scroll will be displayed next to your scrolls, indicating that it will be active on your next turn."
 }
 
-// No tooltip rendered in this stage
 export const pageThreeStageNineTooltip = {
-	elementId: "",
-	child: [1, 2],
+	elementId: "player-cards",
+	child: [0, 1, 0],
 	position: {
-		top: null,
-		right: null,
+		top: 16,
+		right: 0,
 		bottom: null,
-		left: null,
+		left: 0,
 	},
-	text: "",
+	text: "Passive scroll",
 	arrowPosition: {
-		x: "",
-		y: "",
+		x: "center",
+		y: "bottom",
 	}
 }
 
@@ -397,13 +396,13 @@ export const pageThreeStageTenModal = {
 	},
 	moveable: false,
 	headline: "Game Layout",
-	body: "Note the scroll next to your cards that is dimmed. This is the passive scroll.  When it is your turn, the passive scroll will be displayed next to your scrolls, indicating that it will be active on your next turn."
+	body: "Note the scroll in your player area that is dimmed. This is the passive scroll.  When it is your turn, the passive scroll will be displayed next to your scrolls, indicating that it will be active on your next turn."
 }
 
 // No tooltip rendered in this stage
 export const pageThreeStageTenTooltip = {
 	elementId: "",
-	child: [1, 2],
+	child: [],
 	position: {
 		top: null,
 		right: null,
@@ -436,7 +435,7 @@ export const pageFourStageOneTooltip = {
 		bottom: 0,
 		left: 0,
 	},
-	text: "Click an active card.",
+	text: "Click an active scroll.",
 	arrowPosition: {
 		x: "center",
 		y: "top",
@@ -502,7 +501,7 @@ export const pageFourStageFourModal = {
 	},
 	moveable: false,
 	headline: "Elements of a Scroll: Title",
-	body: "The title of the card is for identification purposes only.  It has no affect on gameplay."
+	body: "The title of the scroll is for identification purposes only.  It has no affect on gameplay."
 }
 
 export const pageFourStageFourTooltip = {
@@ -528,7 +527,7 @@ export const pageFourStageFiveModal = {
 	},
 	moveable: false,
 	headline: "Elements of a Scroll: Action Grid",
-	body: "The action grid depicts the actions available for that card.  The black space in the center of the grid represents the position of any pawn and all other highlighted spaces reflect the potential targets relative to its current position."
+	body: "The action grid depicts the actions available for that scroll.  The black space in the center of the grid represents the position of any pawn and all other highlighted spaces reflect the potential targets relative to its current position."
 }
 
 export const pageFourStageFiveTooltip = {
@@ -540,7 +539,7 @@ export const pageFourStageFiveTooltip = {
 		bottom: null,
 		left: 0,
 	},
-	text: "The action grid depicts the actions available for that card.",
+	text: "The action grid depicts the actions available for that scroll.",
 	arrowPosition: {
 		x: "center",
 		y: "bottom",
@@ -581,7 +580,7 @@ export const pageFourStageSevenModal = {
 	},
 	moveable: false,
 	headline: "Movement Restrictions",
-	body: "It is possible that no pawns have any valid actions for a selected card.  If so, you must select the other card to complete your turn."
+	body: "It is possible that no pawns have any valid actions for a selected scroll.  If this is the case, you must select the other scroll to complete your turn."
 }
 
 // No tooltip rendered in this stage
@@ -659,7 +658,7 @@ export const pageFiveStageOneModal = {
 		y: 25 // percentage of screen
 	},
 	moveable: false,
-	headline: "Step 1: Choose a Pawn",
+	headline: "Step 2: Choose a Pawn",
 	body: "After you select a scroll, select a highlighted pawn."
 }
 
@@ -676,6 +675,162 @@ export const pageFiveStageOneTooltip = {
 	arrowPosition: {
 		x: "center",
 		y: "top",
+	}
+}
+
+export const pageFiveStageTwoModal = {
+	position: {
+		x: 0, // percentage of screen
+		y: 25 // percentage of screen
+	},
+	moveable: false,
+	headline: "Step 2: Choose a Pawn",
+	body: "Selecting a pawn will highlight the selected pawn and all eligible targets for the selected pawn."
+}
+
+export const pageFiveStageTwoTooltip = {
+	elementId: "board",
+	child: [21],
+	position: {
+		top: null,
+		right: 0,
+		bottom: 16,
+		left: 0,
+	},
+	text: "The selected pawn",
+	arrowPosition: {
+		x: "center",
+		y: "top",
+	}
+}
+
+export const pageFiveStageThreeModal = {
+	position: {
+		x: 0, // percentage of screen
+		y: 25 // percentage of screen
+	},
+	moveable: false,
+	headline: "Step 2: Choose a Pawn",
+	body: "If a target space is empty, a black crosshair icon will be displayed.  "
+}
+
+export const pageFiveStageThreeTooltip = {
+	elementId: "board",
+	child: [15],
+	position: {
+		top: null,
+		right: 0,
+		bottom: 16,
+		left: 0,
+	},
+	text: "Eligible target space",
+	arrowPosition: {
+		x: "center",
+		y: "top",
+	}
+}
+
+export const pageFiveStageFourModal = {
+	position: {
+		x: 0, // percentage of screen
+		y: 10 // percentage of screen
+	},
+	moveable: false,
+	headline: "Step 2: Choose a Pawn",
+	body: "Enemy pawn targets will display a white crosshair icon.  Moving to these spaces will result in defeating an enemy pawn."
+}
+
+export const pageFiveStageFourTooltip = {
+	elementId: "board",
+	child: [6],
+	position: {
+		top: null,
+		right: 0,
+		bottom: 16,
+		left: 0,
+	},
+	text: "Enemy pawn space",
+	arrowPosition: {
+		x: "center",
+		y: "top",
+	}
+}
+
+export const pageFiveStageFiveModal = {
+	position: {
+		x: 0, // percentage of screen
+		y: 10 // percentage of screen
+	},
+	moveable: false,
+	headline: "Step 2: Choose a Pawn",
+	body: "Enemy temple targets also display a white crosshair icon.  Moving to these spaces will result in winning the game!"
+}
+
+export const pageFiveStageFiveTooltip = {
+	elementId: "board",
+	child: [2],
+	position: {
+		top: null,
+		right: 0,
+		bottom: 16,
+		left: 0,
+	},
+	text: "Enemy temple space",
+	arrowPosition: {
+		x: "center",
+		y: "top",
+	}
+}
+
+export const pageFiveStageSixModal = {
+	position: {
+		x: 0, // percentage of screen
+		y: 25 // percentage of screen
+	},
+	moveable: false,
+	headline: "Step 2: Choose a Pawn",
+	body: "If you select a pawn then change your mind, you can click either of your scrolls to show all eligible pawns for that scroll."
+}
+
+export const pageFiveStageSixTooltip = {
+	elementId: "player-cards",
+	child: [0, 1, 2],
+	position: {
+		top: 16,
+		right: 0,
+		bottom: null,
+		left: 0,
+	},
+	text: "Click a scroll to reset pawns and targets.",
+	arrowPosition: {
+		x: "center",
+		y: "bottom",
+	}
+}
+
+export const pageSixStageOneModal = {
+	position: {
+		x: 0, // percentage of screen
+		y: 20 // percentage of screen
+	},
+	moveable: false,
+	headline: "Step 3: Choose a Target",
+	body: "Once you have selected a valid pawn, click on any valid target space to move the selected pawn to that space."
+}
+
+export const pageSixStageOneTooltip = {
+	elementId: "board",
+	child: [15],
+	position: {
+		top: 16,
+		right: 0,
+		bottom: null,
+		left: 0,
+	},
+	text: "Click a target space.",
+	arrowPosition: {
+		x: "center",
+		y: "bottom",
 	}
 }
 
@@ -774,6 +929,30 @@ export const pageFourStageTwoBoard = [
 	["0000", "0000", "0000", "0000", "0000"],
 	["000x", "000x", "000x", "000x", "0000"],
 	["bs00", "bsh0", "bmh0", "bsh0", "bsh0"],
+]
+
+export const pageFiveStageTwoBoard = [
+	["rs00", "rs00", "rm00", "rs00", "rs00"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["000x", "0000", "0000", "0000", "0000"],
+	["bs00", "bsh0", "bm00", "bs00", "bs00"],
+]
+
+export const pageFiveStageThreeBoard = [
+	["rs00", "0000", "000x", "rs00", "rs00"],
+	["0000", "rs0x", "bsh0", "rm00", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "bs00", "0000", "0000", "bs00"],
+	["bs00", "0000", "bm00", "bs00", "0000"],
+]
+
+export const pageFiveStageSixBoard = [
+	["rs00", "000x", "0000", "rs00", "rs00"],
+	["000x", "rs00", "bsh0", "rm00", "0000"],
+	["000x", "0000", "0000", "000x", "0000"],
+	["0000", "bsh0", "000x", "0000", "bsh0"],
+	["bs00", "000x", "bm00", "bsh0", "0000"],
 ]
 
 export const pageThreeStageOneNotification = {

@@ -58,6 +58,16 @@ export const GuideGame = ({ modal, tooltip, stage, page, updateStage }: GuideGam
 		// get updated board, if applicable
 		if (page === 4 && stage > 1) {
 			setBoard(data.pageFourStageTwoBoard)
+		} else if (page === 5 && stage === 1) {
+			setBoard(data.pageFourStageTwoBoard)
+		} else if (page === 5 && [2, 3].includes(stage)) {
+			setBoard(data.pageFiveStageTwoBoard)
+		} else if (page === 5 && [4, 5].includes(stage)) {
+			setBoard(data.pageFiveStageThreeBoard)
+		} else if (page === 5 && stage > 5) {
+			setBoard(data.pageFiveStageSixBoard)
+		} else if (page === 6 && stage === 1) {
+			setBoard(data.pageFiveStageTwoBoard)
 		} else (
 			setBoard(game?.board)
 		)
@@ -65,8 +75,13 @@ export const GuideGame = ({ modal, tooltip, stage, page, updateStage }: GuideGam
 		// get selected card, if applicable
 		if (page === 4 && stage > 1) {
 			setSelectedCard(game.cards[4])
+		} else if (page === 5 && stage < 4) {
+			setSelectedCard(game.cards[4])
+		} else if (page === 5 && [4, 5].includes(stage)) {
+			setSelectedCard(game.cards[2])
+		} else if (page === 5 && stage > 5) {
+			setSelectedCard(game.cards[4])
 		}
-		
 	}, [page, stage])
 	
 	const blurBoard = () => {

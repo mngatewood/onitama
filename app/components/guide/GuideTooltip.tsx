@@ -29,9 +29,11 @@ export const GuideTooltip = ({ tooltip, ...props }: GuideTooltipProps) => {
 	const updateArrowPosition = useCallback(( offset: number ) => {
 		let style = {};
 		if (offset > 0 && arrowPosition.x === 'right') {
-			style= { right: '24px' };
+			// 4px padding - 4px margin + 17px offset
+			style= { right: '17px' };
 		} else if (offset > 0 && arrowPosition.x === 'left') {
-			style = { left: '24px' };
+			// 4px padding - 4px margin + 17px offset
+			style = { left: '17px' };
 		} else if (offset < 0 && arrowPosition.x === 'right') {
 			style = { right: (offset - 8) + 'px' };
 		} else if (offset < 0 && arrowPosition.x === 'left') {
@@ -77,6 +79,10 @@ export const GuideTooltip = ({ tooltip, ...props }: GuideTooltipProps) => {
 					// if there is a left value, set the tooltip left position to this value
 					} else if (position.left !== null) {
 						x = elementRect.left - tooltipRect.width - 10;
+					// if there is a right value, set the tooltip right position to this value
+					} else if (position.right !== null && position.top === null && position.bottom === null) {
+						x = elementRect.left + elementRect.width;
+						y= elementRect.top + (elementRect.height - tooltipRect.height) / 2;
 					// if there is a left value, set the tooltip left position to this value
 					} else if (position.right !== null) {
 						x = elementRect.left + (elementRect.width / 2) + 16 - (tooltipRect.width);
@@ -139,6 +145,10 @@ export const GuideTooltip = ({ tooltip, ...props }: GuideTooltipProps) => {
 
 		if (x === "right" && y === "top") {
 			setArrowPositionClass("-top-2 right-2 border-x-8 border-x-transparent border-b-8 border-b-gray-500")
+		}
+
+		if (x === "left" && y === "center") {
+			setArrowPositionClass("-left-2 top-1/2 -translate-y-1/2 border-y-8 border-y-transparent border-r-8 border-r-gray-500")
 		}
 
 	}, [arrowPosition, offsetArrowX])
