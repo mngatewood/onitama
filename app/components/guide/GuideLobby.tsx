@@ -98,7 +98,7 @@ export const GuideLobby = ({ modal, tooltip, stage, updateStage }: GuideLobbyPro
 							)}
 						</div>
 					</div>
-					<div className="guide w-full h-10 portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center gap-4 text-sky-700 dark:text-sky-300  z-50 rounded-full">
+					<div className="guide w-full h-10 portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center gap-4 text-sky-700 dark:text-sky-300 rounded-full">
 						<button className="w-1/3 group cursor-default">
 							<div id="login-button" className="relative">
 								<span>Logout</span>
@@ -112,7 +112,7 @@ export const GuideLobby = ({ modal, tooltip, stage, updateStage }: GuideLobbyPro
 					</div>
 				</div>
 				{ stage === 5 &&			
-					<div id="new-game-container" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center w-3/4 max-w-xs p-8 text-neutral-800 bg-gray-300 shadow-[0px_0px_100px_0px_rgba(0,0,0,0.7)] dark:shadow-[0px_0px_100px_0px_rgba(255,255,255,0.7)] rounded-2xl transition-all duration-500 ease-in-out opacity-1">
+					<div id="new-game-container" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center w-3/4 max-w-xs p-8 text-neutral-800 bg-gray-300 shadow-[0px_0px_100px_0px_rgba(0,0,0,0.7)] dark:shadow-[0px_0px_100px_0px_rgba(255,255,255,0.7)] rounded-2xl transition-all duration-500 ease-in-out">
 						<h2 className="text-xl font-bold">New Game</h2>
 						<p className="mt-2 max-w-sm text-sm">Select solo or multiplayer game.</p>
 						<button className="mt-4 relative block h-10 w-full rounded-md bg-gradient-to-br from-neutral-500 to-neutral-400 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-800 dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]">

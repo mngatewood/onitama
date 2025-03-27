@@ -30,7 +30,7 @@ export const GuideTooltip = ({ tooltip, ...props }: GuideTooltipProps) => {
 		if (offset > 0 && arrowPosition.x === 'right') {
 			style= { right: (offset + 8) + 'px' };
 		} else if (offset > 0 && arrowPosition.x === 'left') {
-			style = { left: '36px' };
+			style = { left: '24px' };
 		} else if (offset < 0 && arrowPosition.x === 'right') {
 			style = { right: (offset - 8) + 'px' };
 		} else if (offset < 0 && arrowPosition.x === 'left') {
