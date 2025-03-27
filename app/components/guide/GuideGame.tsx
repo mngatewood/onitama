@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react";
 import { Board } from "../Board";
 import { DefeatedPawns } from "../DefeatedPawns";
 import { allCards, game } from "../guide/guideData";
@@ -22,6 +23,7 @@ interface GuideGameProps {
 	};
 	tooltip: {
 		elementId: string;
+		child: number[];
 		position: {
 			top: number | null;
 			right: number | null;
@@ -41,14 +43,43 @@ interface GuideGameProps {
 
 export const GuideGame = ({ modal, tooltip, stage, page, updateStage }: GuideGameProps) => {
 
+	const [board, setBoard] = useState<string[][]>(game.board);
+	const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+
 	const userId = "1";
 	const neutralCard = allCards[0];
-	const selectedCard = null;
 	const selectedPawn = null;
 
 	const userColor = ["red", "blue"].find((key) => {
 		return game?.players && game?.players[key as keyof typeof game.players]?.id === userId;
 	}) || "";
+
+	useEffect(() => {
+		// get updated board, if applicable
+		if (page === 4 && stage > 1) {
+			setBoard(data.pageFourStageTwoBoard)
+		} else (
+			setBoard(game?.board)
+		)
+
+		// get selected card, if applicable
+		if (page === 4 && stage > 1) {
+			setSelectedCard(game.cards[4])
+		}
+		
+	}, [page, stage])
+	
+	const blurBoard = () => {
+		if (page === 3 && [4, 5].includes(stage)) {
+			return "";
+		} else if (page === 4 && stage > 5) {
+			return "";
+		} else if (page === 5) {
+			return "";
+		} else {
+			return "guide";
+		}
+	};
 
 	const getPlayerData = (identifier: string) => {
 		if (game?.players) {
@@ -115,9 +146,9 @@ export const GuideGame = ({ modal, tooltip, stage, page, updateStage }: GuideGam
 						<div className={`${stage !== 6 && "guide"} basis-[20%] landscape:tall:xl:basis-[10%] flex justify-center items-center h-full`}>
 							<DefeatedPawns board={game.board}/>
 						</div>
-						<div id="data-board" className={`${![4, 5].includes(stage) && "guide"} basis-[60%] landscape:basis-[80%] flex justify-center items-center h-full`}>
+						<div id="data-board" className={`${blurBoard()} basis-[60%] landscape:basis-[80%] flex justify-center items-center h-full`}>
 							<Board 
-								board={game.board} 
+								board={board} 
 								userColor={userColor} 
 								selectPawn={selectPawn} 
 								selectedPawn={selectedPawn} 

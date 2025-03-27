@@ -49,6 +49,24 @@ export const GuidePlayerCards = ({ player, neutralCard, userColor, selectCard, s
 
 	const playerTurnClass = getPlayerTurnClass();
 
+	const blurPlayerCards = () => {
+		if (page === 3 && stage === 7 && playerIdentifier === "self") {
+			return "";
+		} else if (page === 4 && stage === 1 && playerIdentifier === "self") {
+			return "";
+		} else if (page === 3 && stage === 8 && playerIdentifier === "opponent") {
+			return "";
+		} else {
+			return "guide";
+		}
+	};
+
+	const focusSecondCard = () => {
+		if (page === 4 && stage > 1 && stage < 6 && playerIdentifier === "self") {
+			return "!blur-none !brightness-100";
+		}
+	};
+
 	return (
 		<div className={`${playerFlex} player w-full flex justify-evenly items-center`}>
 			<div className={`${playerCardsColor} ${playerTurnClass} guide player-color flex w-1/2 text-xs xs:text-sm sm:text-base md:text-lg landscape:text-sm border rounded-xl border-neutral-400 items-center text-gray-300`}>
@@ -65,7 +83,7 @@ export const GuidePlayerCards = ({ player, neutralCard, userColor, selectCard, s
 			<div className={`
 				${playerIdentifier === "self" ? "landscape:flex-wrap-reverse tall:flex-wrap" : "landscape:flex-wrap tall:flex-wrap-reverse"} 
 				w-full flex justify-around my-2 gap-2 landscape:flex-wrap tall:flex-wrap`}>
-				<div className={`${playerIdentifier === "self" ? "landscape:order-2" : "landscape:order-last"} ${page === 3 && stage !== 9 && "guide"} opacity-50 landscape:basis-0 landscape:xshort:basis-full landscape:sm:basis-0 landscape:md:xshort:basis-0 landscape:lg:xshort:basis-full landscape:lg:basis-full tall:sm:basis-0 2xtall:basis-full [&>*:first-child]:mx-auto [&>*:first-child]:tall:sm:my-0 [&>*:first-child]:landscape:xshort:my-4  [[&>*:first-child]:landscape:md:xshort:my-0 [[&>*:first-child]:landscape:lg:my-4 [&>*:first-child]:2xtall:my-4`}>
+				<div className={`${playerIdentifier === "self" ? "landscape:order-2" : "landscape:order-last"} ${!(page === 3 && stage === 9) && "guide"} opacity-50 landscape:basis-0 landscape:xshort:basis-full landscape:sm:basis-0 landscape:md:xshort:basis-0 landscape:lg:xshort:basis-full landscape:lg:basis-full tall:sm:basis-0 2xtall:basis-full [&>*:first-child]:mx-auto [&>*:first-child]:tall:sm:my-0 [&>*:first-child]:landscape:xshort:my-4  [[&>*:first-child]:landscape:md:xshort:my-0 [[&>*:first-child]:landscape:lg:my-4 [&>*:first-child]:2xtall:my-4`}>
 					{ renderNeutralCard
 						? <PlayerCard 
 							card={neutralCard!} 
@@ -87,7 +105,7 @@ export const GuidePlayerCards = ({ player, neutralCard, userColor, selectCard, s
 				</div>
 				{ player &&
 					<>
-					<div className={`${!((page === 3 && stage === 7 && playerIdentifier === "self") || (page === 4 && stage === 1 && playerIdentifier === "self") || (page === 3 && stage === 8 && playerIdentifier === "opponent")) && "guide"} `}>
+						<div className={`${blurPlayerCards()} `}>
 							<PlayerCard 
 								card={player.cards[0]!} 
 								player={playerIdentifier} 
@@ -97,7 +115,7 @@ export const GuidePlayerCards = ({ player, neutralCard, userColor, selectCard, s
 								selectedCard={selectedCard}
 							/>
 						</div>
-						<div className={`${!((page === 3 && stage === 7 && playerIdentifier === "self") || (page === 3 && stage === 8 && playerIdentifier === "opponent")) && "guide"} `}>
+					<div className={`${blurPlayerCards()} ${focusSecondCard()}`}>
 							<PlayerCard 
 								card={player.cards[1]!} 
 								player={playerIdentifier} 

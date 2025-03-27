@@ -16,6 +16,7 @@ interface GuideRegisterProps {
 	};
 	tooltip: {
 		elementId: string;
+		child: number[];
 		position: {
 			top: number | null;
 			right: number | null;

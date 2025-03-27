@@ -3,6 +3,7 @@ import { useRef, useEffect, useState, useCallback, useLayoutEffect } from 'react
 interface GuideTooltipProps {
 	tooltip: {
 		elementId: string;
+		child: number[];
 		position: {
 			top: number | null;
 			right: number | null;
@@ -18,7 +19,7 @@ interface GuideTooltipProps {
 }
 
 export const GuideTooltip = ({ tooltip, ...props }: GuideTooltipProps) => {
-	const { elementId, position, text, arrowPosition } = tooltip;
+	const { elementId, child, position, text, arrowPosition } = tooltip;
 	const tooltipRef = useRef<HTMLDivElement | null>(null);
 	const elementRef = useRef<HTMLElement | null>(null);
 	const [ arrowPositionClass, setArrowPositionClass ] = useState('')
@@ -28,7 +29,7 @@ export const GuideTooltip = ({ tooltip, ...props }: GuideTooltipProps) => {
 	const updateArrowPosition = useCallback(( offset: number ) => {
 		let style = {};
 		if (offset > 0 && arrowPosition.x === 'right') {
-			style= { right: (offset + 8) + 'px' };
+			style= { right: '24px' };
 		} else if (offset > 0 && arrowPosition.x === 'left') {
 			style = { left: '24px' };
 		} else if (offset < 0 && arrowPosition.x === 'right') {
@@ -36,14 +37,25 @@ export const GuideTooltip = ({ tooltip, ...props }: GuideTooltipProps) => {
 		} else if (offset < 0 && arrowPosition.x === 'left') {
 			style = { left: (offset - 8) + 'px' };
 		}
-
 		setOffsetArrowX(style)
 	}, [arrowPosition.x])
 
 	useLayoutEffect(() => {
 		const observer = new MutationObserver(() => {
 			if (elementId) {
-				elementRef.current = document.getElementById(elementId);
+				if (!child.length) {
+					elementRef.current = document.getElementById(elementId);
+				} else {
+					let currentElement = document.getElementById(elementId);
+					for (const index of child) {
+						if (currentElement) {
+							currentElement = currentElement.children[index] as HTMLElement;
+						} else {
+							break;
+						}
+					}
+					elementRef.current = currentElement
+				}
 				if (elementRef.current && tooltipRef.current) {
 					observer.disconnect();
 					const elementRect = elementRef.current.getBoundingClientRect();
@@ -133,7 +145,7 @@ export const GuideTooltip = ({ tooltip, ...props }: GuideTooltipProps) => {
 
 	return (
 		<div ref={tooltipRef} {...props} className={`${!tooltipReady ? "opacity-0" : "opacity-1"} fixed`}>
-			<div className="px-4 py-2 bg-slate-500 rounded-md text-purple border-gray-500 border right-0 text-lg relative">
+			<div className="px-4 py-2 bg-slate-500 rounded-md text-purple border-gray-500 border right-0 text-lg mx-2 relative">
 				<span className={`h-0 w-0 absolute ${arrowPositionClass}`} style={offsetArrowX}></span>
 				<span>{text}</span>
 			</div>
