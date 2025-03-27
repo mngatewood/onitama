@@ -61,15 +61,15 @@ export const pageTwoStageThreeModal = {
 export const pageTwoStageThreeTooltip = {
 	elementId: "submit-login",
 	position: {
-		top: null,
+		top: 16,
 		right: 0,
-		bottom: 16,
+		bottom: null,
 		left: 0,
 	},
 	text: "Enter your email and password and click 'Submit'.",
 	arrowPosition: {
 		x: "center",
-		y: "top",
+		y: "bottom",
 	}
 }
 
@@ -154,7 +154,7 @@ export const pageThreeStageOneModal = {
 		y: 60 // percentage of screen
 	},
 	moveable: false,
-	headline: "Gameplay Layout",
+	headline: "Game Layout",
 	body: "As the game progresses, you will see notifications that provide updates and helpful tips.  Click the 'X' to dismiss them."
 }
 
@@ -179,7 +179,7 @@ export const pageThreeStageTwoModal = {
 		y: 60 // percentage of screen
 	},
 	moveable: false,
-	headline: "Gameplay Layout",
+	headline: "Game Layout",
 	body: "If you wish, you can disable notifications by clicking the 'Mute Notifications' button."
 }
 
@@ -191,7 +191,7 @@ export const pageThreeStageTwoTooltip = {
 		bottom: 16,
 		left: 0,
 	},
-	text: "Mute notifications by clicking here.",
+	text: "Mute notifications.",
 	arrowPosition: {
 		x: "left",
 		y: "top",
@@ -204,7 +204,7 @@ export const pageThreeStageThreeModal = {
 		y: 60 // percentage of screen
 	},
 	moveable: false,
-	headline: "Gameplay Layout",
+	headline: "Game Layout",
 	body: "You can toggle dark mode on or off by clicking the 'Dark Mode' button."
 }
 
@@ -229,8 +229,8 @@ export const pageThreeStageFourModal = {
 		y: 20 // percentage of screen
 	},
 	moveable: false,
-	headline: "Gameplay Layout",
-	body: "Your pieces will start at the bottom of the board.  Their color will match your player color where your name is displayed."
+	headline: "Game Layout",
+	body: "Your pawns will start at the bottom of the board.  You begin with four students and one (larger) master.  Their color will match your player color where your name is displayed."
 }
 
 export const pageThreeStageFourTooltip = {
@@ -254,7 +254,7 @@ export const pageThreeStageFiveModal = {
 		y: 60 // percentage of screen
 	},
 	moveable: false,
-	headline: "Gameplay Layout",
+	headline: "Game Layout",
 	body: "Your opponent's pieces will start at the top of the board.  Their color will match your player color where their name is displayed."
 }
 
@@ -267,6 +267,159 @@ export const pageThreeStageFiveTooltip = {
 		left: 0,
 	},
 	text: "These are your opponent's pawns.",
+	arrowPosition: {
+		x: "center",
+		y: "bottom",
+	}
+}
+
+export const pageThreeStageSixModal = {
+	position: {
+		x: 0, // percentage of screen
+		y: 15 // percentage of screen
+	},
+	moveable: false,
+	headline: "Game Layout",
+	body: "The small pawns next to the board are for tracking defeated pawns.  When a student pawn is defeated, it will be moved to this area."
+}
+
+// No tooltip rendered in this stage
+export const pageThreeStageSixTooltip = {
+	elementId: "",
+	position: {
+		top: null,
+		right: null,
+		bottom: null,
+		left: null,
+	},
+	text: "",
+	arrowPosition: {
+		x: "",
+		y: "",
+	}
+}
+
+export const pageThreeStageSevenModal = {
+	position: {
+		x: 0, // percentage of screen
+		y: 25 // percentage of screen
+	},
+	moveable: false,
+	headline: "Game Layout",
+	body: "Your scrolls will be displayed at the bottom of the screen."
+}
+
+export const pageThreeStageSevenTooltip = {
+	elementId: "player-cards",
+	position: {
+		top: 0,
+		right: 0,
+		bottom: null,
+		left: 0,
+	},
+	text: "These are your scrolls.",
+	arrowPosition: {
+		x: "center",
+		y: "bottom",
+	}
+}
+
+export const pageThreeStageEightModal = {
+	position: {
+		x: 0, // percentage of screen
+		y: 60 // percentage of screen
+	},
+	moveable: false,
+	headline: "Game Layout",
+	body: "Your opponent's scrolls will be displayed at the top of the screen."
+}
+
+export const pageThreeStageEightTooltip = {
+	elementId: "opponent-cards",
+	position: {
+		top: null,
+		right: 0,
+		bottom: 0,
+		left: 0,
+	},
+	text: "These are your opponent's scrolls.",
+	arrowPosition: {
+		x: "center",
+		y: "top",
+	}
+}
+
+export const pageThreeStageNineModal = {
+	position: {
+		x: 0, // percentage of screen
+		y: 0 // percentage of screen
+	},
+	moveable: false,
+	headline: "Game Layout",
+	body: "Notice the dimmed scroll in your player area below. This is a passive scroll.  When it is your turn, the passive scroll will be displayed next to your scrolls, indicating that it will be active on your next turn."
+}
+
+// No tooltip rendered in this stage
+export const pageThreeStageNineTooltip = {
+	elementId: "",
+	position: {
+		top: null,
+		right: null,
+		bottom: null,
+		left: null,
+	},
+	text: "",
+	arrowPosition: {
+		x: "",
+		y: "",
+	}
+}
+
+export const pageThreeStageTenModal = {
+	position: {
+		x: 0, // percentage of screen
+		y: 0 // percentage of screen
+	},
+	moveable: false,
+	headline: "Game Layout",
+	body: "Note the scroll next to your cards that is dimmed. This is the passive scroll.  When it is your turn, the passive scroll will be displayed next to your scrolls, indicating that it will be active on your next turn."
+}
+
+// No tooltip rendered in this stage
+export const pageThreeStageTenTooltip = {
+	elementId: "",
+	position: {
+		top: null,
+		right: null,
+		bottom: null,
+		left: null,
+	},
+	text: "",
+	arrowPosition: {
+		x: "",
+		y: "",
+	}
+}
+
+export const pageFourStageOneModal = {
+	position: {
+		x: 0, // percentage of screen
+		y: 25 // percentage of screen
+	},
+	moveable: false,
+	headline: "Step 1: Select a Scroll",
+	body: "When it is your turn, click one of your scrolls to activate it."
+}
+
+export const pageFourStageOneTooltip = {
+	elementId: "player-cards",
+	position: {
+		top: 0,
+		right: 0,
+		bottom: null,
+		left: 0,
+	},
+	text: "Select a card.",
 	arrowPosition: {
 		x: "center",
 		y: "bottom",
