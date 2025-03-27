@@ -58,8 +58,8 @@ export const GuideModal = ({ modal, stage, updateStage }: GuideModalProps) => {
 	}
 
 	return (
-		<div className={`${positionClass} h-screen w-screen mx-auto transition-all duration-500 ease-in-out max-w-screen-md`}>
-			<div style={positionStyle} className={`${modalReady ? "opacity-1" : "opacity-0"} relative top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 flex flex-col justify-center items-center landscape:max-w-[30%] w-5/6 mt-6 p-4 border border-neutral-800 text-neutral-800 bg-gray-200 shadow-[2px_2px_5px_0px_rgba(0,0,0,0.7)] dark:shadow-[2px_2px_5px_0px_rgba(255,255,255,0.7)] rounded-2xl transition-opacity duration-500 ease-in-out z-50`}>
+		<div className={`${positionClass} h-screen w-screen mx-auto transition-all duration-500 ease-in-out`}>
+			<div style={positionStyle} className={`${modalReady ? "opacity-1" : "opacity-0"} relative top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 flex flex-col justify-center items-center landscape:max-w-[30%] w-5/6 min-w-96 mt-6 p-4 border border-neutral-800 text-neutral-800 bg-gray-200 shadow-[2px_2px_5px_0px_rgba(0,0,0,0.7)] dark:shadow-[2px_2px_5px_0px_rgba(255,255,255,0.7)] rounded-2xl transition-opacity duration-500 ease-in-out z-50`}>
 				<div className="relative top-0 left-1/2 w-0 h-0 flex justify-center items-center">
 
 					{modal.moveable &&
@@ -96,7 +96,7 @@ export const GuideModal = ({ modal, stage, updateStage }: GuideModalProps) => {
 						</>					
 					}
 				</div>
-				<h2 className="text-xl font-bold">{heading}</h2>
+				<h2 className="text-xl font-bold whitespace-nowrap">{heading}</h2>
 				<p className="mt-2 max-w-sm text-sm">{modal.body}</p>
 				<div className="flex items-center justify-evenly w-full">
 					<button onClick={handlePrevious} className="mt-4 w-16 relative block h-8 rounded-md bg-gradient-to-br from-neutral-500 to-neutral-400 font-medium hover:bg-gradient-to-br hover:from-neutral-600 hover:to-neutral-400 text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:hover:bg-white dark:hover:from-zinc-800 dark:hover:to-zinc-700 dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-800 dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]">&lt;&lt;</button>
