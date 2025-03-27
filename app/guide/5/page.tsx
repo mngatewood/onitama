@@ -7,7 +7,7 @@ import { GuideGame } from "../../components/guide/GuideGame";
 import * as data from "../../components/guide/guideData"
 import { useState } from "react";
 
-const GuidePageFour = () => {
+const GuidePageFive = () => {
 
 	const [stage, setStage] = useState<number>(1);
 
@@ -107,4 +107,4 @@ const GuidePageFour = () => {
 	);
 }
 
-export default GuidePageFour;
+export default GuidePageFive;
