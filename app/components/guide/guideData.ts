@@ -789,7 +789,7 @@ export const pageFiveStageFourModal = {
 	},
 	moveable: false,
 	headline: "Step 2: Choose a Pawn",
-	body: "Enemy pawn targets will display a white crosshair icon.  Moving to these spaces will result in defeating an enemy pawn."
+	body: "Enemy pawn targets will display a white crosshair icon.  Moving to these spaces will result in defeating an enemy pawn.  If you defeat the enemy's master pawn, you win the game!"
 }
 
 export const pageFiveStageFourTooltip = {
