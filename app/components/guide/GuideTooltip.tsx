@@ -79,10 +79,14 @@ export const GuideTooltip = ({ tooltip, ...props }: GuideTooltipProps) => {
 					// if there is a left value, set the tooltip left position to this value
 					} else if (position.left !== null) {
 						x = elementRect.left - tooltipRect.width - 10;
-					// if there is a right value, set the tooltip right position to this value
+					// if there is a right value and no top or bottom value, set the tooltip to the right and centered vertically
 					} else if (position.right !== null && position.top === null && position.bottom === null) {
 						x = elementRect.left + elementRect.width;
 						y= elementRect.top + (elementRect.height - tooltipRect.height) / 2;
+					// if there is a right and top value, set the tooltip to the right and top
+					} else if (position.right !== null && position.top !== null && position.bottom === null) {
+						x = elementRect.left + elementRect.width;
+						y= elementRect.top + position.top;
 					// if there is a left value, set the tooltip left position to this value
 					} else if (position.right !== null) {
 						x = elementRect.left + (elementRect.width / 2) + 16 - (tooltipRect.width);
@@ -154,7 +158,7 @@ export const GuideTooltip = ({ tooltip, ...props }: GuideTooltipProps) => {
 	}, [arrowPosition, offsetArrowX])
 
 	return (
-		<div ref={tooltipRef} {...props} className={`${!tooltipReady ? "opacity-0" : "opacity-1"} fixed`}>
+		<div ref={tooltipRef} {...props} className={`${!tooltipReady ? "opacity-0" : "opacity-1"} fixed z-50`}>
 			<div className="px-4 py-2 bg-slate-500 rounded-md text-purple border-gray-500 border right-0 text-lg mx-2 relative">
 				<span className={`h-0 w-0 absolute ${arrowPositionClass}`} style={offsetArrowX}></span>
 				<span>{text}</span>

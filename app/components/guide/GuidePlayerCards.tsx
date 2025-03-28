@@ -13,13 +13,12 @@ interface GuidePlayerCardsProps {
 	player: Player | null;
 	neutralCard: Card | null;
 	userColor: string;
-	selectCard: (cardId: string) => void;
 	selectedCard: Card | null;
 	stage: number;
 	page: number;
 }
 
-export const GuidePlayerCards = ({ player, neutralCard, userColor, selectCard, selectedCard, stage, page }: GuidePlayerCardsProps) => {
+export const GuidePlayerCards = ({ player, neutralCard, userColor, selectedCard, stage, page }: GuidePlayerCardsProps) => {
 	const playerKanji = player?.color === "red" ? "赤" : "青";
 	const playerCardsColor = player?.color === "red" ? "bg-red-900" : "bg-blue-900";
 	const renderNeutralCard = player?.color === player?.turn;
@@ -61,9 +60,23 @@ export const GuidePlayerCards = ({ player, neutralCard, userColor, selectCard, s
 		}
 	};
 
+	const blurNeutralCard = () => {
+		if (page === 3 && stage === 9 ) {
+			return "";
+		} else if (page === 6 && stage === 3) {
+			return "";
+		} else {
+			return "guide";
+		}
+	};
+
 	const focusSecondCard = () => {
 		if (page === 4 && stage > 1 && stage < 6 && playerIdentifier === "self") {
 			return "!blur-none !brightness-100";
+		} else if (page === 6 && stage === 3 && playerIdentifier === "self") {
+			return "!blur-none !brightness-100";
+		} else {
+			return "";
 		}
 	};
 
@@ -83,7 +96,7 @@ export const GuidePlayerCards = ({ player, neutralCard, userColor, selectCard, s
 			<div className={`
 				${playerIdentifier === "self" ? "landscape:flex-wrap-reverse tall:flex-wrap" : "landscape:flex-wrap tall:flex-wrap-reverse"} 
 				w-full flex justify-around my-2 gap-2 landscape:flex-wrap tall:flex-wrap`}>
-				<div className={`${playerIdentifier === "self" ? "landscape:order-2" : "landscape:order-last"} ${!(page === 3 && stage === 9) && "guide"} opacity-50 landscape:basis-0 landscape:xshort:basis-full landscape:sm:basis-0 landscape:md:xshort:basis-0 landscape:lg:xshort:basis-full landscape:lg:basis-full tall:sm:basis-0 2xtall:basis-full [&>*:first-child]:mx-auto [&>*:first-child]:tall:sm:my-0 [&>*:first-child]:landscape:xshort:my-4  [[&>*:first-child]:landscape:md:xshort:my-0 [[&>*:first-child]:landscape:lg:my-4 [&>*:first-child]:2xtall:my-4`}>
+				<div className={`${playerIdentifier === "self" ? "landscape:order-2" : "landscape:order-last"} ${blurNeutralCard()} opacity-50 landscape:basis-0 landscape:xshort:basis-full landscape:sm:basis-0 landscape:md:xshort:basis-0 landscape:lg:xshort:basis-full landscape:lg:basis-full tall:sm:basis-0 2xtall:basis-full [&>*:first-child]:mx-auto [&>*:first-child]:tall:sm:my-0 [&>*:first-child]:landscape:xshort:my-4  [[&>*:first-child]:landscape:md:xshort:my-0 [[&>*:first-child]:landscape:lg:my-4 [&>*:first-child]:2xtall:my-4`}>
 					{ renderNeutralCard
 						? <GuidePlayerCard 
 							card={neutralCard!} 

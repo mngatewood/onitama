@@ -834,6 +834,190 @@ export const pageSixStageOneTooltip = {
 	}
 }
 
+export const pageSixStageTwoModal = {
+	position: {
+		x: 0, // percentage of screen
+		y: 20 // percentage of screen
+	},
+	moveable: false,
+	headline: "Step 3: Choose a Target",
+	body: "Once you select a valid target space, your turn will end.  The origin and destination spaces of your action will be highlighted."
+}
+
+export const pageSixStageTwoTooltip = {
+	elementId: "board",
+	child: [21],
+	position: {
+		top: null,
+		right: 0,
+		bottom: 0,
+		left: 0,
+	},
+	text: "Your action is highlighted.",
+	arrowPosition: {
+		x: "center",
+		y: "top",
+	}
+}
+
+export const pageSixStageThreeModal = {
+	position: {
+		x: 0, // percentage of screen
+		y: 20 // percentage of screen
+	},
+	moveable: false,
+	headline: "Step 3: Choose a Target",
+	body: "At the end of your turn, the scroll you activated will become inactive and is now displayed near your opponent's scrolls.  The previously inactive scroll is now part of your hand and can be used in your next turn."
+}
+
+export const pageSixStageThreeTooltip = {
+	elementId: "player-cards",
+	child: [0, 1],
+	position: {
+		top: 16,
+		right: 0,
+		bottom: null,
+		left: 0,
+	},
+	text: "The Frog scroll has been replaced with the Ox scroll.",
+	arrowPosition: {
+		x: "",
+		y: "",
+	}
+}
+
+export const pageSixStageFourModal = {
+	position: {
+		x: 0, // percentage of screen
+		y: 70 // percentage of screen
+	},
+	moveable: false,
+	headline: "Step 3: Choose a Target",
+	body: "If you defeated a student pawn, it will be moved to the defeated pawns area."
+}
+
+export const pageSixStageFourTooltip = {
+	elementId: "defeated-pawns",
+	child: [],
+	position: {
+		top: 0,
+		right: 0,
+		bottom: null,
+		left: null,
+	},
+	text: "One defeated red pawn",
+	arrowPosition: {
+		x: "left",
+		y: "center",
+	}
+}
+
+export const pageSixStageFiveModal = {
+	position: {
+		x: 0, // percentage of screen
+		y: 20 // percentage of screen
+	},
+	moveable: false,
+	headline: "Step 3: Choose a Target",
+	body: "When your opponent completes their turn, the board will update to show the results of their actions."
+}
+
+export const pageSixStageFiveTooltip = {
+	elementId: "board",
+	child: [13],
+	position: {
+		top: null,
+		right: 0,
+		bottom: 0,
+		left: 0,
+	},
+	text: "Your opponent's action is highlighted.",
+	arrowPosition: {
+		x: "center",
+		y: "top",
+	}
+}
+
+export const pageSevenStageOneModal = {
+	position: {
+		x: 0, // percentage of screen
+		y: 0 // percentage of screen
+	},
+	moveable: false,
+	headline: "Game End",
+	body: "Play continues until a master pawn is defeated or a temple space is occupied by any enemy pawn."
+}
+
+// No tooltip rendered in this stage
+export const pageSevenStageOneTooltip = {
+	elementId: "",
+	child: [],
+	position: {
+		top: null,
+		right: null,
+		bottom: null,
+		left: null,
+	},
+	text: "",
+	arrowPosition: {
+		x: "",
+		y: "",
+	}
+}
+
+export const pageSevenStageTwoModal = {
+	position: {
+		x: 0, // percentage of screen
+		y: 15 // percentage of screen
+	},
+	moveable: false,
+	headline: "Game End",
+	body: "Once the game is completed, you can click 'Play Again' to restart the game with a new set of cards or click 'Exit' to return to the Lobby."
+}
+
+export const pageSevenStageTwoTooltip = {
+	elementId: "winner-modal",
+	child: [0, 0, 4],
+	position: {
+		top: null,
+		right: 0,
+		bottom: 0,
+		left: 0,
+	},
+	text: "Click 'Play Again' or 'Exit'.",
+	arrowPosition: {
+		x: "center",
+		y: "top",
+	}
+}
+
+export const pageSevenStageThreeModal = {
+	position: {
+		x: 0, // percentage of screen
+		y: 0 // percentage of screen
+	},
+	moveable: false,
+	headline: "Game End",
+	body: "This concludes the Onitama guide.  We hope you enjoy playing the game!"
+}
+
+// No tooltip rendered in this stage
+export const pageSevenStageThreeTooltip = {
+	elementId: "",
+	child: [],
+	position: {
+		top: null,
+		right: null,
+		bottom: null,
+		left: null,
+	},
+	text: "",
+	arrowPosition: {
+		x: "",
+		y: "",
+	}
+}
+
 export const allCards = [
 	{
 		id: "1",
@@ -944,7 +1128,7 @@ export const pageFiveStageThreeBoard = [
 	["0000", "rs0x", "bsh0", "rm00", "0000"],
 	["0000", "0000", "0000", "0000", "0000"],
 	["0000", "bs00", "0000", "0000", "bs00"],
-	["bs00", "0000", "bm00", "bs00", "0000"],
+	["bs00", "0000", "bm00", "0000", "0000"],
 ]
 
 export const pageFiveStageSixBoard = [
@@ -952,7 +1136,31 @@ export const pageFiveStageSixBoard = [
 	["000x", "rs00", "bsh0", "rm00", "0000"],
 	["000x", "0000", "0000", "000x", "0000"],
 	["0000", "bsh0", "000x", "0000", "bsh0"],
-	["bs00", "000x", "bm00", "bsh0", "0000"],
+	["bs00", "000x", "bm00", "0000", "0000"],
+]
+
+export const pageSixStageTwoBoard = [
+	["rs00", "rs00", "rm00", "rs00", "rs00"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["0000", "0000", "0000", "0000", "0000"],
+	["bsh0", "0000", "0000", "0000", "0000"],
+	["bs00", "b0h0", "bm00", "bs00", "bs00"],
+]
+
+export const pageSixStageFourBoard = [
+	["rs00", "0000", "0000", "0000", "rs00"],
+	["0000", "0000", "rm00", "rs00", "0000"],
+	["0000", "0000", "0000", "bsh0", "0000"],
+	["bs00", "bm00", "0000", "0000", "b0h0"],
+	["bs00", "0000", "0000", "bs00", "0000"],
+]
+
+export const pageSixStageFiveBoard = [
+	["rs00", "0000", "0000", "0000", "rs00"],
+	["0000", "0000", "r0h0", "rs00", "0000"],
+	["0000", "0000", "0000", "rmh0", "0000"],
+	["bs00", "bm00", "0000", "0000", "0000"],
+	["bs00", "0000", "0000", "bs00", "0000"],
 ]
 
 export const pageThreeStageOneNotification = {
@@ -961,4 +1169,26 @@ export const pageThreeStageOneNotification = {
 	duration: 0,
 	delay: 0,
 	action: ""
+};
+
+export const pageSixStageTwoPlayers = {
+	red: {
+		id: "2",
+		cards: [allCards[1], allCards[3]]
+	},
+	blue: {
+		id: "1",
+		cards: [allCards[2], allCards[0]]
+	}
+};
+
+export const pageSixStageFivePlayers = {
+	red: {
+		id: "2",
+		cards: [allCards[1], allCards[4]]
+	},
+	blue: {
+		id: "1",
+		cards: [allCards[2], allCards[0]]
+	}
 };

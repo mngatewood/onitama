@@ -23,7 +23,7 @@ export const NotificationsToggle = ({ enabled, toggleNotifications }: Notificati
 	const tooltipText = enabled ? 'Mute notifications' : 'Enable notifications';
 
 	return (
-		<div key="notifications-toggle" className="absolute top-4 left-4">
+		<div id="data-mute-notifications" key="notifications-toggle" className="absolute top-4 left-4">
 			<div className="relative group">
 				<button onClick={handleToggle} className="border border-gray-400 rounded-full p-0 bg-gray-200 hover:scale-125 transition-all duration-300 group hover:bg-slate-400 hover:border-gray-200"
 					title="Toggle notifications"

@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { Board } from "../Board";
 import { DefeatedPawns } from "../DefeatedPawns";
-import { allCards, game } from "../guide/guideData";
 import { GuideModal } from "./GuideModal";
 import { GuideTooltip } from "./GuideTooltip";
 import { GuideDarkModeToggle } from "./GuideDarkThemeToggle";
@@ -43,15 +42,17 @@ interface GuideGameProps {
 
 export const GuideGame = ({ modal, tooltip, stage, page, updateStage }: GuideGameProps) => {
 
-	const [board, setBoard] = useState<string[][]>(game.board);
+	const [board, setBoard] = useState<string[][]>(data.game.board);
 	const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+	const [turn, setTurn] = useState<string>(data.game.turn);
+	const [players, setPlayers] = useState<Players>(data.game.players);
+	const [neutralCard, setNeutralCard] = useState<Card | null>(data.allCards[0]);
 
 	const userId = "1";
-	const neutralCard = allCards[0];
 	const selectedPawn = null;
 
 	const userColor = ["red", "blue"].find((key) => {
-		return game?.players && game?.players[key as keyof typeof game.players]?.id === userId;
+		return players && players[key as keyof typeof players]?.id === userId;
 	}) || "";
 
 	useEffect(() => {
@@ -68,19 +69,40 @@ export const GuideGame = ({ modal, tooltip, stage, page, updateStage }: GuideGam
 			setBoard(data.pageFiveStageSixBoard)
 		} else if (page === 6 && stage === 1) {
 			setBoard(data.pageFiveStageTwoBoard)
+		} else if (page === 6 && stage > 1 && stage < 4) {
+			setBoard(data.pageSixStageTwoBoard)
+		} else if (page === 6 && stage === 4) {
+			setBoard(data.pageSixStageFourBoard)
+		} else if (page === 6 && stage > 4) {
+			setBoard(data.pageSixStageFiveBoard)
 		} else (
-			setBoard(game?.board)
+			setBoard(data.game.board)
 		)
 
 		// get selected card, if applicable
 		if (page === 4 && stage > 1) {
-			setSelectedCard(game.cards[4])
+			setSelectedCard(data.game.cards[4])
 		} else if (page === 5 && stage < 4) {
-			setSelectedCard(game.cards[4])
+			setSelectedCard(data.game.cards[4])
 		} else if (page === 5 && [4, 5].includes(stage)) {
-			setSelectedCard(game.cards[2])
+			setSelectedCard(data.game.cards[2])
 		} else if (page === 5 && stage > 5) {
-			setSelectedCard(game.cards[4])
+			setSelectedCard(data.game.cards[4])
+		} else if (page === 6) {
+			setSelectedCard(data.game.cards[4])
+		}
+
+		// update game turn
+		if (page === 6 && stage > 1 && stage < 5) {
+			setTurn("red")
+			setSelectedCard(null);
+			setPlayers(data.pageSixStageTwoPlayers)
+			setNeutralCard(data.allCards[4])
+		} else if (page === 6 && stage === 5) {
+			setTurn("blue")
+			setSelectedCard(null);
+			setPlayers(data.pageSixStageFivePlayers)
+			setNeutralCard(data.allCards[3])
 		}
 	}, [page, stage])
 	
@@ -91,41 +113,39 @@ export const GuideGame = ({ modal, tooltip, stage, page, updateStage }: GuideGam
 			return "";
 		} else if (page === 5) {
 			return "";
+		} else if (page === 6 && stage !== 3) {
+			return "";
 		} else {
 			return "guide";
 		}
 	};
 
 	const getPlayerData = (identifier: string) => {
-		if (game?.players) {
-			const data = {
-				turn: game.turn,
+		if (players) {
+			const playerData = {
+				turn: turn,
 				userId: userId,
 				firstName: "" as string | undefined,
 				color: "",
 				id: "",
 				cards: [] as Card[],
 			}
-			if ((game.players.red.id === userId && identifier === "self") || (game.players.blue.id === userId && identifier === "opponent")) {
-				data.color = "red";
-				data.id = game.players.red.id;
-				data.cards = game.players.red.cards;
-				data.firstName = game.users?.find((user) => user.id === game.players.red.id)?.first_name ?? undefined;
-			} else if ((game.players.blue.id === userId && identifier === "self") || (game.players.red.id === userId && identifier === "opponent")) {
-				data.color = "blue";
-				data.id = game.players.blue.id;
-				data.cards = game.players.blue.cards;
-				data.firstName = game.users?.find((user) => user.id === game.players.blue.id)?.first_name ?? undefined;
+			if ((players.red.id === userId && identifier === "self") || (players.blue.id === userId && identifier === "opponent")) {
+				playerData.color = "red";
+				playerData.id = players.red.id;
+				playerData.cards = players.red.cards;
+				playerData.firstName = data.game.users?.find((user) => user.id === players.red.id)?.first_name ?? undefined;
+			} else if ((players.blue.id === userId && identifier === "self") || (players.red.id === userId && identifier === "opponent")) {
+				playerData.color = "blue";
+				playerData.id = players.blue.id;
+				playerData.cards = players.blue.cards;
+				playerData.firstName = data.game.users?.find((user) => user.id === players.blue.id)?.first_name ?? undefined;
 			}
-			if (!data) {
+			if (!playerData) {
 				return null;;
 			}
-			return data;
+			return playerData;
 		};
-	};
-
-	const selectCard = (cardId: string) => {
-		return cardId;
 	};
 
 	const selectPawn = (origin: Position) => {
@@ -142,7 +162,7 @@ export const GuideGame = ({ modal, tooltip, stage, page, updateStage }: GuideGam
 
 	return (
 		<>
-			{game && game.board &&
+			{data.game && data.game.board &&
 				<div className="game w-full flex flex-col justify-evenly items-center h-screen landscape:h-[calc(100vh-140px)] landscape:flex-wrap">
 					<div id="opponent-cards"className="player-top order-1 landscape:w-1/2 flex justify-center flex-grow">
 						{getPlayerData("opponent") &&
@@ -150,7 +170,6 @@ export const GuideGame = ({ modal, tooltip, stage, page, updateStage }: GuideGam
 								player={getPlayerData("opponent") ?? null} 
 								neutralCard={neutralCard} 
 								userColor={userColor} 
-								selectCard={selectCard}
 								selectedCard={selectedCard}
 								stage={stage}
 								page={page}
@@ -159,7 +178,7 @@ export const GuideGame = ({ modal, tooltip, stage, page, updateStage }: GuideGam
 					</div>
 					<div className="flex flow-row justify-start order-2 w-full h-56 sm:h-auto landscape:w-1/2 my-2 landscape:order-last landscape:items-center">
 						<div className={`${stage !== 6 && "guide"} basis-[20%] landscape:tall:xl:basis-[10%] flex justify-center items-center h-full`}>
-							<DefeatedPawns board={game.board}/>
+							<DefeatedPawns board={board}/>
 						</div>
 						<div id="data-board" className={`${blurBoard()} basis-[60%] landscape:basis-[80%] flex justify-center items-center h-full`}>
 							<Board 
@@ -177,7 +196,6 @@ export const GuideGame = ({ modal, tooltip, stage, page, updateStage }: GuideGam
 								player={getPlayerData("self") ?? null} 
 								neutralCard={neutralCard} 
 								userColor={userColor} 
-								selectCard={selectCard} 
 								selectedCard={selectedCard}
 								stage={stage}
 								page={page}
@@ -198,20 +216,6 @@ export const GuideGame = ({ modal, tooltip, stage, page, updateStage }: GuideGam
 					<NotificationsToggle enabled={true} toggleNotifications={toggleNotifications}/>
 				</div>
 			}
-			{/* <div className={`${game ? "hidden" : "flex"} absolute top-0 left-0 right-0 bottom-0 items-center`}>
-				<WaitingModal text="Loading game..." isVisible={!game}/>
-			</div>
-			<div className={`${waiting ? "flex" : "hidden"} absolute top-0 left-0 right-0 bottom-0 items-center`}>
-				<WaitingModal text="Waiting for another player to join..." isVisible={!!waiting} />
-			</div>
-			{game && !waiting && otherPlayersTurn &&
-				<div onClick={waitForYourTurn} className="absolute top-0 left-0 right-0 bottom-0">
-				</div>
-			}
-			<div className={`${winner ? "flex" : "hidden"} absolute top-0 left-0 right-0 bottom-0 items-center`}>
-				<WinnerModal userColor={userColor} winner={winner ?? ""} playAgain={playAgain} isVisible={!!winner}/>
-			</div>
-			<NotificationsToggle enabled={notificationsEnabled} toggleNotifications={toggleNotifications} /> */}
 			<GuideModal modal={modal} stage={stage} updateStage={updateStage}/>
 			<GuideTooltip tooltip={tooltip} />
 		</>
