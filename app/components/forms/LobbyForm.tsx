@@ -4,10 +4,10 @@ import React, { useEffect, useState, useRef } from "react";
 import { redirect } from "next/navigation";
 import { createSoloGame, createMultiplayerGame, joinGame } from "../helpers/lobby";
 import { socket } from "../../lib/socketClient";
-import { WaitingModal } from "../WaitingModal";
+import { WaitingModal } from "../modals/WaitingModal";
 import { ToastMessage } from "../ToastMessage";
 import { useSearchParams, usePathname } from "next/navigation";
-import { NewGameModal } from "./NewGameModal";
+import { NewGameModal } from "../modals/NewGameModal";
 
 interface LobbyFormProps {
 	session: AppendedSession;

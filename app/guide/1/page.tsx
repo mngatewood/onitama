@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import spirit from "../../../public/spirit.png";
 import { Title } from "../../components/Title";
-import { DarkModeToggle } from "../../components/DarkThemeToggle";
+import { DarkModeToggle } from "../../components/ui/DarkThemeToggle";
 import Link from "next/link";
 import { GuideModal } from "../../components/guide/GuideModal";
 import * as data from "../../components/guide/guideData";

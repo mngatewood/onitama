@@ -6,24 +6,19 @@ import Link from "next/link";
 import { GuideGame } from "../../components/guide/GuideGame";
 import * as data from "../../components/guide/guideData"
 import { useState } from "react";
-import { WinnerModal } from "@/app/components/modals/WinnerModal";
 
-const GuidePageSeven = () => {
+const GuidePageFour = () => {
 
 	const [stage, setStage] = useState<number>(1);
 
 	const updateStage = ( newStage: number ) => {
 		if (newStage === 0) {
-			window.location.href = "/guide/6";
-		} else if (newStage > 3) {
-			window.location.href = "/";
+			window.location.href = "/guide/5";
+		} else if (newStage > 9) {
+			window.location.href = "/guide/7";
 		} else {
 			setStage(newStage);
 		}
-	}
-
-	const playAgain = () => {
-		return;
 	}
 
 	return (
@@ -34,36 +29,63 @@ const GuidePageSeven = () => {
 			<main className="w-full min-w-[370px] mx-auto p-4 pr-6 overflow-hidden flex flex-col justify-center items-center h-[calc(100vh-140px)] landscape:p-2">
 				{stage === 1 && 
 					<GuideGame 
-						modal={data.pageSevenStageOneModal}
-						tooltip={data.pageSevenStageOneTooltip}
+						modal={data.pageSixStageOneModal}
+						tooltip={data.pageSixStageOneTooltip}
 						stage={stage}
 						updateStage={updateStage}
-						page={7}
+						page={6}
 						/>
 				}
 				{stage === 2 && 
 					<GuideGame 
-						modal={data.pageSevenStageTwoModal}
-						tooltip={data.pageSevenStageTwoTooltip}
+						modal={data.pageSixStageTwoModal}
+						tooltip={data.pageSixStageTwoTooltip}
 						stage={stage}
 						updateStage={updateStage}
-						page={7}
+						page={6}
 						/>
 				}
 				{stage === 3 && 
 					<GuideGame 
-						modal={data.pageSevenStageThreeModal}
-						tooltip={data.pageSevenStageThreeTooltip}
+						modal={data.pageSixStageThreeModal}
+						tooltip={data.pageSixStageThreeTooltip}
 						stage={stage}
 						updateStage={updateStage}
-						page={7}
+						page={6}
+						/>
+				}
+				{stage === 4 && 
+					<GuideGame 
+						modal={data.pageSixStageFourModal}
+						tooltip={data.pageSixStageFourTooltip}
+						stage={stage}
+						updateStage={updateStage}
+						page={6}
+						/>
+				}
+				{stage === 5 && 
+					<GuideGame 
+						modal={data.pageSixStageFiveModal}
+						tooltip={data.pageSixStageFiveTooltip}
+						stage={stage}
+						updateStage={updateStage}
+						page={6}
+						/>
+				}
+				{stage === 6 && 
+					<GuideGame 
+						modal={data.pageSixStageSixModal}
+						tooltip={data.pageSixStageSixTooltip}
+						stage={stage}
+						updateStage={updateStage}
+						page={6}
 						/>
 				}
 			</main>
 			<footer className="w-full h-10 text-sm xxs:text-base portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center gap-4 text-sky-700 dark:text-sky-300 bg-neutral-200 dark:bg-blue-1 z-50">
 				<button className="w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
-					<Link href="/guide/6" className="relative">
-						<span className="whitespace-nowrap">&lt;&lt;&nbsp;Choose a Target</span>
+					<Link href="/guide/5" className="relative">
+						<span className="whitespace-nowrap">&lt;&lt;&nbsp;Choose a Pawn</span>
 						<span className="absolute -bottom-1 right-0 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-full"></span>
 					</Link>
 				</button>
@@ -74,15 +96,15 @@ const GuidePageSeven = () => {
 					</Link>
 				</button>
 				<button className="w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
+					<Link href="/guide/7" className="relative">
+						<span className="whitespace-nowrap">Game End&nbsp;&gt;&gt;</span>
+						<span className="absolute -bottom-1 right-0 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-full"></span>
+					</Link>
 				</button>
 			</footer>
-			<div id="winner-modal" className="absolute top-0 left-0 right-0 bottom-0 items-center">
-				<WinnerModal winner={"blue"} userColor={"blue"} playAgain={playAgain} isVisible={stage === 2} />
-				<div className="absolute top-16 left-0 right-0 bottom-0 bg-black opacity-0"></div>
-			</div>
 			<DarkModeToggle />
 		</div>
 	);
 }
 
-export default GuidePageSeven;
+export default GuidePageFour;

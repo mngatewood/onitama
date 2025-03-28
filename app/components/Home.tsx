@@ -3,7 +3,7 @@
 import Image from "next/image";
 import spirit from "../../public/spirit.png";
 import { Title } from "./Title";
-import { DarkModeToggle } from "./DarkThemeToggle";
+import { DarkModeToggle } from "./ui/DarkThemeToggle";
 import Link from "next/link";
 import { ToastMessage } from "../components/ToastMessage";
 import { useSearchParams, usePathname } from "next/navigation";

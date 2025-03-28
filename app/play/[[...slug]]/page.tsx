@@ -3,7 +3,7 @@ import { authOptions } from "../../api/auth/[...nextauth]/config";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Title } from "../../components/Title";
-import { DarkModeToggle } from "../../components/DarkThemeToggle";
+import { DarkModeToggle } from "../../components/ui/DarkThemeToggle";
 import { Game } from "../../components/Game";
 
 const Play = async ({ params }: { params: Promise<{ slug: string }> }) => {

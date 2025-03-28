@@ -7,7 +7,7 @@ import { GuideModal } from "./GuideModal";
 import { GuideTooltip } from "./GuideTooltip";
 import { GuideDarkModeToggle } from "./GuideDarkThemeToggle";
 import { GuidePlayerCards } from "./GuidePlayerCards";
-import { NotificationsToggle } from "../NotificationsToggle";
+import { NotificationsToggle } from "../ui/NotificationsToggle";
 import * as data from "../guide/guideData";
 
 interface GuideGameProps {

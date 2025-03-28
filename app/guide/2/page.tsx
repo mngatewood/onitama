@@ -1,7 +1,7 @@
 "use client"
 
 import { Title } from "../../components/Title";
-import { DarkModeToggle } from "../../components/DarkThemeToggle";
+import { DarkModeToggle } from "../../components/ui/DarkThemeToggle";
 import Link from "next/link";
 import { useState } from "react";
 import { GuideHome } from "../../components/guide/GuideHome";

@@ -1,7 +1,7 @@
 "use client"
 
 import { Title } from "../../components/Title";
-import { DarkModeToggle } from "../../components/DarkThemeToggle";
+import { DarkModeToggle } from "../../components/ui/DarkThemeToggle";
 import Link from "next/link";
 import { GuideGame } from "../../components/guide/GuideGame";
 import * as data from "../../components/guide/guideData"

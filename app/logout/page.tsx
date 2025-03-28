@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Title } from "../components/Title";
-import { DarkModeToggle } from "../components/DarkThemeToggle";
+import { DarkModeToggle } from "../components/ui/DarkThemeToggle";
 import { LogoutForm } from "../components/forms/LogoutForm";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";

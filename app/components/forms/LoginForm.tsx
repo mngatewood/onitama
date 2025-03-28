@@ -1,6 +1,6 @@
 "use client";
-import { Label } from "./Label";
-import { Input } from "./Input";
+import { Label } from "../ui/Label";
+import { Input } from "../ui/Input";
 import React, { FormEvent, useEffect, useCallback, useState } from "react";
 import { validateLoginFormComplete, validateEmail, validatePassword } from "../helpers/auth";
 import { signIn } from "next-auth/react";

@@ -1,7 +1,7 @@
 "use client";
 
-import { Label } from "./Label";
-import { Input } from "./Input";
+import { Label } from "../ui/Label";
+import { Input } from "../ui/Input";
 import React, { FormEvent, useEffect, useCallback, useState } from "react";
 import { validateRegisterFormComplete, validateEmail, validatePassword } from "../helpers/auth";
 import { useRouter } from "next/navigation";

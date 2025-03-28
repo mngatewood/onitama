@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Title } from "../components/Title";
 import { RegisterForm } from "../components/forms/RegisterForm";
-import { DarkModeToggle } from "../components/DarkThemeToggle";
+import { DarkModeToggle } from "../components/ui/DarkThemeToggle";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import Image from "next/image";

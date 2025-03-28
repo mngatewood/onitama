@@ -4,7 +4,7 @@ import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/config";
 import { Title } from "./Title";
-import { DarkModeToggle } from "./DarkThemeToggle";
+import { DarkModeToggle } from "./ui/DarkThemeToggle";
 import { LobbyForm } from "./forms/LobbyForm";
 import spirit from "../../public/spirit.png";
 import { getPendingGames } from "./helpers/lobby";

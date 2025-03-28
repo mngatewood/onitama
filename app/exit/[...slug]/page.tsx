@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Title } from "@/app/components/Title";
-import { DarkModeToggle } from "@/app/components/DarkThemeToggle";
+import { DarkModeToggle } from "@/app/components/ui/DarkThemeToggle";
 import { ExitForm } from "@/app/components/forms/ExitForm";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";

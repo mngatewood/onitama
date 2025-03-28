@@ -1,14 +1,14 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react";
-import { WaitingModal } from "./WaitingModal";
-import { WinnerModal } from "./WinnerModal";
+import { WaitingModal } from "./modals/WaitingModal";
+import { WinnerModal } from "./modals/WinnerModal";
 import { Board } from "./Board";
 import { DefeatedPawns } from "./DefeatedPawns";
 import { PlayerCards } from "./PlayerCards";
 import { socket } from "../lib/socketClient";
 import { ToastMessage } from "./ToastMessage";
-import { NotificationsToggle } from "@/app/components/NotificationsToggle";
+import { NotificationsToggle } from "@/app/components/ui/NotificationsToggle";
 import { getCardActions, getUpdatedBoard, completeTurn, getGameWinner } from "../components/helpers/action";
 import { endGame, restartGame } from "../components/helpers/lobby";
 import { resolveVirtualTurn } from "./helpers/virtualOpponent";
