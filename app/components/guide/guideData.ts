@@ -997,7 +997,7 @@ export const pageSevenStageOneModal = {
 	},
 	moveable: false,
 	headline: "Game End",
-	body: "Play continues until a master pawn is defeated or a temple space is occupied by any enemy pawn."
+	body: "Play continues until a master pawn is defeated or a temple space is occupied by any enemy master."
 }
 
 // No tooltip rendered in this stage
