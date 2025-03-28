@@ -73,10 +73,20 @@ export const GuidePlayerCards = ({ player, neutralCard, userColor, selectedCard,
 	const focusSecondCard = () => {
 		if (page === 4 && stage > 1 && stage < 6 && playerIdentifier === "self") {
 			return "!blur-none !brightness-100";
+		} else if (page === 5 && stage === 6 && playerIdentifier === "self") {
+			return "!blur-none !brightness-100";
 		} else if (page === 6 && stage === 3 && playerIdentifier === "self") {
 			return "!blur-none !brightness-100";
 		} else {
 			return "";
+		}
+	};
+
+	const isSelected = (card: Card) => {
+		if (selectedCard?.id === card.id) {
+			return true;
+		} else {
+			return false;
 		}
 	};
 
@@ -116,7 +126,7 @@ export const GuidePlayerCards = ({ player, neutralCard, userColor, selectedCard,
 				</div>
 				{ player &&
 					<>
-						<div className={`${blurPlayerCards()} `}>
+						<div className={`${blurPlayerCards()} ${isSelected(player.cards[0]!) ? "z-50" : ""}`}>
 							<GuidePlayerCard 
 								card={player.cards[0]!} 
 								player={playerIdentifier} 
@@ -125,7 +135,7 @@ export const GuidePlayerCards = ({ player, neutralCard, userColor, selectedCard,
 								selectedCard={selectedCard}
 							/>
 						</div>
-					<div className={`${blurPlayerCards()} ${focusSecondCard()}`}>
+						<div className={`${blurPlayerCards()} ${isSelected(player.cards[1]!) ? "z-50" : ""} ${focusSecondCard()}`}>
 							<GuidePlayerCard 
 								card={player.cards[1]!} 
 								player={playerIdentifier} 

@@ -41,7 +41,7 @@ export const GuidePlayerCard = ({ card, player, clickable, cardClass, selectedCa
 	return (
 		<>
 			{ isReady ? (
-				<div id={`card-${card.id}`} className={`${pointer} ${cardClass} ${isSelected && "scale-125"} card flex justify-between h-[15vw] landscape:h-[5vw] landscape:short:h-[10vw] landscape:my-2 landscape:md:h-[7vw] landscape:lg:h-[10vw] max-h-[12vh] landscape:xl:h-[8vw] xtall:max-w-screen-xs:h-[20vw] tall:md:h-[10vw] rounded-sm border border-neutral-400 shadow-md shadow-slate-500 bg-gray-700 aspect-video first:basis-full`}>
+				<div id={`card-${card.id}`} className={`${pointer} ${cardClass} ${isSelected && "scale-125 !z-50"} card flex justify-between h-[15vw] landscape:h-[5vw] landscape:short:h-[10vw] landscape:my-2 landscape:md:h-[7vw] landscape:lg:h-[10vw] max-h-[12vh] landscape:xl:h-[8vw] xtall:max-w-screen-xs:h-[20vw] tall:md:h-[10vw] rounded-sm border border-neutral-400 shadow-md shadow-slate-500 bg-gray-700 aspect-video first:basis-full`}>
 					{card.id
 						?
 						<>
