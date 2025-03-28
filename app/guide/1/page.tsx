@@ -53,7 +53,6 @@ const GuidePageOne = () => {
 				{ stage === 2 &&
 					<GuideModal 
 						modal={data.pageOneStageOneModal}
-						tooltip={data.pageOneStageOneTooltip}
 						stage={stage}
 						updateStage={updateStage}
 					/>
