@@ -35,9 +35,20 @@ const getVictoryActions = async (actions: Action[], userId: string, game: Game) 
 			}
 		});
 	}).flat().filter((space) => space !== undefined)[0];
+	const opponentMaster = game.board.map((row, rowIndex) => {
+		return row.map((column, columnIndex) => {
+			if (column[0] === "r" && column[1] === "m") {
+				return { row: rowIndex, column: columnIndex };
+			}
+		});
+	}).flat().filter((space) => space !== undefined)[0];
 	const victoryActions: Action[] = [];
 	actions.forEach((action) => {
-		const attacksThrone = action.target.row === playerThrone.row && action.target.column === playerThrone.column;
+		const attacksThrone = 
+			action.target.row === playerThrone.row && 
+			action.target.column === playerThrone.column &&
+			action.origin.row === opponentMaster.row &&
+			action.origin.column === opponentMaster.column;
 		const attacksMaster = action.target.row === playerMaster.row && action.target.column === playerMaster.column;
 		if (attacksThrone || attacksMaster) {
 			victoryActions.push(action);

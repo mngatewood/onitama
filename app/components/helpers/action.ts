@@ -192,8 +192,8 @@ export const getGameWinner = (game: Game) => {
 	const redMaster = game.board.flat().find(space => space[0] === "r" && space[1] === "m");
 	const blueThrone = game.board[4][2];
 	const redThrone = game.board[0][2];
-	const blueThroneDefeated = blueThrone[0] === "r" && ["s", "m"].includes(blueThrone[1]);
-	const redThroneDefeated = redThrone[0] === "b" && ["s", "m"].includes(redThrone[1]);
+	const blueThroneDefeated = blueThrone[0] === "r" && blueThrone[1] === "m";
+	const redThroneDefeated = redThrone[0] === "b" && redThrone[1] === "m";
 
 	if (!blueMaster || blueThroneDefeated) {
 		return "red";
