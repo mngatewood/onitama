@@ -6,7 +6,8 @@ import {
 	logoutUser,
 	clearTestData,
 	startTestGame,
-	updateGameVictoryCondition,
+	updateGameVictoryMaster,
+	updateGameVictoryTemple,
 	updateGameAvoidDefeatGameThroneAndMaster,
 	updateGameAvoidDefeatGameThrone,
 	updateGameAvoidDefeatGameMasterCanAttackThreat,
@@ -70,12 +71,12 @@ test.describe('user can play a solo game', () => {
 
 	test.describe('the game will complete its turns', () => {
 
-		test.describe('a victory is possible', () => {
+		test.describe('a victory is possible by defeating the enemy master or temple', () => {
 
 			test.beforeEach(async ({ page }) => {
 				await clearTestData();
 				await startTestGame({ page }, email);
-				updateGameVictoryCondition();
+				updateGameVictoryMaster();
 				await page.waitForTimeout(500);
 				await page.reload();
 			});
@@ -92,7 +93,38 @@ test.describe('user can play a solo game', () => {
 				// space-3 or space-13 should have red master
 				await expect(page.locator("#space-13.red.master, #space-3.red.master")).toHaveCount(1);
 				// origin and target spaces should be highlighted red
-				await expect(page.locator("#space-3.action, #space-17.action")).toHaveCount(1);
+				await expect(page.locator("#space-3.action, #space-13.action")).toHaveCount(2);
+				// winner modal should be visible
+				await expect(page.getByRole('heading', { name: 'Better luck next time!' })).toBeVisible();
+				await expect(page.getByRole('button', { name: 'Exit', exact: true })).toBeVisible();
+				await expect(page.getByRole('button', { name: 'Play Again' })).toBeVisible();
+			});
+
+		});
+
+		test.describe('a victory is possible by defeating the enemy temple', () => {
+
+			test.beforeEach(async ({ page }) => {
+				await clearTestData();
+				await startTestGame({ page }, email);
+				updateGameVictoryTemple();
+				await page.waitForTimeout(500);
+				await page.reload();
+			});
+
+			test('the game will select an action that will result in a victory', async ({ page }) => {
+				// player cards should have amber shadow
+				await expect(page.locator(".player-color").locator("nth=0")).not.toHaveClass(/!shadow-amber-300 !shadow-md/);
+				await expect(page.locator(".player-color").locator("nth=1")).toHaveClass(/!shadow-amber-300 !shadow-md/);
+				await expect(page.locator(".card").locator("nth=0")).not.toHaveClass(/!shadow-amber-300 !shadow-md/);
+				await expect(page.locator(".card").locator("nth=1")).not.toHaveClass(/!shadow-amber-300 !shadow-md/);
+				await expect(page.locator(".card").locator("nth=2")).not.toHaveClass(/!shadow-amber-300 !shadow-md/);
+				await expect(page.locator(".card").locator("nth=3")).not.toHaveClass(/!shadow-amber-300 !shadow-md/);
+				await expect(page.locator(".card").locator("nth=4")).toHaveClass(/!shadow-amber-300 !shadow-md/);
+				// space-23 should have red master
+				await expect(page.locator("#space-23.red.master")).toHaveCount(1);
+				// origin and target spaces should be highlighted red
+				await expect(page.locator("#space-13.action, #space-23.action")).toHaveCount(2);
 				// winner modal should be visible
 				await expect(page.getByRole('heading', { name: 'Better luck next time!' })).toBeVisible();
 				await expect(page.getByRole('button', { name: 'Exit', exact: true })).toBeVisible();
