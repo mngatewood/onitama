@@ -105,7 +105,7 @@ export const GuideLobby = ({ modal, tooltip, stage, updateStage }: GuideLobbyPro
 								<span>Logout</span>
 							</div>
 						</button>
-						<button id="register-button" className="w-1/3 group cursor-default">
+						<button className="w-1/3 group cursor-default">
 							<div className="relative">
 								<span>Guide</span>
 							</div>

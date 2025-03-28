@@ -64,9 +64,9 @@ export const GuideHome = ({modal, tooltip, stage, updateStage}: GuideHomeProps) 
 								<span>Guide</span>
 							</div>
 						</button>
-						<button id="register-button" className="w-1/3 group cursor-default">
+						<button className="w-1/3 group cursor-default">
 							<div className="relative">
-								<span>Register</span>
+								<span id="register-button">Register</span>
 							</div>
 						</button>
 					</div>
