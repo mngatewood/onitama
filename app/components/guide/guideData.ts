@@ -11,8 +11,8 @@ export const pageTwoStageOneModal = {
 export const pageTwoStageOneTooltip = {
 	elementId: "register-button",
 	child: [],
-	position: {
-		top: 24,
+	position: { // null: N/A; 0: 
+		top: 16,
 		right: 0,
 		bottom: null,
 		left: null,
@@ -118,7 +118,7 @@ export const pageTwoStageFiveTooltip = {
 	position: {
 		top: null,
 		right: 0,
-		bottom: 60,
+		bottom: 16,
 		left: 0,
 	},
 	text: "Choose 'Solo' or 'Multiplayer'.",
@@ -142,15 +142,15 @@ export const pageTwoStageSixTooltip = {
 	elementId: "join-game-container",
 	child: [],
 	position: {
-		top: null,
+		top: 16,
 		right: 0,
-		bottom: 16,
+		bottom: null,
 		left: 0,
 	},
 	text: "Click a pending game to join.",
 	arrowPosition: {
 		x: "center",
-		y: "top",
+		y: "bottom",
 	}
 }
 
@@ -170,7 +170,7 @@ export const pageThreeStageOneTooltip = {
 	position: {
 		top: null,
 		right: 0,
-		bottom: 32,
+		bottom: 16,
 		left: 0,
 	},
 	text: "Notifications appear here.",
@@ -183,7 +183,7 @@ export const pageThreeStageOneTooltip = {
 export const pageThreeStageTwoModal = {
 	position: {
 		x: 0, // percentage of screen
-		y: 60 // percentage of screen
+		y: 0 // percentage of screen
 	},
 	moveable: false,
 	headline: "Game Layout",
@@ -209,7 +209,7 @@ export const pageThreeStageTwoTooltip = {
 export const pageThreeStageThreeModal = {
 	position: {
 		x: 0, // percentage of screen
-		y: 60 // percentage of screen
+		y: 0 // percentage of screen
 	},
 	moveable: false,
 	headline: "Game Layout",
@@ -222,7 +222,7 @@ export const pageThreeStageThreeTooltip = {
 	position: {
 		top: null,
 		right: 0,
-		bottom: 32,
+		bottom: 16,
 		left: null,
 	},
 	text: "Enable or disable dark mode.",
@@ -235,7 +235,7 @@ export const pageThreeStageThreeTooltip = {
 export const pageThreeStageFourModal = {
 	position: {
 		x: 0, // percentage of screen
-		y: 20 // percentage of screen
+		y: 25 // percentage of screen
 	},
 	moveable: false,
 	headline: "Game Layout",
@@ -261,7 +261,7 @@ export const pageThreeStageFourTooltip = {
 export const pageThreeStageFiveModal = {
 	position: {
 		x: 0, // percentage of screen
-		y: 60 // percentage of screen
+		y: 65 // percentage of screen
 	},
 	moveable: false,
 	headline: "Game Layout",
@@ -294,14 +294,13 @@ export const pageThreeStageSixModal = {
 	body: "The small pawns next to the board are for tracking defeated pawns.  When a student pawn is defeated, it will be moved to this area."
 }
 
-// No tooltip rendered in this stage
 export const pageThreeStageSixTooltip = {
 	elementId: "defeated-pawns",
 	child: [],
 	position: {
-		top: null,
-		right: 0,
-		bottom: null,
+		top: 0,
+		right: 4,
+		bottom: 0,
 		left: null,
 	},
 	text: "Defeated pawns",
@@ -314,7 +313,7 @@ export const pageThreeStageSixTooltip = {
 export const pageThreeStageSevenModal = {
 	position: {
 		x: 0, // percentage of screen
-		y: 0 // percentage of screen
+		y: 25 // percentage of screen
 	},
 	moveable: false,
 	headline: "Game Layout",
@@ -325,22 +324,22 @@ export const pageThreeStageSevenTooltip = {
 	elementId: "player-cards",
 	child: [0, 1],
 	position: {
-		top: null,
+		top: 16,
 		right: 0,
-		bottom: 0,
+		bottom: null,
 		left: 0,
 	},
 	text: "These are your scrolls.",
 	arrowPosition: {
 		x: "center",
-		y: "top",
+		y: "bottom",
 	}
 }
 
 export const pageThreeStageEightModal = {
 	position: {
 		x: 0, // percentage of screen
-		y: 0 // percentage of screen
+		y: 70 // percentage of screen
 	},
 	moveable: false,
 	headline: "Game Layout",
@@ -351,22 +350,22 @@ export const pageThreeStageEightTooltip = {
 	elementId: "opponent-cards",
 	child: [0, 1],
 	position: {
-		top: 0,
+		top: null,
 		right: 0,
-		bottom: null,
+		bottom: 16,
 		left: 0,
 	},
 	text: "These are your opponent's scrolls.",
 	arrowPosition: {
 		x: "center",
-		y: "bottom",
+		y: "top",
 	}
 }
 
 export const pageThreeStageNineModal = {
 	position: {
 		x: 0, // percentage of screen
-		y: 20 // percentage of screen
+		y: 25 // percentage of screen
 	},
 	moveable: false,
 	headline: "Game Layout",
@@ -430,15 +429,15 @@ export const pageFourStageOneTooltip = {
 	elementId: "player-cards",
 	child: [0, 1],
 	position: {
-		top: null,
+		top: 16,
 		right: 0,
-		bottom: 0,
+		bottom: null,
 		left: 0,
 	},
 	text: "Click an active scroll.",
 	arrowPosition: {
 		x: "center",
-		y: "top",
+		y: "bottom",
 	}
 }
 
@@ -463,7 +462,7 @@ export const pageFourStageTwoTooltip = {
 	},
 	text: "This is the activated scroll.",
 	arrowPosition: {
-		x: "center",
+		x: "right",
 		y: "bottom",
 	}
 }
@@ -483,14 +482,14 @@ export const pageFourStageThreeTooltip = {
 	child: [0, 1, 0],
 	position: {
 		top: 16,
-		right: 0,
+		right: null,
 		bottom: null,
 		left: 0,
 	},
 	text: "The color of the inactive scroll determines who goes first.",
 	arrowPosition: {
-		x: "center",
-		y: "bottom",
+		x: "",
+		y: "",
 	}
 }
 
@@ -515,8 +514,8 @@ export const pageFourStageFourTooltip = {
 	},
 	text: "The title of the scroll is for identification purposes only.",
 	arrowPosition: {
-		x: "center",
-		y: "bottom",
+		x: "",
+		y: "",
 	}
 }
 
@@ -537,11 +536,11 @@ export const pageFourStageFiveTooltip = {
 		top: 16,
 		right: 0,
 		bottom: null,
-		left: 0,
+		left: null,
 	},
 	text: "The action grid depicts the actions available for that scroll.",
 	arrowPosition: {
-		x: "center",
+		x: "right",
 		y: "bottom",
 	}
 }
@@ -616,7 +615,7 @@ export const pageFourStageEightTooltip = {
 	position: {
 		top: null,
 		right: 0,
-		bottom: 0,
+		bottom: 16,
 		left: 0,
 	},
 	text: "Eligible pawns are highlighted in your player color.",
@@ -785,7 +784,7 @@ export const pageFiveStageFiveTooltip = {
 export const pageFiveStageSixModal = {
 	position: {
 		x: 0, // percentage of screen
-		y: 25 // percentage of screen
+		y: 10 // percentage of screen
 	},
 	moveable: false,
 	headline: "Step 2: Choose a Pawn",
@@ -799,11 +798,11 @@ export const pageFiveStageSixTooltip = {
 		top: 16,
 		right: 0,
 		bottom: null,
-		left: 0,
+		left: null,
 	},
 	text: "Click a scroll to reset pawns and targets.",
 	arrowPosition: {
-		x: "center",
+		x: "right",
 		y: "bottom",
 	}
 }
@@ -811,7 +810,7 @@ export const pageFiveStageSixTooltip = {
 export const pageSixStageOneModal = {
 	position: {
 		x: 0, // percentage of screen
-		y: 20 // percentage of screen
+		y: 25 // percentage of screen
 	},
 	moveable: false,
 	headline: "Step 3: Choose a Target",
@@ -837,7 +836,7 @@ export const pageSixStageOneTooltip = {
 export const pageSixStageTwoModal = {
 	position: {
 		x: 0, // percentage of screen
-		y: 20 // percentage of screen
+		y: 25 // percentage of screen
 	},
 	moveable: false,
 	headline: "Step 3: Choose a Target",
@@ -850,7 +849,7 @@ export const pageSixStageTwoTooltip = {
 	position: {
 		top: null,
 		right: 0,
-		bottom: 0,
+		bottom: 16,
 		left: 0,
 	},
 	text: "Your action is highlighted.",
@@ -863,7 +862,7 @@ export const pageSixStageTwoTooltip = {
 export const pageSixStageThreeModal = {
 	position: {
 		x: 0, // percentage of screen
-		y: 20 // percentage of screen
+		y: 25 // percentage of screen
 	},
 	moveable: false,
 	headline: "Step 3: Choose a Target",
@@ -901,7 +900,7 @@ export const pageSixStageFourTooltip = {
 	child: [],
 	position: {
 		top: 0,
-		right: 0,
+		right: 4,
 		bottom: null,
 		left: null,
 	},
@@ -928,7 +927,7 @@ export const pageSixStageFiveTooltip = {
 	position: {
 		top: null,
 		right: 0,
-		bottom: 0,
+		bottom: 16,
 		left: 0,
 	},
 	text: "Your opponent's action is highlighted.",
@@ -968,7 +967,7 @@ export const pageSevenStageOneTooltip = {
 export const pageSevenStageTwoModal = {
 	position: {
 		x: 0, // percentage of screen
-		y: 15 // percentage of screen
+		y: 20 // percentage of screen
 	},
 	moveable: false,
 	headline: "Game End",
@@ -981,7 +980,7 @@ export const pageSevenStageTwoTooltip = {
 	position: {
 		top: null,
 		right: 0,
-		bottom: 0,
+		bottom: 16,
 		left: 0,
 	},
 	text: "Click 'Play Again' or 'Exit'.",
