@@ -208,3 +208,7 @@
 	transition: all 0.3s ease-in-out;
 }
 
+/* Blur and darken guide pages */
+.guide {
+	filter: blur(1px) brightness(0.8);
+}
