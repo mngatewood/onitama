@@ -61,7 +61,6 @@ export const GuideModal = ({ modal, stage, updateStage }: GuideModalProps) => {
 		<div className={`${positionClass} h-screen w-screen mx-auto transition-all duration-500 ease-in-out`}>
 			<div style={positionStyle} className={`${modalReady ? "opacity-1" : "opacity-0"} relative top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 flex flex-col justify-center items-center landscape:max-w-[30%] w-5/6 min-w-96 max-w-md mt-6 p-4 border border-neutral-800 text-neutral-800 bg-gray-200 shadow-[2px_2px_5px_0px_rgba(0,0,0,0.7)] dark:shadow-[2px_2px_5px_0px_rgba(255,255,255,0.7)] rounded-2xl transition-opacity duration-500 ease-in-out z-50`}>
 				<div className="relative top-0 left-1/2 w-0 h-0 flex justify-center items-center">
-
 					{modal.moveable &&
 						<>
 							{/* Toggle position in portrait */}

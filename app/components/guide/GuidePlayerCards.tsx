@@ -63,6 +63,8 @@ export const GuidePlayerCards = ({ player, neutralCard, userColor, selectedCard,
 	const blurNeutralCard = () => {
 		if (page === 3 && stage === 9 ) {
 			return "";
+		} else if (page === 4 && stage === 3) {
+			return "";
 		} else if (page === 6 && stage === 3) {
 			return "";
 		} else {
@@ -71,7 +73,7 @@ export const GuidePlayerCards = ({ player, neutralCard, userColor, selectedCard,
 	};
 
 	const focusSecondCard = () => {
-		if (page === 4 && stage > 1 && stage < 6 && playerIdentifier === "self") {
+		if (page === 4 && stage > 1 && stage < 6 && stage !== 3 && playerIdentifier === "self") {
 			return "!blur-none !brightness-100";
 		} else if (page === 5 && stage === 6 && playerIdentifier === "self") {
 			return "!blur-none !brightness-100";

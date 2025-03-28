@@ -1,13 +1,28 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import spirit from "../../../public/spirit.png";
 import { Title } from "../../components/Title";
 import { DarkModeToggle } from "../../components/DarkThemeToggle";
 import Link from "next/link";
+import { GuideModal } from "../../components/guide/GuideModal";
+import * as data from "../../components/guide/guideData";
 
 const GuidePageOne = () => {
 
+	const [stage, setStage] = useState<number>(1);
+
+	const updateStage = ( newStage: number ) => {
+		if (newStage === 0) {
+			window.location.href = "/";
+		} else if (newStage > 2) {
+			window.location.href = "/guide/2";
+		} else {
+			setStage(newStage);
+		}
+	}
+	
 	return (
 		<div className="absolute top-0 left-0 right-0 bottom-0 overflow-hidden flex flex-col justify-between items-center">
 			<header>
@@ -25,16 +40,24 @@ const GuidePageOne = () => {
 					</ul>
 					<p className="my-4">With each passing turn, the duel unfolds like a story of discipline and adaptability. The battlefield is small, but the depth of possibilities is vast, making every match a unique test of foresight and skill. Only one master will emerge victorious, their name forever etched in the annals of Onitama’s sacred tradition.</p>
 					<div className="flex flex-col items-center">
-						<button className="my-4 px-4 py-2 group hover:bg-slate-600 transition-all duration-500 ease-in-out rounded-lg bg-slate-500 text-neutral-200">
-							<Link href="/guide/2" className="relative">
+						<div className="my-4 px-4 py-2 group hover:bg-slate-600 transition-all duration-500 ease-in-out rounded-lg bg-slate-500 text-neutral-200">
+							<button onClick={() =>updateStage(2)} className="relative">
 								<span>Continue</span>
-							</Link>
-						</button>
+							</button>
+						</div>
 					</div>
 				</div>
 				<div className="flex items-center justify-center absolute w-screen h-screen z-[-1]">
 					<Image src={spirit} width={640} height={640} alt="Spirit" priority />
 				</div>
+				{ stage === 2 &&
+					<GuideModal 
+						modal={data.pageOneStageOneModal}
+						tooltip={data.pageOneStageOneTooltip}
+						stage={stage}
+						updateStage={updateStage}
+					/>
+				}
 			</main>
 			<footer className="w-full h-10 text-sm xxs:text-base portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center gap-4 text-sky-700 dark:text-sky-300 bg-neutral-200 dark:bg-blue-1 z-50">
 				<div className="w-2/5">
