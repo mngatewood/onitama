@@ -62,56 +62,67 @@ export const GuideTooltip = ({ tooltip, ...props }: GuideTooltipProps) => {
 					observer.disconnect();
 					const elementRect = elementRef.current.getBoundingClientRect();
 					const tooltipRect = tooltipRef.current.getBoundingClientRect();
+
+					// fallback values
 					let x = elementRect.left + (elementRect.width - tooltipRect.width) / 2;
-					let y = elementRect.top + 10;
+					let y = elementRect.top - 16;
 
-					if (position.top !== null) {
+					// TOOL TIP POSITIONING
+					// above the element
+					if (position.top !== null && Math.abs(position.top) > 0) {
 						y = elementRect.top - tooltipRect.height - position.top;
+					// below the element
+					} else if (position.bottom !== null && position.bottom > 0) {
+						y = elementRect.bottom + position.bottom;
+					// left of the element
+					} else if (position.left !== null && position.left > 0) {
+						x = elementRect.left - tooltipRect.width - position.left;
+					// right of the element
+					} else if (position.right !== null && position.right > 0) {
+						x = elementRect.right + position.right;
 					}
 
-					if (position.bottom !== null) {
-						y = elementRect.bottom + 10;
+					// VERTICAL ALIGNMENT
+					// top of the element
+					if (position.top === 0 && position.bottom === null) {
+						y = elementRect.top;
+					// bottom of the element
+					} else if (position.bottom === 0 && position.top === null) {
+						y = elementRect.bottom - tooltipRect.height;
+					// center of the element
+					} else if (position.top === 0 && position.bottom === 0) {
+						y = elementRect.top + (elementRect.height - tooltipRect.height) / 2;
 					}
 
-					// if left and right are 0, center the tooltip above the div
-					if (position.left === 0 && position.right === 0) {
+					// HORIZONTAL ALIGNMENT
+					// left of the element
+					if (position.left === 0 && position.right === null) {
+						x = elementRect.left - 4; // 4px padding
+					// right of the element
+					} else if (position.right === 0 && position.left === null) {
+						x = elementRect.left + elementRect.width - tooltipRect.width + 4; // 4px padding
+					// center of the element
+					} else if (position.left === 0 && position.right === 0) {
 						x = elementRect.left + (elementRect.width - tooltipRect.width) / 2;
-					// if there is a left value, set the tooltip left position to this value
-					} else if (position.left !== null) {
-						x = elementRect.left - tooltipRect.width - 10;
-					// if there is a right value and no top or bottom value, set the tooltip to the right and centered vertically
-					} else if (position.right !== null && position.top === null && position.bottom === null) {
-						x = elementRect.left + elementRect.width;
-						y= elementRect.top + (elementRect.height - tooltipRect.height) / 2;
-					// if there is a right and top value, set the tooltip to the right and top
-					} else if (position.right !== null && position.top !== null && position.bottom === null) {
-						x = elementRect.left + elementRect.width;
-						y= elementRect.top + position.top;
-					// if there is a left value, set the tooltip left position to this value
-					} else if (position.right !== null) {
-						x = elementRect.left + (elementRect.width / 2) + 16 - (tooltipRect.width);
 					}
 
+					// if the tooltip is off the screen, adjust the position
 					if (x < 0) {
 						// offset the arrow position so it remains centered relative to element
 						updateArrowPosition(Math.round(Math.abs(x)))
 						x = 0;
 					}
-
 					if (x + tooltipRect.width > window.innerWidth) {
 						// offset the arrow position so it remains centered relative to element
 						updateArrowPosition(Math.round(x))
 						x = window.innerWidth - tooltipRect.width;
 					}
-
 					if (y < 0) {
 						y = 0;
 					}
-
 					if (y + tooltipRect.height > window.innerHeight) {
 						y = window.innerHeight - tooltipRect.height - 56; // 56 is the height of the footer
 					}
-
 					tooltipRef.current.style.top = `${y}px`;
 					tooltipRef.current.style.left = `${x}px`;
 					setTooltipReady(true);
@@ -126,7 +137,7 @@ export const GuideTooltip = ({ tooltip, ...props }: GuideTooltipProps) => {
 		return () => {
 			observer.disconnect();
 		};
-	}, [elementId, position, updateArrowPosition]);
+	}, [elementId, position, child, updateArrowPosition]);
 
 	useEffect(() => {
 		const { x, y } = arrowPosition
