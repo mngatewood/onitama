@@ -3,6 +3,7 @@
 import Link, { LinkProps } from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { sleep } from "../helpers/utility";
+import { useEffect } from "react";
 
 interface TransitionLinkProps extends LinkProps {
 	children: React.ReactNode;
@@ -14,6 +15,10 @@ export const TransitionLink = ({ href, children, className, ...props }: Transiti
 
 	const router = useRouter();
 	const pathname = usePathname();
+
+	useEffect(() => {
+		router.prefetch(href);
+	}, [href, router]);
 
 	const getTransitionClass = (origin: string, destination: string) => {
 		if (origin.startsWith("/guide/")) { origin = "/guide/" + origin.charAt(7) }
