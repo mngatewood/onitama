@@ -7,11 +7,17 @@ import { getGame } from "@/app/components/helpers/lobby";
 import { authOptions } from "@/app/api/auth/[...nextauth]/config";
 import { ToastMessage } from "@/app/components/ToastMessage";
 import { TransitionLink } from "@/app/components/utils/TransitionLink";
+import type { PageProps } from "@/.next/types/app/page";
 
-const Exit = async ({ searchParams }: { searchParams: { gameId?: string }}) => {
-
+const Exit = async ({ searchParams }: PageProps) => {
 	const session = await getServerSession(authOptions) as AppendedSession;
-	const gameId = searchParams.gameId;
+
+	if (!session) {
+		redirect('/login');
+		return null;
+	}
+
+	const gameId = (await searchParams)?.gameId || "";
 	const game = gameId ? await getGame(gameId) : null;
 	const user = game?.users && game.users.find((user: User) => user.id === session?.user.id);
 	const notification = {
@@ -21,10 +27,6 @@ const Exit = async ({ searchParams }: { searchParams: { gameId?: string }}) => {
 		delay: 3000,
 		action: "/"
 	};
-
-	if (!session) {
-		redirect('/login');
-	}
 
 	return (
 		<div className="transition absolute top-0 left-0 right-0 bottom-0 overflow-hidden flex flex-col justify-center items-center">
@@ -46,7 +48,7 @@ const Exit = async ({ searchParams }: { searchParams: { gameId?: string }}) => {
 			</main>
 			<footer className="w-full h-10 portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center gap-4 text-sky-700 dark:text-sky-300 bg-neutral-200 dark:bg-blue-1 z-50">
 				<button className="w-1/3">
-					<TransitionLink href={`/play/${gameId}`}>Cancel</TransitionLink>
+					<TransitionLink href={gameId ? `/play/${gameId}` : "/"}>Cancel</TransitionLink>
 				</button>
 			</footer>
 			<DarkModeToggle />

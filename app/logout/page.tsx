@@ -7,10 +7,11 @@ import Image from "next/image";
 import spirit from "../../public/spirit.png";
 import { TransitionLink } from "../components/utils/TransitionLink";
 import { getGame } from "@/app/components/helpers/lobby";
+import type { PageProps } from "@/.next/types/app/page";
 
-const Logout = async ({ searchParams} : { searchParams: { gameId?: string }}) => {
+const Logout = async ({ searchParams} : PageProps ) => {
 	const session = await getServerSession() as AppendedSession;
-	const gameId = searchParams.gameId;
+	const gameId = (await searchParams)?.gameId || "";
 	const game = gameId ? await getGame(gameId) : null;
 	const user = game?.users && game.users.find((user: User) => user.id === session?.user.id);
 	const cancelHref = game ? `/play/${game.id}` : "/";
