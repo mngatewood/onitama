@@ -16,7 +16,19 @@ export const TransitionLink = ({ href, children, className, ...props }: Transiti
 	const pathname = usePathname();
 
 	const getTransitionClass = (origin: string, destination: string) => {
+		if (origin.startsWith("/guide/")) { origin = "/guide/" + origin.charAt(7) }
+		if (destination.startsWith("/guide/")) { destination = "/guide/" + destination.charAt(7) }
+		if (origin.startsWith("/play/")) { origin = "/play" }
+		if (destination.startsWith("/play/")) { destination = "/play" }
+		if (origin.startsWith("/exit/")) { origin = "/exit" }
+		if (destination.startsWith("/exit/")) { destination = "/exit" }
+		if (origin.startsWith("/login/")) { origin = "/login" }
+		if (destination.startsWith("/login/")) { destination = "/login" }
+		if (origin.startsWith("/logout/")) { origin = "/logout" }
+		if (destination.startsWith("/logout/")) { destination = "/logout" }
+
 		const transitions: Record<string, Record<string, string>> = {
+
 			"/": {
 				"/login": "transition-right",
 				"/register": "transition-left",
@@ -28,6 +40,19 @@ export const TransitionLink = ({ href, children, className, ...props }: Transiti
 			},
 			"/login": {
 				"/": "transition-left",
+			},
+			"/logout": {
+				"/": "transition-left",
+				"/play": "transition-left",
+			},
+			"/play": {
+				"/logout": "transition-right",
+				"/exit": "transition-left",
+				"/guide": "transition-up",
+			},
+			"/exit": {
+				"/play": "transition-right",
+				"/": "transition-right",
 			},
 			"/guide/1": {
 				"/guide/2": "transition-left",
@@ -55,38 +80,7 @@ export const TransitionLink = ({ href, children, className, ...props }: Transiti
 			"/guide/7": {
 				"/guide/6": "transition-right",
 			},
-			"/logout": {
-				"/": "transition-left",
-			},
 		};
-
-		if (origin.startsWith("/guide/") && destination === "/") {
-			return "transition-down";
-		}
-
-		if (origin.startsWith("/play/")) {
-			if (destination.startsWith("/logout/")) {
-				return "transition-right";
-			} else if (destination.startsWith("/exit/")) {
-				return "transition-left";
-			} else if (destination.startsWith("/guide/")) {
-				return "transition-up";
-			}
-		};
-
-		if (origin.startsWith("/exit/") && destination.startsWith("/play/")) {
-			return "transition-right";
-		}
-
-		if (origin.startsWith("/login/") && destination.startsWith("/play/")) {
-			return "transition-left";
-		}
-
-		if (origin.startsWith("/logout/") && destination.startsWith("/play/")) {
-			return "transition-left";
-		}
-
-
 
 		return transitions[origin]?.[destination] || "false";
 	};
@@ -95,9 +89,6 @@ export const TransitionLink = ({ href, children, className, ...props }: Transiti
 		event.preventDefault();
 		const transition = document.querySelector(".transition");
 		const transitionClass = getTransitionClass(pathname, href) ?? "false";
-		console.log("href: ", href);
-		console.log("pathname: ", pathname);
-		console.log("transitionClass: ", transitionClass);
 		transition?.classList.add(transitionClass);
 		await sleep(300);
 		router.push(href);
