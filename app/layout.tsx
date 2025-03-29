@@ -24,7 +24,8 @@ const reggaeOne = localFont({
 export const metadata: Metadata = {
 	title: "Onitama",
 	description: "Onitama is a fast-paced, abstract strategy game of martial tactics where players use ever-changing movement cards to outmaneuver their opponent on a 5x5 board.",
-	icons: {
+	metadataBase: new URL('https://onitama-production.up.railway.app'),
+ 	icons: {
 		icon: [
 			{ url: '/icon.png', type: 'image/png', sizes: '32x32' },
 			{ url: '/favicon.ico', sizes: '32x32' },
@@ -40,6 +41,12 @@ export const metadata: Metadata = {
 		title: 'Onitama',
 	},
 	openGraph: {
+		type: 'website',
+		locale: 'en_US',
+		url: 'https://onitama-production.up.railway.app',
+		siteName: 'Onitama',
+		title: 'Onitama',
+		description: 'Onitama is a fast-paced, abstract strategy game of martial tactics where players use ever-changing movement cards to outmaneuver their opponent on a 5x5 board.',
 		images: [
 			{
 				url: '/opengraph-image.png',
@@ -52,6 +59,7 @@ export const metadata: Metadata = {
 	twitter: {
 		card: 'summary_large_image',
 		title: 'Onitama',
+		description: 'Onitama is a fast-paced, abstract strategy game of martial tactics where players use ever-changing movement cards to outmaneuver their opponent on a 5x5 board.',
 		images: [
 			{
 				url: '/twitter-image.png',
@@ -87,19 +95,6 @@ export default function RootLayout({
 					href="/apple-icon.png"
 					sizes="180x180"
 				/>
-				<title>Onitama</title>
-				<meta name="description" content="Onitama is a fast-paced, abstract strategy game of martial tactics where players use ever-changing movement cards to outmaneuver their opponent on a 5x5 board." />
-				<meta property="og:url" content="https://onitama-production.up.railway.app" />
-				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Onitama" />
-				<meta property="og:description" content="Onitama is a fast-paced, abstract strategy game of martial tactics where players use ever-changing movement cards to outmaneuver their opponent on a 5x5 board." />
-				<meta property="og:image" content="http://localhost:8080/opengraph-image.png?bdbc8a4c97e5c1e6" />
-				<meta name="twitter:card" content="summary_large_image" />
-				<meta property="twitter:domain" content="onitama-production.up.railway.app" />
-				<meta property="twitter:url" content="https://onitama-production.up.railway.app" />
-				<meta name="twitter:title" content="Onitama" />
-				<meta name="twitter:description" content="Onitama is a fast-paced, abstract strategy game of martial tactics where players use ever-changing movement cards to outmaneuver their opponent on a 5x5 board." />
-				<meta name="twitter:image" content="http://localhost:8080/opengraph-image.png?bdbc8a4c97e5c1e6" />
 			</head>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} ${reggaeOne.variable} bg-neutral-200 dark:bg-blue-1 text-foreground font-sans antialiased`}
