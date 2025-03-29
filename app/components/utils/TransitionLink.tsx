@@ -106,8 +106,6 @@ export const TransitionLink = ({ href, children, className, ...props }: Transiti
 		transition?.classList.add(transitionClass);
 		await sleep(300);
 		router.push(href);
-		// await sleep(300);
-		// transition?.classList.remove(transitionClass);
 	}
 
 	return (
