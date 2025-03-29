@@ -42,17 +42,24 @@ export const metadata: Metadata = {
 	openGraph: {
 		images: [
 			{
-				alt: "A workspace with a laptop, bookshelf and a frame on the wall with military decorations and photos.",
+				url: '/opengraph-image.png',
 				width: 1200,
-				height: 628,
-				url: "https://onitama-production.up.railway.app/opengraph.png",
+				height: 630,
+				alt: 'Onitama - A game of martial tactics',
 			},
 		],
 	},
 	twitter: {
-		card: "summary_large_image",
-		title: "Onitama",
-		images: [{ url: "https://onitama-production.up.railway.app/opengraph.png" }],
+		card: 'summary_large_image',
+		title: 'Onitama',
+		images: [
+			{
+				url: '/twitter-image.png',
+				width: 1200,
+				height: 630,
+				alt: 'Onitama - A game of martial tactics',
+			}
+		],
 	},
 }; 
 
