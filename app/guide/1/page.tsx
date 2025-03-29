@@ -8,10 +8,15 @@ import { DarkModeToggle } from "../../components/ui/DarkThemeToggle";
 import { GuideModal } from "../../components/guide/GuideModal";
 import * as data from "../../components/guide/guideData";
 import { TransitionLink } from "@/app/components/utils/TransitionLink";
+import { useSearchParams } from "next/navigation";
 
 const GuidePageOne = () => {
 
+	const searchParams = useSearchParams();
+	const gameId = searchParams.get("gameId");
 	const [stage, setStage] = useState<number>(1);
+	const nextLink = gameId ? `/guide/2?gameId=${gameId}` : "/guide/2";
+	const homeLink = gameId ? `/play/${gameId}` : "/";
 
 	const updateStage = ( newStage: number ) => {
 		if (newStage === 0) {
@@ -62,14 +67,14 @@ const GuidePageOne = () => {
 				<div className="w-2/5">
 				</div>
 				<button className="w-1/5 group hover:font-bold hover:scale-125 transition-all duration-500">
-					<TransitionLink href="/" className="relative">
-						<span>Home</span>
+					<TransitionLink href={homeLink} className="relative">
+						<span>{gameId ? "Game" : "Home"}</span>
 						<span className="absolute -bottom-1 left-1/2 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-1/2"></span>
 						<span className="absolute -bottom-1 right-1/2 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-1/2"></span>
 					</TransitionLink>
 				</button>
 				<button className="w-2/5 group hover:font-bold hover:scale-125 transition-all duration-500">
-					<TransitionLink href="/guide/2" className="relative">
+					<TransitionLink href={nextLink} className="relative">
 						<span className="whitespace-nowrap">Start a Game &nbsp;&gt;&gt;</span>
 						<span className="absolute -bottom-1 right-0 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-full"></span>
 					</TransitionLink>

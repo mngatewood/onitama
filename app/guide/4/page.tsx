@@ -6,10 +6,16 @@ import { GuideGame } from "../../components/guide/GuideGame";
 import * as data from "../../components/guide/guideData"
 import { useState } from "react";
 import { TransitionLink } from "@/app/components/utils/TransitionLink";
+import { useSearchParams } from "next/navigation";
 
 const GuidePageFour = () => {
 
+	const searchParams = useSearchParams();
+	const gameId = searchParams.get("gameId");
 	const [stage, setStage] = useState<number>(1);
+	const previousLink = gameId ? `/guide/3?gameId=${gameId}` : "/guide/3";
+	const nextLink = gameId ? `/guide/5?gameId=${gameId}` : "/game/5";
+	const homeLink = gameId ? `/play/${gameId}` : "/";
 
 	const updateStage = ( newStage: number ) => {
 		if (newStage === 0) {
@@ -111,19 +117,19 @@ const GuidePageFour = () => {
 			</main>
 			<footer className="w-full h-10 text-sm xxs:text-base portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center gap-4 text-sky-700 dark:text-sky-300 bg-neutral-200 dark:bg-blue-1 z-50">
 				<button className="w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
-					<TransitionLink href="/guide/3" className="relative">
+					<TransitionLink href={previousLink} className="relative">
 						<span className="whitespace-nowrap">&lt;&lt;&nbsp;Game Layout</span>
 						<span className="absolute -bottom-1 right-0 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-full"></span>
 					</TransitionLink>
 				</button>
 				<button className="w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
-					<TransitionLink href="/" className="relative">
-						<span>Home</span>
+					<TransitionLink href={homeLink} className="relative">
+						<span>{gameId ? "Game" : "Home"}</span>
 						<span className="absolute -bottom-1 right-0 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-full"></span>
 					</TransitionLink>
 				</button>
 				<button className="w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
-					<TransitionLink href="/guide/5" className="relative">
+					<TransitionLink href={nextLink} className="relative">
 						<span className="whitespace-nowrap">Choose a Pawn&nbsp;&gt;&gt;</span>
 						<span className="absolute -bottom-1 right-0 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-full"></span>
 					</TransitionLink>
