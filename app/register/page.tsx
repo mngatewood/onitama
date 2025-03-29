@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Title } from "../components/Title";
 import { RegisterForm } from "../components/forms/RegisterForm";
 import { DarkModeToggle } from "../components/ui/DarkThemeToggle";

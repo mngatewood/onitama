@@ -1,6 +1,5 @@
 'use client';
 
-import { redirect } from "next/navigation";
 import { endGame } from "../helpers/lobby";
 import { socket } from "@/app/lib/socketClient";
 import { sleep } from "../helpers/utility";
