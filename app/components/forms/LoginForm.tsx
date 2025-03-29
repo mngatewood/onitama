@@ -1,12 +1,13 @@
 "use client";
-import { Label } from "./Label";
-import { Input } from "./Input";
+import { Label } from "../ui/Label";
+import { Input } from "../ui/Input";
 import React, { FormEvent, useEffect, useCallback, useState } from "react";
 import { validateLoginFormComplete, validateEmail, validatePassword } from "../helpers/auth";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { ToastMessage } from "../ToastMessage";
 import { useSearchParams, usePathname } from "next/navigation";
+import { sleep } from "../helpers/utility";
 
 export const LoginForm = () => {
 	const router = useRouter();
@@ -91,7 +92,12 @@ export const LoginForm = () => {
 			};
 			const response = await signIn('credentials', payload);
 			if (response?.ok) {
+				const transition = document.querySelector(".transition");
+				transition?.classList.add("transition-down");
+				await sleep(500);
 				router.push("/?logged_in=true");
+				await sleep(500);
+				transition?.classList.remove("transition-down");
 			} else {
 				setFormError("Incorrect email or password");
 				setFormValid(false);

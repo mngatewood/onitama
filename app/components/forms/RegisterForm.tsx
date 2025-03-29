@@ -1,10 +1,11 @@
 "use client";
 
-import { Label } from "./Label";
-import { Input } from "./Input";
+import { Label } from "../ui/Label";
+import { Input } from "../ui/Input";
 import React, { FormEvent, useEffect, useCallback, useState } from "react";
 import { validateRegisterFormComplete, validateEmail, validatePassword } from "../helpers/auth";
 import { useRouter } from "next/navigation";
+import { sleep } from "../helpers/utility";
 
 export const RegisterForm = () => {
 	const router = useRouter();
@@ -77,7 +78,13 @@ export const RegisterForm = () => {
 				body: JSON.stringify(formData),
 			})
 			if (response.ok) {
+				// router.push("/login?registered=true");
+				const transition = document.querySelector(".transition");
+				transition?.classList.add("transition-left");
+				await sleep(500);
 				router.push("/login?registered=true");
+				await sleep(500);
+				transition?.classList.remove("transition-left");
 			} else {
 				const errorData = await response.json();
 				setFormError(errorData.message);

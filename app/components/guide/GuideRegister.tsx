@@ -1,5 +1,5 @@
-import { Label } from "../forms/Label";
-import { Input } from "../forms/Input";
+import { Label } from "../ui/Label";
+import { Input } from "../ui/Input";
 import { GuideModal } from "../../components/guide/GuideModal";
 import { GuideTooltip } from "../../components/guide/GuideTooltip";
 import { GuideDarkModeToggle } from "../../components/guide/GuideDarkThemeToggle";

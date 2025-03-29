@@ -170,7 +170,7 @@ export const GuideTooltip = ({ tooltip, ...props }: GuideTooltipProps) => {
 
 	return (
 		<div ref={tooltipRef} {...props} className={`${!tooltipReady ? "opacity-0" : "opacity-1"} fixed z-50`}>
-			<div className="px-4 py-2 bg-slate-500 rounded-md text-purple border-gray-500 border right-0 text-lg mx-2 relative">
+			<div className="px-4 py-2 bg-slate-500 text-gray-100 rounded-md text-purple border-gray-500 border right-0 text-lg mx-2 relative">
 				<span className={`h-0 w-0 absolute ${arrowPositionClass}`} style={offsetArrowX}></span>
 				<span>{text}</span>
 			</div>

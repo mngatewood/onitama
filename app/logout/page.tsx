@@ -1,20 +1,27 @@
-import Link from "next/link";
 import { Title } from "../components/Title";
-import { DarkModeToggle } from "../components/DarkThemeToggle";
+import { DarkModeToggle } from "../components/ui/DarkThemeToggle";
 import { LogoutForm } from "../components/forms/LogoutForm";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import spirit from "../../public/spirit.png";
+import { TransitionLink } from "../components/utils/TransitionLink";
+import { getGame } from "@/app/components/helpers/lobby";
+import type { PageProps } from "@/.next/types/app/page";
 
-const Logout = async () => {
-	const session = await getServerSession();
+const Logout = async ({ searchParams} : PageProps ) => {
+	const session = await getServerSession() as AppendedSession;
+	const gameId = (await searchParams)?.gameId || "";
+	const game = gameId ? await getGame(gameId) : null;
+	const user = game?.users && game.users.find((user: User) => user.id === session?.user.id);
+	const cancelHref = game ? `/play/${game.id}` : "/";
 
 	if (!session) {
-		redirect('/');
+		redirect('/login');
 	}
+
 	return (
-		<div className="absolute top-0 left-0 right-0 bottom-0 overflow-hidden flex flex-col justify-center items-center">
+		<div className="transition absolute top-0 left-0 right-0 bottom-0 overflow-hidden flex flex-col justify-center items-center">
 			<header>
 				<Title />
 			</header>
@@ -27,16 +34,16 @@ const Logout = async () => {
 					<p className="mt-2 max-w-sm text-sm text-neutral-600 dark:text-neutral-300">
 						Are you sure you want to logout?
 					</p>
-					<LogoutForm />
+					<LogoutForm gameId={gameId ?? ""} firstName={user?.first_name ?? ""} />
 				</div>
 			</main>
 			<footer className="w-full h-10 portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center text-sky-700 dark:text-sky-300">
 				<button className="w-1/3 group hover:font-bold hover:scale-125 transition-all duration-500">
-					<Link href="/" className="relative">
+					<TransitionLink href={cancelHref} className="relative">
 						<span>Cancel</span>
 						<span className="absolute -bottom-1 left-1/2 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-1/2"></span>
 						<span className="absolute -bottom-1 right-1/2 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-1/2"></span>
-					</Link>
+					</TransitionLink>
 				</button>
 			</footer>
 			<DarkModeToggle />
