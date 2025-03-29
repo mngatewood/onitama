@@ -8,13 +8,12 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/config";
 import { ToastMessage } from "@/app/components/ToastMessage";
 import { TransitionLink } from "@/app/components/utils/TransitionLink";
 
-const Exit = async ({ params }: { params: Promise<{ slug: string }> }) => {
+const Exit = async ({ searchParams }: { searchParams: { gameId?: string }}) => {
 
 	const session = await getServerSession(authOptions) as AppendedSession;
-	const { slug } = await params;
-	const gameId = slug[0];
-	const game: Game = await getGame(gameId);
-	const user = game?.users && game.users.find((user) => user.id === session?.user.id);
+	const gameId = searchParams.gameId;
+	const game = gameId ? await getGame(gameId) : null;
+	const user = game?.users && game.users.find((user: User) => user.id === session?.user.id);
 	const notification = {
 		type: "error",
 		message: "Game not found.  Redirecting to the lobby...",
@@ -39,7 +38,7 @@ const Exit = async ({ params }: { params: Promise<{ slug: string }> }) => {
 						<p className="mt-2 max-w-sm text-sm text-neutral-600 dark:text-neutral-300">
 							Are you sure you want to exit the game?  Any progress will be lost.
 						</p>
-						<ExitForm gameId={gameId} firstName={user?.first_name ?? ""}/>
+						<ExitForm gameId={gameId ?? ""} firstName={user?.first_name ?? ""}/>
 					</div>
 					:
 						<ToastMessage notifications={[notification]} />

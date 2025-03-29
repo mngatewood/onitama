@@ -1,19 +1,18 @@
-import { Title } from "../../components/Title";
-import { DarkModeToggle } from "../../components/ui/DarkThemeToggle";
-import { LogoutForm } from "../../components/forms/LogoutForm";
+import { Title } from "../components/Title";
+import { DarkModeToggle } from "../components/ui/DarkThemeToggle";
+import { LogoutForm } from "../components/forms/LogoutForm";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import Image from "next/image";
-import spirit from "../../../public/spirit.png";
-import { TransitionLink } from "../../components/utils/TransitionLink";
+import spirit from "../../public/spirit.png";
+import { TransitionLink } from "../components/utils/TransitionLink";
 import { getGame } from "@/app/components/helpers/lobby";
 
-const Logout = async ({ params }: { params: Promise<{ slug: string }> }) => {
+const Logout = async ({ searchParams} : { searchParams: { gameId?: string }}) => {
 	const session = await getServerSession() as AppendedSession;
-	const { slug } = await params;
-	const gameId = slug[0];
-	const game: Game = await getGame(gameId);
-	const user = game?.users && game.users.find((user) => user.id === session?.user.id);
+	const gameId = searchParams.gameId;
+	const game = gameId ? await getGame(gameId) : null;
+	const user = game?.users && game.users.find((user: User) => user.id === session?.user.id);
 	const cancelHref = game ? `/play/${game.id}` : "/";
 
 	if (!session) {
@@ -34,7 +33,7 @@ const Logout = async ({ params }: { params: Promise<{ slug: string }> }) => {
 					<p className="mt-2 max-w-sm text-sm text-neutral-600 dark:text-neutral-300">
 						Are you sure you want to logout?
 					</p>
-					<LogoutForm gameId={gameId} firstName={user?.first_name ?? ""} />
+					<LogoutForm gameId={gameId ?? ""} firstName={user?.first_name ?? ""} />
 				</div>
 			</main>
 			<footer className="w-full h-10 portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center text-sky-700 dark:text-sky-300">
