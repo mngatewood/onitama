@@ -20,12 +20,12 @@ export const TransitionLink = ({ href, children, className, ...props }: Transiti
 		if (destination.startsWith("/guide/")) { destination = "/guide/" + destination.charAt(7) }
 		if (origin.startsWith("/play/")) { origin = "/play" }
 		if (destination.startsWith("/play/")) { destination = "/play" }
-		if (origin.startsWith("/exit/")) { origin = "/exit" }
-		if (destination.startsWith("/exit/")) { destination = "/exit" }
-		if (origin.startsWith("/login/")) { origin = "/login" }
-		if (destination.startsWith("/login/")) { destination = "/login" }
-		if (origin.startsWith("/logout/")) { origin = "/logout" }
-		if (destination.startsWith("/logout/")) { destination = "/logout" }
+		if (origin.startsWith("/exit?")) { origin = "/exit" }
+		if (destination.startsWith("/exit?")) { destination = "/exit" }
+		if (origin.startsWith("/login?")) { origin = "/login" }
+		if (destination.startsWith("/login?")) { destination = "/login" }
+		if (origin.startsWith("/logout?")) { origin = "/logout" }
+		if (destination.startsWith("/logout?")) { destination = "/logout" }
 
 		const transitions: Record<string, Record<string, string>> = {
 
@@ -55,29 +55,43 @@ export const TransitionLink = ({ href, children, className, ...props }: Transiti
 				"/": "transition-right",
 			},
 			"/guide/1": {
+				"/": "transition-down",
+				"/play": "transition-down",
 				"/guide/2": "transition-left",
 			},
 			"/guide/2": {
+				"/": "transition-down",
+				"/play": "transition-down",
 				"/guide/1": "transition-right",
 				"/guide/3": "transition-left",
 			},
 			"/guide/3": {
+				"/": "transition-down",
+				"/play": "transition-down",
 				"/guide/2": "transition-right",
 				"/guide/4": "transition-left",
 			},
 			"/guide/4": {
+				"/": "transition-down",
+				"/play": "transition-down",
 				"/guide/3": "transition-right",
 				"/guide/5": "transition-left",
 			},
 			"/guide/5": {
+				"/": "transition-down",
+				"/play": "transition-down",
 				"/guide/4": "transition-right",
 				"/guide/6": "transition-left",
 			},
 			"/guide/6": {
+				"/": "transition-down",
+				"/play": "transition-down",
 				"/guide/5": "transition-right",
 				"/guide/7": "transition-left",
 			},
 			"/guide/7": {
+				"/": "transition-down",
+				"/play": "transition-down",
 				"/guide/6": "transition-right",
 			},
 		};
@@ -92,8 +106,8 @@ export const TransitionLink = ({ href, children, className, ...props }: Transiti
 		transition?.classList.add(transitionClass);
 		await sleep(300);
 		router.push(href);
-		await sleep(300);
-		transition?.classList.remove(transitionClass);
+		// await sleep(300);
+		// transition?.classList.remove(transitionClass);
 	}
 
 	return (
