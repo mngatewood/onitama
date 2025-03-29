@@ -5,9 +5,9 @@ import Image from "next/image";
 import spirit from "../../../public/spirit.png";
 import { Title } from "../../components/Title";
 import { DarkModeToggle } from "../../components/ui/DarkThemeToggle";
-import Link from "next/link";
 import { GuideModal } from "../../components/guide/GuideModal";
 import * as data from "../../components/guide/guideData";
+import { TransitionLink } from "@/app/components/utils/TransitionLink";
 
 const GuidePageOne = () => {
 
@@ -24,7 +24,7 @@ const GuidePageOne = () => {
 	}
 	
 	return (
-		<div className="absolute top-0 left-0 right-0 bottom-0 overflow-hidden flex flex-col justify-between items-center">
+		<div className="transition absolute top-0 left-0 right-0 bottom-0 overflow-hidden flex flex-col justify-between items-center">
 			<header>
 				<Title />
 			</header>
@@ -62,17 +62,17 @@ const GuidePageOne = () => {
 				<div className="w-2/5">
 				</div>
 				<button className="w-1/5 group hover:font-bold hover:scale-125 transition-all duration-500">
-					<Link href="/" className="relative">
+					<TransitionLink href="/" className="relative">
 						<span>Home</span>
 						<span className="absolute -bottom-1 left-1/2 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-1/2"></span>
 						<span className="absolute -bottom-1 right-1/2 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-1/2"></span>
-					</Link>
+					</TransitionLink>
 				</button>
 				<button className="w-2/5 group hover:font-bold hover:scale-125 transition-all duration-500">
-					<Link href="/guide/2" className="relative">
+					<TransitionLink href="/guide/2" className="relative">
 						<span className="whitespace-nowrap">Start a Game &nbsp;&gt;&gt;</span>
 						<span className="absolute -bottom-1 right-0 w-0 transition-all h-0.5 bg-sky-700 dark:bg-sky-300 group-hover:w-full"></span>
-					</Link>
+					</TransitionLink>
 				</button>
 			</footer>
 			<DarkModeToggle />

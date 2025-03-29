@@ -212,3 +212,32 @@
 .guide {
 	filter: blur(1px) brightness(0.8);
 }
+
+/* Page transitions */
+
+.transition {
+	transition-property: transform, opacity;
+	transition-timing-function: linear;
+	transition-duration: 200ms;
+	opacity: 1;
+}
+
+.transition-right {
+	transform: translateX(100%);
+	opacity: 0;
+}
+
+.transition-left {
+	transform: translateX(-100%);
+	opacity: 0;
+}
+
+.transition-up {
+	transform: translateY(-100%);
+	opacity: 0;
+}
+
+.transition-down {
+	transform: translateY(100%);
+	opacity: 0;
+}

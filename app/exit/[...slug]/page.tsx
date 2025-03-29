@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Title } from "@/app/components/Title";
 import { DarkModeToggle } from "@/app/components/ui/DarkThemeToggle";
 import { ExitForm } from "@/app/components/forms/ExitForm";
@@ -7,6 +6,7 @@ import { getServerSession } from "next-auth";
 import { getGame } from "@/app/components/helpers/lobby";
 import { authOptions } from "@/app/api/auth/[...nextauth]/config";
 import { ToastMessage } from "@/app/components/ToastMessage";
+import { TransitionLink } from "@/app/components/utils/TransitionLink";
 
 const Exit = async ({ params }: { params: Promise<{ slug: string }> }) => {
 
@@ -28,7 +28,7 @@ const Exit = async ({ params }: { params: Promise<{ slug: string }> }) => {
 	}
 
 	return (
-		<div className="absolute top-0 left-0 right-0 bottom-0 overflow-hidden flex flex-col justify-center items-center">
+		<div className="transition absolute top-0 left-0 right-0 bottom-0 overflow-hidden flex flex-col justify-center items-center">
 			<header>
 				<Title />
 			</header>
@@ -46,7 +46,9 @@ const Exit = async ({ params }: { params: Promise<{ slug: string }> }) => {
 					}
 			</main>
 			<footer className="w-full h-10 portrait:h-14 landscape:short:h-14 p-2 portrait:p-4 landscape:short:p-4 flex justify-center gap-4 text-sky-700 dark:text-sky-300 bg-neutral-200 dark:bg-blue-1 z-50">
-				<button className="w-1/3"><Link href={`/play/${gameId}`}>Cancel</Link></button>
+				<button className="w-1/3">
+					<TransitionLink href={`/play/${gameId}`}>Cancel</TransitionLink>
+				</button>
 			</footer>
 			<DarkModeToggle />
 		</div>

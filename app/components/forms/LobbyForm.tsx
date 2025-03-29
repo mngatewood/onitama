@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { createSoloGame, createMultiplayerGame, joinGame } from "../helpers/lobby";
 import { socket } from "../../lib/socketClient";
 import { WaitingModal } from "../modals/WaitingModal";
 import { ToastMessage } from "../ToastMessage";
 import { useSearchParams, usePathname } from "next/navigation";
 import { NewGameModal } from "../modals/NewGameModal";
+import { sleep } from "../helpers/utility";
 
 interface LobbyFormProps {
 	session: AppendedSession;
@@ -22,6 +23,7 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 	const [loading, setLoading] = React.useState(false);
 	const [notifications, setNotifications] = useState<ToastNotification[]>([]);
 	const [showNewGameModal, setShowNewGameModal] = useState(false);
+	const router = useRouter();
 
 	// Evaluate searchParams
 	useEffect(() => {
@@ -118,8 +120,13 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 			setShowNewGameModal(false);
 			const newGame = await createSoloGame(session?.user.id);
 			if(newGame) {
-				console.log("newGame", newGame);
-				redirect(`/play/${newGame.id}`);
+				// redirect(`/play/${newGame.id}`);
+				const transition = document.querySelector(".transition");
+				transition?.classList.add("transition-left");
+				await sleep(500);
+				router.push(`/play/${newGame.id}`);
+				await sleep(500);
+				transition?.classList.remove("transition-left");
 			}
 			setLoading(false);			
 		} else {
@@ -165,7 +172,13 @@ export const LobbyForm = ({session, initialPendingGames}: LobbyFormProps) => {
 					setTimeout(resolve, 500);
 				});
 
-				redirect(`/play/${newGame.id}`);
+				// redirect(`/play/${newGame.id}`);
+				const transition = document.querySelector(".transition");
+				transition?.classList.add("transition-left");
+				await sleep(500);
+				router.push(`/play/${newGame.id}`);
+				await sleep(500);
+				transition?.classList.remove("transition-left");
 			}
 			setLoading(false);
 		} else {

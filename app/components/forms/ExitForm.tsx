@@ -3,15 +3,25 @@
 import { redirect } from "next/navigation";
 import { endGame } from "../helpers/lobby";
 import { socket } from "@/app/lib/socketClient";
+import { sleep } from "../helpers/utility";
+import { useRouter } from "next/navigation";
 
 export const ExitForm = ({gameId, firstName}: {gameId: string, firstName: string}) => {
+
+	const router = useRouter();
 
 	const handleExitGame = async (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
 		await endGame(gameId);
 		socket.emit("leave", gameId);
 		socket.emit("user_left", gameId, firstName);
-		redirect('/');
+		const transition = document.querySelector(".transition");
+		transition?.classList.add("transition-right");
+		await sleep(500);
+		router.push("/");
+		await sleep(500);
+		transition?.classList.remove("transition-right");
+		// redirect('/');
 	};
 		
 	return (

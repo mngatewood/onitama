@@ -1,12 +1,29 @@
 'use client';
 
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { sleep } from "../helpers/utility";
+import { endGame } from "../helpers/lobby";
+import { socket } from "@/app/lib/socketClient";
 
-export const LogoutForm = () => {
 
-	const handleSignOut = (e: React.MouseEvent<HTMLButtonElement>) => {
+export const LogoutForm = ({ gameId, firstName }: { gameId: string, firstName: string }) => {
+	const router = useRouter();
+
+	const handleSignOut = async (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
-		signOut({ callbackUrl: '/?logged_out=true', redirect: true })
+		if (gameId) {
+			await endGame(gameId);
+			socket.emit("leave", gameId);
+			socket.emit("user_left", gameId, firstName);
+		}
+		await signOut();
+		const transition = document.querySelector(".transition");
+		transition?.classList.add("transition-up");
+		await sleep(500);
+		router.push("/login");
+		await sleep(500);
+		transition?.classList.remove("transition-up");
 	};
 		
 	return (
